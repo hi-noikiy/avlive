@@ -1,0 +1,328 @@
+<template>
+	<scroll-view scroll-y :style="{height:mainHeight+'px'}" @scrolltolower="onreachBottom">
+		<view >
+			<!-- #ifdef APP-PLUS -->
+			<u-gap height="44" ></u-gap>
+			<!-- #endif --> 
+			<view class="top-menu">
+				<u-tabs-swiper
+					ref="uTabs"
+					:list="list"
+					:current="current"
+					@change="tabsChange"
+					:is-scroll="false"
+					active-color="#000000"
+					inactive-color="#000000"
+					font-size="31"
+					bar-width="48"
+					bar-height="7"
+				></u-tabs-swiper>
+				<view class="search">
+					<image src="../../../static/images/home_search.png"></image>
+				</view>
+			</view>
+			<u-gap height="20" ></u-gap>
+			<view class="wrap">
+				<!-- banner -->
+				<u-swiper
+					:list="banner"
+					mode="dot"
+					height="292"
+					border-radius="20"
+				></u-swiper>
+			</view>
+		<view v-if="current==0||current==1||current==2">
+		<category-menu :menuList="demand_form" @menuId="setMenuId"></category-menu>
+		</view>
+		<u-gap height="20" ></u-gap>
+		<template v-if="current==0">
+			<!-- 视频、直播 -->
+			<video-list :videoList="data_list"></video-list>
+		</template>
+		<template v-if="current==2">
+			<live-list></live-list>
+		</template>
+		<template v-else-if="current==1">
+			<!-- 音频 -->
+			<audio-list :audioList="data_list"></audio-list>
+		</template>
+		<!-- <template v-else-if="current==2"></template> -->
+		<template v-else-if="current==3">
+			<!-- 关注 -->
+		<!-- 	<u-tabs ref="uTabs3" :list="list3" :current="current3" @change="tabsChange3" :is-scroll="false" ></u-tabs> -->
+			<view id="nav2">
+				<u-tabs-swiper ref="uTabs3" :list="list3" :is-scroll="false"   bar-width="300" active-color="#000000" :current="current3" @change="tabsChange3"></u-tabs-swiper>
+				<u-gap height="20" ></u-gap>
+			</view>
+			
+			 <swiper :style="{height:mainHeight+'px'}" :current="current3" @transition="transition" @animationfinish="animationfinish">
+				<swiper-item class="swiper-item" v-for="(item, index) in list3" :key="index">
+						 <template v-if="index==0">
+						 	<!-- 视频、直播 -->
+						 	<video-list :videoList="data_list"></video-list>
+						 </template>
+						<template v-else-if="index==1">
+							<!-- 音频 -->
+							<audio-list :audioList="data_list"></audio-list>
+						</template>
+				</swiper-item>
+			 </swiper>
+		</template>
+		<u-gap height="20" ></u-gap>
+		</view>  
+	</scroll-view>
+</template>
+
+<script>
+	import {
+		getAddressList
+	} from '@/api/user.js';
+	import {
+		getDemandForm,
+		getHomeData
+	} from '@/api/liveApp.js';
+	import categoryMenu from '@/components/category-menu/category-menu.vue';
+	import liveList from '@/components/live-list/live-list.vue';
+	import audioList from '@/components/audio-list/audio-list.vue';
+	import videoList from '@/components/video-list/video-list.vue';
+	export default {
+		props: {
+			
+		},
+		components: {
+			'category-menu': categoryMenu,
+			'live-list': liveList,
+			'audio-list': audioList,
+			'video-list': videoList
+		},
+		data() {
+			return {
+				windowHeight:0,
+				mainHeight:800,
+				banner: [{
+							image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
+							title: '昨夜星辰昨夜风，画楼西畔桂堂东'
+						},
+						{
+							image: 'https://cdn.uviewui.com/uview/swiper/2.jpg',
+							title: '身无彩凤双飞翼，心有灵犀一点通'
+						},
+						{
+							image: 'https://cdn.uviewui.com/uview/swiper/3.jpg',
+							title: '谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳'
+						}
+				],
+				list: [{
+					name: '视频'
+				}, {
+					name: '音频'
+				}, {
+					name: '直播'
+				},{
+					name: '关注'
+				}],
+				list3: [{
+					name: '视频'
+				}, {
+					name: '音频'
+				}],
+				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
+				current: 0, // tabs组件的current值，表示当前活动的tab选项 
+				current2: 0, // tabs组件的current值，表示当前活动的tab选项 
+				current3: 0, // tabs组件的current值，表示当前活动的tab选项 
+				audioList:[
+					{
+						cover:'',
+						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
+						author:'张三',
+						isPlay:false,
+						isLike:false, 
+					},
+					{
+						cover:'',
+						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
+						author:'张三',
+						isPlay:false,
+						isLike:false, 
+					},
+					{
+						cover:'',
+						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
+						author:'张三',
+						isPlay:false,
+						isLike:false, 
+					},
+					{
+						cover:'',
+						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
+						author:'张三',
+						isPlay:false,
+						isLike:false, 
+					},
+					{
+						cover:'',
+						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
+						author:'张三',
+						isPlay:false,
+						isLike:false, 
+					},
+					{
+						cover:'',
+						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
+						author:'张三',
+						isPlay:false,
+						isLike:false, 
+					},
+					{
+						cover:'',
+						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
+						author:'张三',
+						isPlay:false,
+						isLike:false, 
+					},
+					{
+						cover:'',
+						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
+						author:'张三',
+						isPlay:false,
+						isLike:false, 
+					}
+				],
+				// 作品分类列表
+				demand_form: [],
+				// 视频/音频列表
+				data_list: [],
+				// 当前页码
+				page: 1,
+				// 当前选中的作品分类id
+				menu_id: ''
+			};
+		},
+		created() {
+			this.getDemandForm();
+		},
+		mounted() {
+			this.initData();
+			uni.getSystemInfo({
+			    success:  res=> {
+					this.windowHeight=res.windowHeight;
+					this.mainHeight=this.windowHeight
+			        // console.log(res);
+			        // console.log(res.model);
+			        // console.log(res.pixelRatio);
+			        // console.log(res.windowWidth);
+			        // console.log(res.windowHeight);
+			        // console.log(res.language);
+			        // console.log(res.version);
+			        // console.log(res.platform);
+			    }
+			});
+		},
+		methods: {
+			playVideo(){
+				uni.navigateTo({
+					url:'/pages/liveApp/playVideo'
+				})
+			},
+			// tabs通知swiper切换
+			tabsChange(index) {
+				this.current=index
+				this.initData();
+			},
+			// tabs通知swiper切换
+			tabsChange2(index) {
+				this.current2=index 
+			},
+			// tabs通知swiper切换
+			tabsChange3(index) {
+				this.current3=index 
+			},
+			// swiper-item左右移动，通知tabs的滑块跟随移动
+			transition(e) {
+				let dx = e.detail.dx;
+				this.$refs.uTabs3.setDx(dx);
+			},
+			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
+			// swiper滑动结束，分别设置tabs和swiper的状态
+			animationfinish(e) {
+				let current = e.detail.current;
+				this.$refs.uTabs3.setFinishCurrent(current); 
+				this.current3 = current;
+			},
+			// scroll-view到底部加载更多
+			onreachBottom() {
+				
+			},
+			// 获取作品分类列表
+			getDemandForm() {
+				var that = this;
+				getDemandForm().then(res => {
+					that.demand_form = res.data.demand_form;
+					that.menu_id = res.data.demand_form[0].id;
+				})
+			},
+			// 获取数据
+			getData() {
+				var that = this;
+				var data = {
+					'type': that.current + 1,
+					'demand_form_id':that.menu_id,
+					'page':that.page
+				}
+				getHomeData(data).then(res => {
+					that.data_list = res.data.list;
+					if(that.page != 1) {
+						that.page = that.page + 1;
+					}
+				})
+			},
+			// 初始化数据
+			initData() {
+				this.page = 1;
+				this.getData();
+			},
+			// 设置menu_id 
+			setMenuId(menu_id) {
+				this.menu_id = menu_id;
+				this.initData();
+			},
+			onAction(index,flag){
+				switch (flag){
+					case 0:
+						//播放暂停
+						this.audioList[index].isPlay=!this.audioList[index].isPlay
+						break;
+					case 1:
+						//播放暂停
+						this.audioList[index].isLike=!this.audioList[index].isLike
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	}
+</script>
+
+<style scoped lang="scss">
+	.wrap {
+		max-width: 730rpx;
+	}
+	.top-menu {
+		display: flex;
+		flex-direction: row;
+		width: 400rpx;
+		margin-left: 10rpx;
+		.search {
+			margin-top: 26rpx;
+			margin-left: 270rpx;
+			image {
+				width: 40rpx;
+				height: 40rpx;
+			}
+		}
+		.u-tabs {
+			background-color: rgba(0,0,0,0)!important;
+		}
+	}
+</style>

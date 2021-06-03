@@ -1,0 +1,28 @@
+.ml-20{margin-left: 20rpx !important;}
+.mr-10{margin-right: 10rpx !important;}
+.mr-20{margin-right: 20rpx !important;}
+.mt-10{margin-top: 10rpx !important;}
+.mt-20{margin-top: 20rpx !important;}
+.mb-10{margin-bottom: 10rpx !important;}
+.mb-30{margin-bottom: 30rpx !important;}
+
+.mtb-10{margin-top:10rpx !important ; margin-bottom: 10rpx!important;}
+.mtb-20{margin-top:20rpx !important ; margin-bottom: 20rpx!important;}
+
+.pd-10-20{padding: 10rpx 20rpx !important;}
+.ptb-10{padding-top: 10rpx !important;padding-bottom: 10rpx !important;}
+
+
+.text-desc{color: #9B9B9B!important;} 
+
+.line-h-40{line-height: 40rpx;}
+.line-h-50{line-height: 50rpx;}
+
+.tr{text-align: right;}
+
+.white{color: white;}
+
+.bg-white{background-color: white;}
+
+.pr{position: relative !important;}
+.pa{position: absolute !important;}

@@ -1,0 +1,264 @@
+<template>
+	<view class="page">
+		<view class="module module1">
+			<view class="title">我的余额</view>
+			<view class="prices">
+				<view class="item">
+					<image src="../users/static/1.png"></image>
+					<view class="price">音贝：{{userInfo.now_yinbei}}</view>
+				</view>
+				<view class="item">
+					<image src="../users/static/1.png"></image>
+					<view class="price">音宝：{{userInfo.now_yinbao}}</view>
+					<view class="b">价值{{userInfo.now_yinbao}}元</view>
+				</view>
+				<view class="item">
+					<image src="../users/static/1.png"></image>
+					<view class="price">音珠：{{userInfo.now_yinzhu}}</view>
+					<view class="b">价值{{userInfo.now_yinzhu / 10}}元</view>
+				</view>
+			</view>
+			<view class="info">说明：1个音宝=1元   10个音珠=1元</view>
+		</view>
+		<view class="module module2">
+			<view class="ma">
+				<view class="t">可提现金额</view>
+				<view class="b"><span style="padding-right: 12rpx;">{{userInfo.now_money}}</span>元</view>
+			</view>
+			<view class="mb"></view>
+			<view class="mc">
+				<view class="t">累计提现</view>
+				<view class="b"><span style="padding-right: 12rpx;">{{userInfo.extractTotalPrice}}</span>元</view>
+			</view>
+			<view class="md">
+				<view>提现记录</view>
+				<image src="../../static/images/rj_icon.png"></image>
+			</view>
+		</view>
+		<view class="module module3">
+			<view class="t">
+				<span class="type">提现类型</span>
+				<easy-select
+					class="select"
+					ref="easySelect"
+					:value="type"
+					:options="types"
+					@selectOne="selectOne"
+				></easy-select>
+				<span class="type">提现数量</span>
+				<input type="number" value="" placeholder="请输入数量" />
+			</view>
+			<view class="b">
+				预计到账：<span>500</span>元
+			</view>
+		</view>
+		<view class="sub">立即提现</view>
+	</view>
+</template>
+
+<script>
+	import {
+		getUserInfo
+	} from '@/api/user.js';
+	export default {
+		data() {
+			return {
+				type: '音宝',
+				types: [{
+						value: '1',
+						label: '音宝'
+					}, {
+						value: '2',
+						label: '音珠'
+					}, {
+						value: '3',
+						label: '余额'
+					}],
+				typeVal: '1',
+				userInfo: []
+			}
+		},
+		methods: {
+			selectOne(options) {
+				this.type = options.label
+				this.typeVal = options.value
+			},
+			onLoad() {
+				this.getUserInfo();
+			},
+			getUserInfo() {
+				let that = this;
+				getUserInfo().then(res => {
+					that.userInfo = res.data;
+				})
+			}
+		}
+	}
+</script>
+
+<style scoped lang="scss">
+	.page {
+		width: 690rpx;
+		margin: 0 auto;
+	}
+	.module {
+		width: 100%;
+		background: #2C2C2C;
+		box-shadow: 2rpx 3rpx 8rpx 0rpx rgba(42, 42, 42, 0.04);
+		opacity: 0.9;
+		border-radius: 15rpx;
+		padding: 30rpx;
+		margin-bottom: 30rpx;
+		font-family: PingFang;
+		font-weight: 500;
+	}
+	.module1 {
+		.title {
+			color: #E7E8ED;
+			font-size: 34rpx;
+		}
+		.prices {
+			margin-top: 26rpx;
+			display: flex;
+			justify-content: space-between;
+			.item {
+				display: flex;
+				flex-direction: column;
+				text-align: center;
+				align-items: center;
+				.price {
+					color: #E7E8ED;
+					font-size: 30rpx;
+				}
+				image {
+					width: 90rpx;
+					height: 90rpx;
+					margin-bottom: 6rpx;
+				}
+				.b {
+					color: #FF7171;
+					font-size: 26rpx;
+					padding-top: 10rpx;
+				}
+			}
+		}
+		.info {
+			color: #F0F0F0;
+			font-size: 26rpx;
+			padding-top: 20rpx;
+		}
+	}
+	.module2 {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		color: #E7E8ED;
+		.ma {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			.t {
+				font-size: 36rpx;
+				opacity: 0.96;
+			}
+			.b {
+				margin-top: 10rpx;
+				font-size: 33rpx;
+				span {
+					color: #FE6969;
+					font-size: 46rpx;
+				}
+			}
+		}
+		.mb {
+			width: 3rpx;
+			height: 82rpx;
+			border: 2rpx solid #E7E8ED;
+			opacity: 0.47;
+			margin-left: 46rpx;
+			margin-right: 46rpx;
+		}
+		.mc {
+			display: flex;
+			flex-direction: column;
+			min-width: 128rpx;
+			.t {
+				font-size: 36rpx;
+			}
+			.b {
+				margin-top: 10rpx;
+				font-size: 33rpx;
+				span {
+					font-size: 46rpx;
+				}
+			}
+		}
+		.md {
+			display: flex;
+			align-items: center;
+			margin-left: 59rpx;
+			view {
+				width: 60rpx;
+				height: 74rpx;
+				line-height: 44rpx;
+				font-size: 30rpx;
+			}
+			image {
+				margin-left: 26rpx;
+				width: 22rpx;
+				height: 40rpx;
+			}
+		}
+	}
+	.module3 {
+		display: flex;
+		flex-direction: column;
+		color: #E7E8ED;
+		.t {
+			display: flex;
+			font-size: 30rpx;
+			height: 48rpx;
+			line-height: 48rpx;
+			.type {margin-right: 20rpx;}
+			.select {
+				width: 144rpx!important;
+				height: 48rpx!important;
+				font-size: 24rpx;
+				color: #E7E8ED;
+				margin-right: 30rpx;
+			}
+			input {
+				width: 170rpx;
+				height: 48rpx;
+				border: 2rpx solid #E7E8ED;
+				border-radius: 14rpx;
+				font-size: 24rpx;
+				text-align: center;
+			}
+		}
+		.b {
+			font-size: 36rpx;
+			color: #E7E8ED;
+			margin-top: 49rpx;
+			text-align: center;
+			span {
+				color: #E05252;
+			}
+		}
+	}
+	.sub {
+		position: absolute;
+		z-index: -1;
+		margin-top: 46rpx;
+		left: 130rpx;
+		width: 490rpx;
+		height: 110rpx;
+		background: #3E3E3E;
+		opacity: 0.95;
+		border-radius: 30rpx;
+		font-size: 36rpx;
+		color: #E7E8ED;
+		line-height: 110rpx;
+		text-align: center;
+	}
+</style>
