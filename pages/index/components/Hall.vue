@@ -22,17 +22,24 @@
 		<!-- 筛选 -->
 		<view class="bg-white">
 			<span>排序</span>
-			<easy-select class="select" ref="easySelect" :value="selecValue" @selectOne="selectOne"></easy-select>
+			<easy-select
+				class="select"
+				ref="easySelect"
+				:options="orders"
+				:value="selecValue"
+				@selectOne="selectOne"
+			></easy-select>
 		</view>
 		<u-gap height="20" ></u-gap>
 		<view class="wrap">
 		<!-- 需求列表 -->
-			<view class="list_item" v-for="(item,index) in list" :key="index"  @click="see">
+			<view class="list_item" v-for="(item,index) in list" :key="index"  @click="see(item)">
 				<view class="title">招标</view>
-				<view class="info">录制一篇有声小说需要多少角色</view>
-				<view class="price">￥20000</view>
-				<view class="num">1个投标</view>
-				<view class="end-time">截止日还剩3天6个小时</view>
+				<view class="info">{{item.desc}}</view>
+				<view class="price">￥{{item.pay_price}}</view>
+				<view class="num">{{item.order_count}}个投标</view>
+				<view class="end-time" v-if="!item.diff_false">截止日还剩{{item.diff_day}}天{{item.diff_hour}}个小时</view>
+				<view class="end-time" v-else>已过期</view>
 			</view>
 		</view>
 
@@ -43,94 +50,48 @@
 	import {
 		getAddressList
 	} from '@/api/user.js';
+	import {
+		getOrderList
+	} from '@/api/liveApp.js';
 	export default {
 		props: {
 		},
 		data() {
 			return {
-				
-				banner:[{
-						image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
-						title: '昨夜星辰昨夜风，画楼西畔桂堂东'
-					},
+				// 排序
+				orders: [
 					{
-						image: 'https://cdn.uviewui.com/uview/swiper/2.jpg',
-						title: '身无彩凤双飞翼，心有灵犀一点通'
-					},
-					{
-						image: 'https://cdn.uviewui.com/uview/swiper/3.jpg',
-						title: '谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳'
-					}
-				],
-				value1: 1,
-				value2: 2,
-				value3: 1,
-				options1: [{
-						label: '全部',
 						value: 1,
+						label: '默认'
 					},
 					{
-						label: '视频',
 						value: 2,
+						label: '价格由低到高'
 					},
 					{
-						label: '音频',
-						value: 2,
-					}
-				],
-				options2: [{
-						label: '全部',
-						value: 1,
-					},
-					{
-						label: '主持人',
-						value: 2,
-					},
-					{
-						label: '模仿配音',
 						value: 3,
-					},
-					{
-						label: '游戏',
-						value: 4,
-					},
-					{
-						label: '广告',
-						value: 5,
-					},
-					{
-						label: '诗歌朗诵',
-						value: 6,
-					},
-				], 
-				options3: [{
-						label: '默认',
-						value: 1,
-					},
-					{
-						label: '价格有低到高',
-						value: 2,
-					},
-					{
-						label: '价格由高到低',
-						value: 3,
-					},
-					{
-						label: '发布时间',
-						value: 4,
+						label: '价格由高到低'
 					}
 				],
-				list:[1,1,1,1,1,1,1,1],
-				selecValue: '双皮奶'
+				selecValue: '默认',
+				order: 1,
+				// 订单列表
+				list: [],
+				// 当前页码
+				page: 1,
 			};
-		}, 
-		
+		},
+		mounted() {
+			this.getData()
+		},
 		methods: {
+			// 创建需求单
 			goForm(){
 				uni.navigateTo({
 					url:'/pages/liveApp/hall/index'
 				})
 			},
+			// 待确认
 			gosure(){
 				// uni.navigateTo({
 				// 	url:'/pages/liveApp/onsure',
@@ -139,10 +100,7 @@
 					url: '/pages/demand/employer'
 				})
 			},
-			selectOne(options) {
-				this.selecValue = options.label
-			},
-			
+			// 待上传
 			upload(){
 				// uni.navigateTo({
 				// 	url:'/pages/liveApp/upload',
@@ -151,22 +109,48 @@
 					url: '/pages/demand/demand'
 				})
 			},
+			// 已完成
 			complete(){
 				uni.navigateTo({
 					url:'/pages/liveApp/complete',
 				})
 			},
+			// 我参与的
 			partake(){
 				uni.navigateTo({
 					url:'/pages/liveApp/partake',
 				})
 			},
-			see(){
-				console.log('see')
+			// 需求详情
+			see(item){
+				if(item.is_over == 1 || item.unclick == 1) {
+					return false;
+				}
 				uni.navigateTo({
-					url: '/pages/demand/detail'
+					url: '/pages/demand/detail?order_id='+item.order_id+'&uid='+item.uid
 				})
 			},
+			// 排序选中
+			selectOne(options) {
+				this.selecValue = options.label;
+				this.order = options.value;
+				this.page = 1;
+				this.getData();
+			},
+			// 获取数据
+			getData() {
+				var that = this;
+				var data = {
+					page: this.page,
+					order: this.order
+				}
+				getOrderList(data).then(res => {
+					that.list = res.data.data;
+				})
+			},
+			
+			
+			
 			open(index) {
 				// 展开某个下来菜单时，先关闭原来的其他菜单的高亮
 				// 同时内部会自动给当前展开项进行高亮
@@ -181,12 +165,6 @@
 				// 更多的细节，如有需要请自行根据业务逻辑进行处理
 				// this.$refs.uDropdown.highlight(xxx);
 			},
-			
-			
-			
-			
-			
-			
 			tapAddress: function(e, addressid) {
 				this.active = e;
 				this.$emit('OnChangeAddress', addressid);

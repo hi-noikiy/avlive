@@ -1,17 +1,15 @@
 <template>
 	<view class="page">
 		<view class="module module1">
-			<view>项目名称：录制一篇小说，需要多个角色...</view>
+			<view>项目名称：{{order_info.desc}}</view>
 			<view>项目类型：音频</view>
-			<view>预算：<span>10000</span>元</view>
-			<view>期望周期：40天</view>
-			<view>音色要求：男声  中年人  老人</view>
+			<view>预算：<span>{{order_info.pay_price}}</span>元</view>
+			<view>期望周期：{{order_info.cycle}}</view>
+			<view>音色要求：{{order_info.timbre_type_name}}</view>
 		</view>
 		<view class="module module2">
 			<view class="title">需求详情</view>
-			<view>这里是编辑器内容</view>
-			<view>这里是编辑器内容</view>
-			<view>这里是编辑器内容</view>
+			<rich-text :nodes="htmlNodes"></rich-text>
 		</view>
 		<view class="download">
 			<image src="../../static/images/link_icon.png" class="icon"></image>
@@ -35,34 +33,104 @@
 </template>
 
 <script>
+	import HTMLParser from '@/utils/htmlParser.js'
+	import {
+		getUserOrderList,
+		cancelOrder
+	} from '@/api/liveApp.js';
 	export default {
 		data() {
 			return {
 				download_progress: 0,
-				download_status: '下载'
+				download_status: '下载',
+				htmlNodes: [],
+				// 订单信息
+				order_info: [],
+				// 下面的列表
+				order_list: [],
 			}
+		},
+		// 获取数据
+		onLoad(options) {
+			var that = this;
+			var data = {
+				uid: options.uid,
+				order_id: options.order_id
+			};
+			getUserOrderList(data).then(res => {
+				that.order_info = res.data.order_info;
+				// 需求详情
+				that.htmlNodes = HTMLParser(that.order_info.remake);
+				
+				that.order_list = res.data.order_list;
+			})
 		},
 		methods: {
 			// 下载
 			download() {
-				console.log('下载')
 				var that = this;
-				var time = setInterval(function() {
-					that.download_progress = that.download_progress + 25;
-					if(that.download_progress >= 100) {
-						clearInterval(time)
-						that.download_status = '下载完成'
-					}
-				},1000)
+				that.download_status = '下载中';
+				// 请求下载
+				const downloadTask = uni.downloadFile({
+				    url: that.order_info.enclosure,
+				    success: (res) => {
+				        if (res.statusCode === 200) {
+							// 打开文件
+							uni.openDocument({
+								filePath: res.tempFilePath,
+								success: function(res) {
+									console.log('打开文件成功');
+								}
+							});
+							// 保存文件
+							uni.saveFile({
+								tempFilePath: res.tempFilePath,
+								success(result) {
+									var savedFilePath = result.savedFilePath;
+									uni.showToast({
+										title: '文件保存在'+savedFilePath,
+										icon: 'none',
+										duration: 2000
+									})
+									that.download_status = '下载完成';
+								},
+								fail() {
+									uni.showToast({
+										title: '保存失败',
+										icon: 'none'
+									})
+								}
+							})
+				        }
+				    }
+				});
+				// 更新下载进度条
+				downloadTask.onProgressUpdate((res) => {
+					that.download_progress = res.progress
+				});
 			},
 			// 取消订单
 			cancel() {
+				var that = this;
 				uni.showModal({
 					title: '提示',
 					content: '您确定要取消订单吗？',
 					success: function (res) {
 						if (res.confirm) {
-							console.log('取消订单')
+							var data = {
+								order_id: that.order_info.order_id
+							};
+							cancelOrder(data).then(res => {
+								console.log(res)
+								uni.showToast({
+									title: res.data.msg
+								})
+								if(res.data.status == 200) {
+									setTimeout(()=>{
+										// 跳转到指定组件
+									},1000)
+								}
+							})
 						} else if (res.cancel) {
 							console.log('用户点击取消');
 						}

@@ -15,5 +15,20 @@ export function getHomeData(data){
 }
 
 /**
- * 
+ * 交易大厅
  */
+export function getOrderList(data){
+  return request.get('demand/order_list', data);
+}
+/**
+ * 需求详情
+ */
+export function getUserOrderList(data){
+  return request.get('demand/user_order_list', data);
+}
+/**
+ * 取消订单
+ */
+export function cancelOrder(data){
+  return request.get('demand/cancel_order', data);
+}
