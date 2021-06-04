@@ -14,7 +14,6 @@
 				简单的测试
 				<view>测试1</view>
 				<text>测试2</text>
-				<cover-view>测试4</cover-view>
 				<author></author>
 				<!-- <image src="../../users/static/1.png"></image>
 				<view class="info">
@@ -23,6 +22,7 @@
 				</view>
 				<view class="btn">关注</view> -->
 			</cover-view>
+			<cover-view>测试4</cover-view>
 		</video>
 	</view>
 </template>
