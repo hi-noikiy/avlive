@@ -12,9 +12,8 @@
 			object-fit="fill">
 			<cover-view class="author" style="width: 500rpx;height: 500rpx;background-color: #008000;">
 				简单的测试
-				<view>测试1</view>
+				<view>测试11</view>
 				<text>测试2</text>
-				<author></author>
 				<!-- <image src="../../users/static/1.png"></image>
 				<view class="info">
 					<view class="t">王保保</view>
@@ -22,17 +21,13 @@
 				</view>
 				<view class="btn">关注</view> -->
 			</cover-view>
-			<cover-view>测试4</cover-view>
+			<cover-view>测试41</cover-view>
 		</video>
 	</view>
 </template>
 
 <script>
-	import author from './components/author.vue';
 	export default {
-		components:{
-			author
-		},
 		data() {
 			return {
 				

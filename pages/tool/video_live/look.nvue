@@ -14,7 +14,6 @@
 				简单的测试
 				<view>测试11</view>
 				<text>测试2</text>
-				<author></author>
 				<!-- <image src="../../users/static/1.png"></image>
 				<view class="info">
 					<view class="t">王保保</view>
@@ -28,11 +27,7 @@
 </template>
 
 <script>
-	import author from './components/author.vue';
 	export default {
-		components:{
-			author
-		},
 		data() {
 			return {
 				
