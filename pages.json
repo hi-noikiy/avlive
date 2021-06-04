@@ -4,6 +4,36 @@
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+			"path": "pages/index/components/Home",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/index/components/Hall",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/index/components/Msg",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/index/components/MyCircle",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/index/components/Me",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "首页",
@@ -11,18 +41,17 @@
 					// #ifdef APP-PLUS
 					"titleNView": false
 					// #endif
-				}
-				 ,
-				 "navigationStyle": "custom"
+				},
+				"navigationStyle": "custom"
 			}
-		},  
+		},
 		{
 			"path": "pages/retrieve_password/index",
 			"style": {
 				"navigationBarTitleText": "找回密码"
 			}
 		}
-		  
+
 		//#ifdef H5
 		,
 		{
@@ -32,332 +61,295 @@
 			}
 		}
 		//#endif 
-        ,{
-            "path" : "pages/emediaToOne/index",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/evaluate",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/see",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/tool/works",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/tool/turn",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        
-        ,{
-            "path" : "pages/tool/telecast",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-       
-       
-        ,{
-            "path" : "pages/wallet/wallet",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/wallet/bill",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/demand/detail",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "需求详情",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/demand/employer",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "待确定的订单（雇主方）",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/demand/demand",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "待确定的订单（需求方）",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/wallet/withdrawal",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "提现",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/circle/form",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "发布",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/tool/video_live/live",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "直播间-主播端",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/tool/video_live/look",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "直播间-观看端",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
-	"subPackages": [
+		, {
+			"path": "pages/emediaToOne/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/evaluate",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/see",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/tool/works",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/tool/turn",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+
+		, {
+			"path": "pages/tool/telecast",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+
+
+		, {
+			"path": "pages/wallet/wallet",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/wallet/bill",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/demand/detail",
+			"style": {
+				"navigationBarTitleText": "需求详情",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/demand/employer",
+			"style": {
+				"navigationBarTitleText": "待确定的订单（雇主方）",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/demand/demand",
+			"style": {
+				"navigationBarTitleText": "待确定的订单（需求方）",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/wallet/withdrawal",
+			"style": {
+				"navigationBarTitleText": "提现",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/circle/form",
+			"style": {
+				"navigationBarTitleText": "发布",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/tool/video_live/live",
+			"style": {
+				"navigationBarTitleText": "直播间-主播端",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/tool/video_live/look",
+			"style": {
+				"navigationBarTitleText": "直播间-观看端",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	],
+	"tabBar": {
+		"color": "#8a8a8a",
+		"selectedColor": "#00ff7f",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [{
+				"pagePath": "pages/index/components/Home",
+				"text": "首页"
+			},
 			{
-				"root": "pages/liveApp",
-				"name": "live",
-				"pages": [  
-                 {
-                    "path" : "hall/index",
-                    "style" :                                                                                    
-					{
+				"pagePath": "pages/index/components/Hall",
+				"text": "交易大厅"
+			},
+			{
+				"pagePath": "pages/index/components/Msg",
+				"text": "消息"
+			},
+			{
+				"pagePath": "pages/index/components/MyCircle",
+				"text": "圈子"
+			},
+			{
+				"pagePath": "pages/index/components/Me",
+				"text": "我的"
+			}
+		]
+
+	},
+	"subPackages": [{
+			"root": "pages/liveApp",
+			"name": "live",
+			"pages": [{
+					"path": "hall/index",
+					"style": {
 						"navigationBarTitleText": "需求大厅",
 						"enablePullDownRefresh": false
 					}
-                
-                }
-                ,{
-                    "path" : "hall/detail",
-                    "style" :                                                                                    
-					{
+
+				}, {
+					"path": "hall/detail",
+					"style": {
 						"navigationBarTitleText": "需求详情",
 						"enablePullDownRefresh": false
 					}
-                } 
-                ,{
-                    "path" : "playVideo",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false,
-					"app-plus":{
-						"titleView":false
+				}, {
+					"path": "playVideo",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false,
+						"app-plus": {
+							"titleView": false
+						}
 					}
-                }
-                
-                }
-                ,{
-                    "path" : "user/findUser",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "chatroom/chatroom",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "聊天室", 
-					"enablePullDownRefresh": true, 
-					"navigationBarBackgroundColor": "#fafafa",
-					"navigationBarTextStyle": "black"
-                }
-                
-                }
-                ,{
-                    "path" : "add_new/add_new",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "chatUserList/chatUserList",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "groups/groups",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "add_groups/add_groups",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "groupChatRoom/groupChatRoom",
-                    "style" :                                                                                    
-					{
+
+				}, {
+					"path": "user/findUser",
+					"style": {
 						"navigationBarTitleText": "",
 						"enablePullDownRefresh": false
 					}
-                
-                }
-                ,{
-                    "path" : "emedia/index",
-                    "style" :                                                                                    
-					{
+
+				}, {
+					"path": "chatroom/chatroom",
+					"style": {
+						"navigationBarTitleText": "聊天室",
+						"enablePullDownRefresh": true,
+						"navigationBarBackgroundColor": "#fafafa",
+						"navigationBarTextStyle": "black"
+					}
+
+				}, {
+					"path": "add_new/add_new",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "chatUserList/chatUserList",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "groups/groups",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "add_groups/add_groups",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "groupChatRoom/groupChatRoom",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "emedia/index",
+					"style": {
 						"navigationBarBackgroundColor": "#fafafa",
 						"navigationBarTextStyle": "black",
 						"navigationBarTitleText": "emedia"
 					}
-                
-                }
-                ,{
-                    "path" : "groupSetting/groupSetting",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "newfriendDetail/newfriendDetail",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "onsure",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "upload",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "onseee",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "partake",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "complete",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-				
-				
-				
-            ]
-			},
-			{
+
+				}, {
+					"path": "groupSetting/groupSetting",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "newfriendDetail/newfriendDetail",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "onsure",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "upload",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "onseee",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "partake",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "complete",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false
+					}
+
+				}
+
+
+
+			]
+		},
+		{
 			"root": "pages/users",
 			"name": "users",
-			"pages": [ 
-				{
+			"pages": [{
 					"path": "scan_login/index",
 					"style": {
 						"navigationBarTitleText": "授权登录"
 					}
-				}, 
+				},
 				{
 					"path": "wechat_login/index",
 					"style": {
@@ -393,7 +385,7 @@
 							// #endif
 						}
 					}
-				},  
+				},
 				{
 					"path": "user_phone/index",
 					"style": {
@@ -413,7 +405,7 @@
 							// #endif
 						}
 					}
-				}, 
+				},
 				{
 					"path": "user_pwd_edit/index",
 					"style": {
@@ -433,7 +425,7 @@
 							// #endif
 						}
 					}
-				},  
+				},
 				{
 					"path": "login/index",
 					"style": {
@@ -448,7 +440,7 @@
 					}
 				}
 			]
-		} 
+		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
@@ -456,7 +448,7 @@
 		"navigationBarBackgroundColor": "#fff",
 		"backgroundColor": "#F8F8F8",
 		// "titleNView": false 去除系统原生导航
-		"bounce":"none" // 将回弹属性关掉
+		"bounce": "none" // 将回弹属性关掉
 	},
 	"condition": { //模式配置，仅开发期间生效
 		"current": 0, //当前激活的模式(list 的索引项)
