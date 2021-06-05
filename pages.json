@@ -194,32 +194,17 @@
 				"enablePullDownRefresh": false
 			}
 
-		}, {
-			"path": "pages/tool/video_live/look",
-			"style": {
-				"navigationBarTitleText": "直播",
-				//头部导航不显示
-				"navigationBarBackgroundColor": "transparent",
-				"navigationBarTextStyle": "white",
-				"app-plus": {
-					"titleNView": false,
-					"subNVues": [{
-						"id": "popup", // 唯一标识  
-						"path": "pages/tool/video_live/subNVue/look", // 页面路径  
-						//"type": "popup",  //原生子窗口内置样式，可取值：'popup',弹出层；"navigationBar",导航栏
-						"style": {
-							"position": "absolute",
-							"height": "60px",
-							"top": "40px",
-							"background": "transparent"
-						}
-					}]
-
-				}
-			}
-
 		}
-	],
+        ,{
+            "path" : "pages/tool/video_live/look",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "直播间-观看端",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"tabBar": {
 		"color": "#8a8a8a",
 		"selectedColor": "#00ff7f",

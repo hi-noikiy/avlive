@@ -8,7 +8,7 @@
     /* 5+App特有相关 */
     "app-plus" : {
         "usingComponents" : true,
-        "nvueCompiler" : "weex",
+        "nvueCompiler" : "uni-app",
         "compilerVersion" : 2,
         "splashscreen" : {
             "alwaysShowBeforeRender" : true,
@@ -190,6 +190,9 @@
                     "parameters" : {}
                 }
             }
+        },
+        "uniStatistics" : {
+            "enable" : true
         }
     },
     /* 快应用特有相关 */
@@ -243,7 +246,10 @@
         "async" : {
             "timeout" : 200000
         },
-        "title" : "音视频"
+        "title" : "音视频",
+        "uniStatistics" : {
+            "enable" : false
+        }
     },
     "plus" : {
         "statusbar" : {

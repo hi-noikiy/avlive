@@ -1,0 +1,160 @@
+<template>
+	<view>
+		<video
+			style="height:572px;width:360px;"
+			src="http://mp4.vjshi.com/2021-05-19/e141f65baf6e46b4dd384fafbb5a6274.mp4"
+		></video>
+		<view class="top">
+			<view class="author">
+				<view class="author-l">
+					<image class="author-l-head" src="../../users/static/1.png"></image>
+					<view class="author-l-info">
+						<text class="author-l-info-name">王保保</text>
+						<text class="author-l-info-zan">432本场点赞</text>
+					</view>
+				</view>
+				<text class="author-r">关注</text>
+			</view>
+			<view class="user">
+				<image class="user-head" src="../../users/static/1.png"></image>
+				<image class="user-head" src="../../users/static/1.png"></image>
+				<image class="user-head" src="../../users/static/1.png"></image>
+				<text class="user-num">20</text>
+				<image class="user-close" src="../../../static/images/lclose.png"></image>
+			</view>
+		</view>
+		
+		<view class="t2">
+			<view>覆盖21</view>
+			<view style="margin-top: 10px;">
+				<text style="color: #4CD964">覆盖22</text>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				videoStyle: ''
+			}
+		},
+		beforeCreate() {
+			uni.getSystemInfo({
+			　　success: function(res) { // res - 各种参数
+			　　 	console.log(res.windowWidth); // 屏幕的宽度 
+					console.log(res.windowHeight);// 屏幕的高度
+					
+					// 这里不好用，不知道为啥
+					this.videoStyle = 'height:'+res.windowHeight+'px;width:'+res.windowWidth+'px;';
+					console.log(this.videoStyle);
+				}
+			});
+		},
+		methods: {
+			
+		}
+	}
+</script>
+
+<style>
+	.top {
+		position: fixed;
+		width: 750px;
+		height: 32px;
+		display: flex;
+		flex-direction: row;
+		margin-top: 42px;
+		background-color: #09BB07;
+	}
+	.author {
+		width: 134.5px;
+		height: 32px;
+		background-color: #000000;
+		opacity: 0.2;
+		border-radius: 16px;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.author-l {
+		display: flex;
+		flex-direction: row;
+	}
+	.author-l-head {
+		width: 30px;
+		height: 30px;
+		border-radius: 15px;
+		margin-left: 1px;
+	}
+	.author-l-info {
+		display: flex;
+		flex-direction: column;
+		margin-top: 5.5px;
+		margin-left: 5px;
+	}
+	.author-l-info-name {
+		font-size: 10px;
+		font-weight: bold;
+		color: #FFFFFF;
+	}
+	.author-l-info-zan {
+		font-size: 8px;
+		color: #FFFFFF;
+		margin-top: 2px;
+	}
+	.author-r {
+		width: 40px;
+		height: 29px;
+		line-height: 29px;
+		text-align: center;
+		background-color: #FE3149;
+		border-radius: 14.5px;
+		font-size: 10px;
+		font-weight: bold;
+		color: #FFFFFF;
+		margin-right: 1px;
+	}
+	.user {
+		display: flex;
+		flex-direction: row;
+		margin-left: 63.5px;
+	}
+	.user-head {
+		width: 25px;
+		height: 25px;
+		border-radius: 12.5px;
+		margin-top: 2.5px;
+		margin-right: 5px;
+	}
+	.user-num {
+		margin-top: 2.5px;
+		width: 35px;
+		height: 25px;
+		line-height: 25px;
+		text-align: center;
+		background-color: #000000;
+		opacity: 0.2;
+		border-radius: 12.5px;
+		color: #FFFFFF;
+		font-size: 10px;
+		font-weight: bold;
+	}
+	.user-close {
+		width: 14px;
+		height: 14px;
+		margin-top: 8px;
+		margin-left: 13.5px;
+	}
+	
+	.t2 {
+		position: fixed;
+		width: 80px;
+		height: 80px;
+		background-color: #007AFF;
+		top: 300px;
+		left: 50px;
+	}
+</style>
