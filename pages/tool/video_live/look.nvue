@@ -1,9 +1,7 @@
 <template>
 	<view>
-		<video
-			style="height:572px;width:360px;"
-			src="http://mp4.vjshi.com/2021-05-19/e141f65baf6e46b4dd384fafbb5a6274.mp4"
-		></video>
+		<video style="object-fit: fill;object-position: center;height: 572px;"
+			src="http://mp4.vjshi.com/2021-05-19/e141f65baf6e46b4dd384fafbb5a6274.mp4"></video>
 		<view class="top">
 			<view class="author">
 				<view class="author-l">
@@ -23,37 +21,103 @@
 				<image class="user-close" src="../../../static/images/lclose.png"></image>
 			</view>
 		</view>
-		
-		<view class="t2">
-			<view>覆盖21</view>
-			<view style="margin-top: 10px;">
-				<text style="color: #4CD964">覆盖22</text>
+
+		<scroll-view class="t2" style="scroll-y:true">
+			<view class="news" v-for="(item,index) in bodd" :key="index">
+				<text class="texts_user" style="color: #D91F16;">{{item}}</text>
+				<!-- <text class="texts_text" style="color: #FFFFFF;">晚上好</text> -->
 			</view>
+		</scroll-view>
+		<view class="t3">
+			<input class="send" type="text" v-model="say" placeholder="说点什么" />
+		</view>
+		<button type="default" @click="fas"
+			style="width: 30px;height: 20px;position: fixed;bottom: 33px;left: 145px;"><text
+				style="font-size: 10px;line-height: 20px;">发送</text></button>
+		<view class="gift" @click="open">
+			<image src="../../../static/images/liweu.png" mode=""></image>
+		</view>
+		<!-- 		<uni-popup ref="popup" type="bottom" >底部弹出 Popup</uni-popup>
+		<button @click="close">关闭</button> -->
+		<view class="alt" v-if="show">
+			<view class="live_gift">
+				<text style="color: #FFFFFF;margin-left: 10px;margin-top: 5px;">直播礼物</text>
+			</view>
+			<div class="con">
+				<view class="box-card">
+					<!-- tab按钮 -->
+					<text class="tabs" :class="{to_active:isShow === 1}" @click="handleTab(1)">礼物</text>
+					<text class="tabs" :class="{to_active:isShow === 2}" @click="handleTab(2)">表情</text>
+					<text class="tabs" :class="{to_active:isShow === 3}" @click="handleTab(3)">特效</text>
+					<!-- 下面的div盒子 -->
+					<view class="switch" v-if="isShow === 1">
+						<view class="liw">
+							<dl v-for="i in 8">
+								<dt>
+									<image style="width: 60px;height: 60px;" src="../../users/static/value.jpg" mode="">
+									</image>
+								</dt>
+								<dd>
+									<view style="width: 60px;">
+										<text style="font-size: 15px;color: #FFFFFF;text-align: center;">玫瑰</text>
+									</view>
+									<view style="flex-direction: row;width: 60px;">
+										<text class="ybei_zhu">1音贝</text><text class="ybei_zhu">丨</text><text
+											class="ybei_zhu">10音珠</text>
+									</view>
+									<view style="width: 60px;">
+										<text class="ybao">100音宝</text>
+									</view>
+								</dd>
+							</dl>
+
+						</view>
+					</view>
+					<view class="switch" v-if="isShow === 2">222222222</view>
+					<view class="switch" v-if="isShow === 3">33333333</view>
+				</view>
+			</div>
 		</view>
 	</view>
 </template>
 
 <script>
 	export default {
+		components: {
+
+		},
 		data() {
 			return {
-				videoStyle: ''
+				// videoStyle: '',
+				say: '',
+				show: false,
+				// btnnum: 0,
+				isShow: 1,
+				bodd: [
+					'1',
+					'2',
+					'3',
+					'4',
+					'我都',
+					'1',
+					'2'
+				]
 			}
 		},
-		beforeCreate() {
-			uni.getSystemInfo({
-			　　success: function(res) { // res - 各种参数
-			　　 	console.log(res.windowWidth); // 屏幕的宽度 
-					console.log(res.windowHeight);// 屏幕的高度
-					
-					// 这里不好用，不知道为啥
-					this.videoStyle = 'height:'+res.windowHeight+'px;width:'+res.windowWidth+'px;';
-					console.log(this.videoStyle);
-				}
-			});
-		},
+
 		methods: {
-			
+			open() {
+
+				this.show = !this.show
+
+			},
+			handleTab(val) {
+				this.isShow = val;
+			},
+			fas() {
+				this.bodd.push(this.say)
+				this.say = ''
+			},
 		}
 	}
 </script>
@@ -63,48 +127,51 @@
 		position: fixed;
 		width: 750px;
 		height: 32px;
-		display: flex;
 		flex-direction: row;
-		margin-top: 42px;
-		background-color: #09BB07;
+		margin-top: 22px;
 	}
+
 	.author {
 		width: 134.5px;
 		height: 32px;
 		background-color: #000000;
 		opacity: 0.2;
 		border-radius: 16px;
-		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: center;
+		margin-left: 10px;
 	}
+
 	.author-l {
-		display: flex;
 		flex-direction: row;
 	}
+
 	.author-l-head {
 		width: 30px;
 		height: 30px;
 		border-radius: 15px;
 		margin-left: 1px;
 	}
+
 	.author-l-info {
-		display: flex;
 		flex-direction: column;
 		margin-top: 5.5px;
 		margin-left: 5px;
 	}
+
 	.author-l-info-name {
 		font-size: 10px;
 		font-weight: bold;
 		color: #FFFFFF;
 	}
+
 	.author-l-info-zan {
 		font-size: 8px;
 		color: #FFFFFF;
 		margin-top: 2px;
 	}
+
 	.author-r {
 		width: 40px;
 		height: 29px;
@@ -117,11 +184,12 @@
 		color: #FFFFFF;
 		margin-right: 1px;
 	}
+
 	.user {
-		display: flex;
 		flex-direction: row;
 		margin-left: 63.5px;
 	}
+
 	.user-head {
 		width: 25px;
 		height: 25px;
@@ -129,6 +197,7 @@
 		margin-top: 2.5px;
 		margin-right: 5px;
 	}
+
 	.user-num {
 		margin-top: 2.5px;
 		width: 35px;
@@ -142,19 +211,130 @@
 		font-size: 10px;
 		font-weight: bold;
 	}
+
 	.user-close {
 		width: 14px;
 		height: 14px;
 		margin-top: 8px;
 		margin-left: 13.5px;
 	}
-	
+
 	.t2 {
 		position: fixed;
-		width: 80px;
-		height: 80px;
-		background-color: #007AFF;
-		top: 300px;
-		left: 50px;
+		height: 100px;
+		bottom: 75px;
+		left: 15px;
+		background-color: #008000;
+		opacity: 0.3;
+	}
+
+
+	.t3 {
+		position: fixed;
+		width: 130px;
+		height: 25px;
+		background-color: #303133;
+		bottom: 30px;
+		left: 15px;
+		border-radius: 15px;
+		opacity: 0.4;
+	}
+
+	.texts_user {
+		padding-left: 5px;
+		line-height: 20px;
+		font-size: 13px;
+	}
+
+	/* 	.texts_text{
+		padding-right: 5px;
+		line-height: 20px;
+		font-size: 13px;
+	} */
+	.gift {
+		width: 23px;
+		height: 23px;
+		border-radius: 50%;
+		position: fixed;
+		bottom: 30px;
+		right: 50px;
+		background-color: #aaaa7f;
+	}
+
+	.alt {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 360px;
+		height: 300px;
+		background-color: #323232;
+		border-top-left-radius: 13px;
+		border-top-right-radius: 13px;
+	}
+
+	.to_active {
+		color: #FFF33D;
+		font-weight: 600;
+	}
+
+	.tabs {
+		width: 50px;
+		/* display: inline-block; */
+		line-height: 40px;
+		font-size: 13px;
+		color: #FFFFFF;
+	}
+
+	.box-card {
+		flex-direction: row;
+		position: fixed;
+		bottom: 5px;
+		left: 10px;
+	}
+
+	.live_gift {
+		width: 375px;
+		height: 30px;
+		border-bottom: 1px solid #ffffff;
+	}
+
+	.news {
+		flex-direction: row;
+		background-color: #330001;
+		opacity: 0.9;
+		border-radius: 15px;
+	}
+
+	.send {
+		padding-left: 10px;
+		font-size: 13px;
+		line-height: 25px;
+	}
+
+	.switch {
+		width: 360px;
+		height: 220px;
+		background-color: #323232;
+		position: fixed;
+		left: 5px;
+		bottom: 40px;
+	}
+
+	.ybao {
+		font-size: 11px;
+		text-align: center;
+		color: #FFFFFF;
+	}
+
+	.ybei_zhu {
+		font-size: 9px;
+		color: #FFFFFF;
+	}
+
+	.liw {
+		width: 360px;
+		height: 100px;
+		flex-direction: row;
+		justify-content: space-around
 	}
 </style>
