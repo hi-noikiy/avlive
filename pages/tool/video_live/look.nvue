@@ -1,7 +1,13 @@
 <template>
 	<view>
-		<video style="object-fit: fill;object-position: center;height: 572px;"
-			src="http://mp4.vjshi.com/2021-05-19/e141f65baf6e46b4dd384fafbb5a6274.mp4"></video>
+		<video :style="'object-fit: fill;height: 572px;'"
+			src="http://mp4.vjshi.com/2021-05-19/e141f65baf6e46b4dd384fafbb5a6274.mp4"
+			:autoplay="true"
+			:loop="true"
+			:controls="false"
+			:show-play-btn="false"
+			:enable-progress-gesture="false"
+		></video>
 		<view class="top">
 			<view class="author">
 				<view class="author-l">
@@ -21,62 +27,65 @@
 				<image class="user-close" src="../../../static/images/lclose.png"></image>
 			</view>
 		</view>
-
-		<scroll-view class="t2" style="scroll-y:true">
-			<view class="news" v-for="(item,index) in bodd" :key="index">
-				<text class="texts_user" style="color: #D91F16;">{{item}}</text>
-				<!-- <text class="texts_text" style="color: #FFFFFF;">晚上好</text> -->
+		<scroll-view class="msgs" :scroll-y="true" :show-scrollbar="false">
+			<view class="msg" v-for="(item, index) in bodd">
+				<text class="uname">测试：</text>
+				<text class="umsg">{{item}}</text>
 			</view>
 		</scroll-view>
-		<view class="t3">
-			<input class="send" type="text" v-model="say" placeholder="说点什么" />
-		</view>
-		<button type="default" @click="fas"
-			style="width: 30px;height: 20px;position: fixed;bottom: 33px;left: 145px;"><text
-				style="font-size: 10px;line-height: 20px;">发送</text></button>
-		<view class="gift" @click="open">
-			<image src="../../../static/images/liweu.png" mode=""></image>
-		</view>
-		<!-- 		<uni-popup ref="popup" type="bottom" >底部弹出 Popup</uni-popup>
-		<button @click="close">关闭</button> -->
-		<view class="alt" v-if="show">
-			<view class="live_gift">
-				<text style="color: #FFFFFF;margin-left: 10px;margin-top: 5px;">直播礼物</text>
+		<view class="bottom">
+			<view class="bottom-l">
+				<input class="bottom-l-l" type="text" value="" placeholder="说点什么" placeholder-style="color:#FFFFFF;" />
+				<image class="bottom-l-r" src="../../users/static/1.png"></image>
 			</view>
-			<div class="con">
-				<view class="box-card">
-					<!-- tab按钮 -->
-					<text class="tabs" :class="{to_active:isShow === 1}" @click="handleTab(1)">礼物</text>
-					<text class="tabs" :class="{to_active:isShow === 2}" @click="handleTab(2)">表情</text>
-					<text class="tabs" :class="{to_active:isShow === 3}" @click="handleTab(3)">特效</text>
-					<!-- 下面的div盒子 -->
-					<view class="switch" v-if="isShow === 1">
-						<view class="liw">
-							<dl v-for="i in 8">
-								<dt>
-									<image style="width: 60px;height: 60px;" src="../../users/static/value.jpg" mode="">
-									</image>
-								</dt>
-								<dd>
-									<view style="width: 60px;">
-										<text style="font-size: 15px;color: #FFFFFF;text-align: center;">玫瑰</text>
-									</view>
-									<view style="flex-direction: row;width: 60px;">
-										<text class="ybei_zhu">1音贝</text><text class="ybei_zhu">丨</text><text
-											class="ybei_zhu">10音珠</text>
-									</view>
-									<view style="width: 60px;">
-										<text class="ybao">100音宝</text>
-									</view>
-								</dd>
-							</dl>
-
-						</view>
-					</view>
-					<view class="switch" v-if="isShow === 2">222222222</view>
-					<view class="switch" v-if="isShow === 3">33333333</view>
+			<view class="bottom-r">
+				<view class="bottom-r-i">
+					<image class="bottom-r-l-img" src="../../users/static/1.png"></image>
 				</view>
-			</div>
+				<view class="bottom-r-i" @click="showBox(true)">
+					<image class="bottom-r-r-img" src="../../users/static/1.png"></image>
+				</view>
+			</view>
+		</view>
+		<view class="box-mb" v-if="box" @click="showBox(false)"></view>
+		<view class="box" v-if="box">
+			<view class="box-t">
+				<text class="box-tt">直播礼物</text>
+			</view>
+			<view class="box-c" v-if="this_box == 1">
+				<swiper class="box-c-swiper">
+					<swiper-item>
+						<view class="swiper-item">
+							<view class="box-c-swiper-item" v-for="i in 8">
+								<image class="box-c-swiper-item-img" src="../../users/static/1.png"></image>
+								<text class="box-c-swiper-item-name">玫瑰</text>
+								<text class="box-c-swiper-item-yy">1音贝 | 10音铢</text>
+								<text class="box-c-swiper-item-yy">100音宝</text>
+							</view>
+						</view>
+					</swiper-item>
+					<swiper-item>
+						<view class="swiper-item">
+							<view class="box-c-swiper-item" v-for="i in 2">
+								<image class="box-c-swiper-item-img" src="../../users/static/1.png"></image>
+								<text class="box-c-swiper-item-name">玫瑰</text>
+								<text class="box-c-swiper-item-yy">1音贝 | 10音铢</text>
+								<text class="box-c-swiper-item-yy">100音宝</text>
+							</view>
+						</view>
+					</swiper-item>
+				</swiper>
+			</view>
+			<view class="box-c" v-if="this_box == 2">表情</view>
+			<view class="box-c" v-if="this_box == 3">特效</view>
+			<view class="box-b">
+				<view class="tabs">
+					<text :class="'tab '+(this_box == 1 ? 'tab-curr' : '')" @click="switchBox(1)">礼物</text>
+					<text :class="'tab '+(this_box == 2 ? 'tab-curr' : '')" @click="switchBox(2)">表情</text>
+					<text :class="'tab '+(this_box == 3 ? 'tab-curr' : '')" @click="switchBox(3)">特效</text>
+				</view>
+				<text class="chongzhi">充值</text>
+			</view>
 		</view>
 	</view>
 </template>
@@ -88,28 +97,36 @@
 		},
 		data() {
 			return {
-				// videoStyle: '',
+				windowWidth: '',
+				windowHeight: '',
+				box: false,
+				this_box: 1,
 				say: '',
 				show: false,
-				// btnnum: 0,
 				isShow: 1,
 				bodd: [
+					'测试',
+					'主播真好看主播真好看主播真好看主播真好看主播真好看主播真好看111',
+					'主播在反驳吗',
+					'111111111',
 					'1',
 					'2',
 					'3',
-					'4',
-					'我都',
-					'1',
-					'2'
+					'4'
 				]
 			}
 		},
-
+		onReady() {
+			uni.getSystemInfo({
+			　　success: function(res) { // res - 各种参数
+			　　 	this.windowWidth = res.windowWidth; // 屏幕的宽度 
+					this.windowHeight = res.windowHeight;// 屏幕的高度
+				}
+			});
+		},
 		methods: {
 			open() {
-
 				this.show = !this.show
-
 			},
 			handleTab(val) {
 				this.isShow = val;
@@ -118,6 +135,13 @@
 				this.bodd.push(this.say)
 				this.say = ''
 			},
+			showBox(bool) {
+				console.log('执行了')
+				this.box = bool;
+			},
+			switchBox(box) {
+				this.this_box = box;
+			}
 		}
 	}
 </script>
@@ -125,22 +149,21 @@
 <style>
 	.top {
 		position: fixed;
-		width: 750px;
-		height: 32px;
+		width: 750rpx;
+		height: 64rpx;
 		flex-direction: row;
-		margin-top: 22px;
+		margin-top: 44rpx;
 	}
 
 	.author {
-		width: 134.5px;
-		height: 32px;
-		background-color: #000000;
-		opacity: 0.2;
-		border-radius: 16px;
+		width: 269rpx;
+		height: 64rpx;
+		background: rgba(0,0,0,0.2);
+		border-radius: 32rpx;
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: center;
-		margin-left: 10px;
+		margin-left: 20rpx;
 	}
 
 	.author-l {
@@ -148,193 +171,257 @@
 	}
 
 	.author-l-head {
-		width: 30px;
-		height: 30px;
-		border-radius: 15px;
-		margin-left: 1px;
+		width: 60rpx;
+		height: 60rpx;
+		border-radius: 30rpx;
+		margin-left: 2rpx;
 	}
 
 	.author-l-info {
 		flex-direction: column;
-		margin-top: 5.5px;
-		margin-left: 5px;
+		margin-top: 11rpx;
+		margin-left: 10rpx;
 	}
 
 	.author-l-info-name {
-		font-size: 10px;
+		font-size: 20rpx;
 		font-weight: bold;
 		color: #FFFFFF;
 	}
 
 	.author-l-info-zan {
-		font-size: 8px;
+		font-size: 16rpx;
 		color: #FFFFFF;
-		margin-top: 2px;
+		margin-top: 4rpx;
 	}
 
 	.author-r {
-		width: 40px;
-		height: 29px;
-		line-height: 29px;
+		width: 80rpx;
+		height: 58rpx;
+		line-height: 58rpx;
 		text-align: center;
 		background-color: #FE3149;
-		border-radius: 14.5px;
-		font-size: 10px;
+		border-radius: 29rpx;
+		font-size: 20rpx;
 		font-weight: bold;
 		color: #FFFFFF;
-		margin-right: 1px;
+		margin-right: 2rpx;
 	}
 
 	.user {
 		flex-direction: row;
-		margin-left: 63.5px;
+		margin-left: 127rpx;
 	}
 
 	.user-head {
-		width: 25px;
-		height: 25px;
-		border-radius: 12.5px;
-		margin-top: 2.5px;
-		margin-right: 5px;
+		width: 50rpx;
+		height: 50rpx;
+		border-radius: 25rpx;
+		margin-top: 5rpx;
+		margin-right: 10rpx;
 	}
 
 	.user-num {
-		margin-top: 2.5px;
-		width: 35px;
-		height: 25px;
-		line-height: 25px;
+		margin-top: 5rpx;
+		width: 70rpx;
+		height: 50rpx;
+		line-height: 50rpx;
 		text-align: center;
-		background-color: #000000;
-		opacity: 0.2;
-		border-radius: 12.5px;
+		background: rgba(0,0,0,0.2);
+		border-radius: 25rpx;
 		color: #FFFFFF;
-		font-size: 10px;
+		font-size: 20rpx;
 		font-weight: bold;
 	}
 
 	.user-close {
-		width: 14px;
-		height: 14px;
-		margin-top: 8px;
-		margin-left: 13.5px;
+		width: 28rpx;
+		height: 28rpx;
+		margin-top: 16rpx;
+		margin-left: 27rpx;
 	}
 
-	.t2 {
+	.msgs {
 		position: fixed;
-		height: 100px;
-		bottom: 75px;
-		left: 15px;
-		background-color: #008000;
-		opacity: 0.3;
+		width: 400rpx;
+		height: 320rpx;
+		bottom: 148rpx;
+		left: 30rpx;
+		flex-direction: column;
 	}
-
-
-	.t3 {
+	.msg {
+		flex-direction: row;
+		padding: 15rpx 20rpx;
+		width: 222rpx;
+		height: 50rpx;
+		background-color: rgba(0,0,0,0.2);
+		border-radius: 25rpx;
+		margin-bottom: 5rpx;
+	}
+	.uname {
+		font-size: 20rpx;
+		font-weight: bold;
+		color: #FE3149;
+	}
+	.umsg {
+		font-size: 20rpx;
+		font-weight: bold;
+		color: #FFFFFF;
+	}
+	
+	.bottom {
 		position: fixed;
-		width: 130px;
-		height: 25px;
-		background-color: #303133;
-		bottom: 30px;
-		left: 15px;
-		border-radius: 15px;
-		opacity: 0.4;
+		flex-direction: row;
+		left: 32rpx;
+		bottom: 63rpx;
+		width: 750rpx;
+		height: 64rpx;
 	}
-
-	.texts_user {
-		padding-left: 5px;
-		line-height: 20px;
-		font-size: 13px;
+	.bottom-l {
+		flex-direction: row;
+		width: 350rpx;
+		height: 64rpx;
+		background-color: rgba(0,0,0,0.2);
+		border-radius: 32rpx;
 	}
-
-	/* 	.texts_text{
-		padding-right: 5px;
-		line-height: 20px;
-		font-size: 13px;
-	} */
-	.gift {
-		width: 23px;
-		height: 23px;
-		border-radius: 50%;
-		position: fixed;
-		bottom: 30px;
-		right: 50px;
-		background-color: #aaaa7f;
+	.bottom-l-l {
+		margin-top: 20rpx;
+		margin-left: 20rpx;
+		width: 270rpx;
+		height: 32rpx;
+		line-height: 32rpx;
+		font-size: 25rpx;
+		font-weight: bold;
+		color: #FFFFFF;
 	}
-
-	.alt {
+	.bottom-l-r {
+		width: 30rpx;
+		height: 40rpx;
+		margin-top: 12rpx;
+		margin-left: 12rpx;
+	}
+	.bottom-r {
+		flex-direction: row;
+		margin-left: 193rpx;
+	}
+	.bottom-r-i {
+		width: 64rpx;
+		height: 64rpx;
+		border-radius: 32rpx;
+		background-color: rgba(0,0,0,0.2);
+		margin-right: 17rpx;
+	}
+	.bottom-r-l-img {
+		width: 28rpx;
+		height: 28rpx;
+		margin-top: 18rpx;
+		margin-left: 18rpx;
+	}
+	.bottom-r-r-img {
+		width: 27rpx;
+		height: 27rpx;
+		margin-top: 19rpx;
+		margin-left: 19rpx;
+	}
+	
+	.box {
 		position: fixed;
 		bottom: 0;
-		left: 0;
-		width: 360px;
-		height: 300px;
+		width: 750rpx;
+		height: 781rpx;
 		background-color: #323232;
-		border-top-left-radius: 13px;
-		border-top-right-radius: 13px;
+		border-radius: 20rpx 20rpx 0rpx 0rpx;
 	}
-
-	.to_active {
-		color: #FFF33D;
-		font-weight: 600;
+	.box-t {
+		width: 750rpx;
+		height: 89rpx;
+		border-bottom: 1rpx;
+		border-bottom-color: #FFFFFF;
 	}
-
+	.box-tt {
+		font-size: 30rpx;
+		font-weight: bold;
+		color: #FFFFFF;
+		margin-top: 31rpx;
+		margin-left: 31rpx;
+	}
+	.box-c {
+		width: 701rpx;
+		height: 536rpx;
+		background-color: #0000FF;
+		margin-top: 39rpx;
+		margin-left: 46rpx;
+	}
+	.box-c-swiper {
+		width: 701rpx;
+		height: 489rpx;
+	}
+	.swiper-item {
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+	.box-c-swiper-item {
+		width: 137rpx;
+		height: 224rpx;
+		align-items: center;
+		margin-right: 40rpx;
+		margin-bottom: 40rpx;
+	}
+	.box-c-swiper-item-img {
+		width: 120rpx;
+		height: 120rpx;
+	}
+	.box-c-swiper-item-name {
+		font-size: 25rpx;
+		font-weight: bold;
+		color: #FFFFFF;
+		opacity: 0.8;
+		margin-top: 21rpx;
+	}
+	.box-c-swiper-item-yy {
+		font-size: 20rpx;
+		font-weight: bold;
+		color: #FFFFFF;
+		opacity: 0.6;
+	}
+	
+	.box-b {
+		position: fixed;
+		bottom: 42rpx;
+		left: 36rpx;
+		width: 684rpx;
+		height: 44rpx;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
 	.tabs {
-		width: 50px;
-		/* display: inline-block; */
-		line-height: 40px;
-		font-size: 13px;
+		flex-direction: row;
+	}
+	.tab {
+		font-size: 20rpx;
+		font-weight: bold;
 		color: #FFFFFF;
+		margin-right: 41rpx;
 	}
-
-	.box-card {
-		flex-direction: row;
-		position: fixed;
-		bottom: 5px;
-		left: 10px;
+	.tab-curr {
+		color: #FFF33D;
 	}
-
-	.live_gift {
-		width: 375px;
-		height: 30px;
-		border-bottom: 1px solid #ffffff;
-	}
-
-	.news {
-		flex-direction: row;
-		background-color: #330001;
-		opacity: 0.9;
-		border-radius: 15px;
-	}
-
-	.send {
-		padding-left: 10px;
-		font-size: 13px;
-		line-height: 25px;
-	}
-
-	.switch {
-		width: 360px;
-		height: 220px;
-		background-color: #323232;
-		position: fixed;
-		left: 5px;
-		bottom: 40px;
-	}
-
-	.ybao {
-		font-size: 11px;
+	.chongzhi {
+		width: 91rpx;
+		height: 44rpx;
+		line-height: 44rpx;
+		background-color: #FE3149;
+		font-size: 20rpx;
+		font-weight: bold;
+		color: #FFFFFF;
 		text-align: center;
-		color: #FFFFFF;
 	}
-
-	.ybei_zhu {
-		font-size: 9px;
-		color: #FFFFFF;
-	}
-
-	.liw {
-		width: 360px;
-		height: 100px;
-		flex-direction: row;
-		justify-content: space-around
+	.box-mb {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750rpx;
+		height: 1000rpx;
 	}
 </style>
