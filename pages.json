@@ -132,7 +132,10 @@
 			"path": "pages/tool/telecast",
 			"style": {
 				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": false
+				}
 			}
 
 		}
@@ -191,7 +194,10 @@
 			"path": "pages/tool/video_live/live",
 			"style": {
 				"navigationBarTitleText": "直播间-主播端",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": false
+				}
 			}
 
 		}
@@ -200,7 +206,10 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "直播间-观看端",
-                "enablePullDownRefresh": false
+                "enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": false
+				}
             }
             
         }

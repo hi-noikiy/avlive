@@ -36,11 +36,12 @@
 		</view>
 		<u-gap height="20" ></u-gap>
 		<template v-if="current==0">
-			<!-- 视频、直播 -->
+			<!-- 视频 -->
 			<video-list :videoList="data_list"></video-list>
 		</template>
 		<template v-if="current==2">
-			<live-list></live-list>
+			<!-- 直播 -->
+			<live-list :liveList="data_list"></live-list>
 		</template>
 		<template v-else-if="current==1">
 			<!-- 音频 -->
@@ -58,7 +59,7 @@
 			 <swiper :style="{height:mainHeight+'px'}" :current="current3" @transition="transition" @animationfinish="animationfinish">
 				<swiper-item class="swiper-item" v-for="(item, index) in list3" :key="index">
 						 <template v-if="index==0">
-						 	<!-- 视频、直播 -->
+						 	<!-- 视频 -->
 						 	<video-list :videoList="data_list"></video-list>
 						 </template>
 						<template v-else-if="index==1">
@@ -79,7 +80,8 @@
 	} from '@/api/user.js';
 	import {
 		getDemandForm,
-		getHomeData
+		getHomeData,
+		getLiveRoomList
 	} from '@/api/liveApp.js';
 	import categoryMenu from '@/components/category-menu/category-menu.vue';
 	import liveList from '@/components/live-list/live-list.vue';
@@ -129,68 +131,10 @@
 				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
 				current: 0, // tabs组件的current值，表示当前活动的tab选项 
 				current2: 0, // tabs组件的current值，表示当前活动的tab选项 
-				current3: 0, // tabs组件的current值，表示当前活动的tab选项 
-				audioList:[
-					{
-						cover:'',
-						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
-						author:'张三',
-						isPlay:false,
-						isLike:false, 
-					},
-					{
-						cover:'',
-						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
-						author:'张三',
-						isPlay:false,
-						isLike:false, 
-					},
-					{
-						cover:'',
-						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
-						author:'张三',
-						isPlay:false,
-						isLike:false, 
-					},
-					{
-						cover:'',
-						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
-						author:'张三',
-						isPlay:false,
-						isLike:false, 
-					},
-					{
-						cover:'',
-						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
-						author:'张三',
-						isPlay:false,
-						isLike:false, 
-					},
-					{
-						cover:'',
-						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
-						author:'张三',
-						isPlay:false,
-						isLike:false, 
-					},
-					{
-						cover:'',
-						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
-						author:'张三',
-						isPlay:false,
-						isLike:false, 
-					},
-					{
-						cover:'',
-						title:'朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读朗读',
-						author:'张三',
-						isPlay:false,
-						isLike:false, 
-					}
-				],
+				current3: 0, // tabs组件的current值，表示当前活动的tab选项
 				// 作品分类列表
 				demand_form: [],
-				// 视频/音频列表
+				// 视频/音频/直播列表
 				data_list: [],
 				// 当前页码
 				page: 1,
@@ -251,7 +195,10 @@
 			},
 			// scroll-view到底部加载更多
 			onreachBottom() {
-				
+				if(that.page != 1) {
+					that.page = that.page + 1;
+				}
+				this.getData();
 			},
 			// 获取作品分类列表
 			getDemandForm() {
@@ -264,17 +211,30 @@
 			// 获取数据
 			getData() {
 				var that = this;
-				var data = {
-					'type': that.current + 1,
-					'demand_form_id':that.menu_id,
-					'page':that.page
-				}
-				getHomeData(data).then(res => {
-					that.data_list = res.data.list;
-					if(that.page != 1) {
-						that.page = that.page + 1;
+				var type = that.current + 1;
+				if(type == 1 || type == 2) {
+					// 视频、音频
+					var data = {
+						'type': that.current + 1,
+						'demand_form_id':that.menu_id,
+						'page':that.page
 					}
-				})
+					getHomeData(data).then(res => {
+						that.data_list = res.data.list;
+					})
+				} else if (type == 3) {
+					// 直播
+					var data = {
+						'demand_form_id':that.menu_id,
+						'page':that.page
+					}
+					getLiveRoomList(data).then(res => {
+						that.data_list = res.data.list;
+						console.log(res.data.list)
+					})
+				} else if (type == 4) {
+					// 关注
+				}
 			},
 			// 初始化数据
 			initData() {

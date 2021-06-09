@@ -1,0 +1,290 @@
+.top {
+	position: fixed;
+	width: 750rpx;
+	height: 64rpx;
+	flex-direction: row;
+	margin-top: 44rpx;
+}
+
+.author {
+	width: 269rpx;
+	height: 64rpx;
+	background: rgba(0,0,0,0.2);
+	border-radius: 32rpx;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	margin-left: 20rpx;
+}
+
+.author-l {
+	flex-direction: row;
+}
+
+.author-l-head {
+	width: 60rpx;
+	height: 60rpx;
+	border-radius: 30rpx;
+	margin-left: 2rpx;
+}
+
+.author-l-info {
+	flex-direction: column;
+	margin-top: 11rpx;
+	margin-left: 10rpx;
+}
+
+.author-l-info-name {
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+
+.author-l-info-zan {
+	font-size: 16rpx;
+	color: #FFFFFF;
+	margin-top: 4rpx;
+}
+
+.author-r {
+	width: 80rpx;
+	height: 58rpx;
+	line-height: 58rpx;
+	text-align: center;
+	background-color: #FE3149;
+	border-radius: 29rpx;
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FFFFFF;
+	margin-right: 2rpx;
+}
+
+.user {
+	flex-direction: row;
+	margin-left: 127rpx;
+}
+
+.user-head {
+	width: 50rpx;
+	height: 50rpx;
+	border-radius: 25rpx;
+	margin-top: 5rpx;
+	margin-right: 10rpx;
+}
+
+.user-num {
+	margin-top: 5rpx;
+	width: 70rpx;
+	height: 50rpx;
+	line-height: 50rpx;
+	text-align: center;
+	background: rgba(0,0,0,0.2);
+	border-radius: 25rpx;
+	color: #FFFFFF;
+	font-size: 20rpx;
+	font-weight: bold;
+}
+
+.user-close {
+	width: 28rpx;
+	height: 28rpx;
+	margin-top: 16rpx;
+	margin-left: 27rpx;
+}
+
+.msgs {
+	position: fixed;
+	width: 400rpx;
+	height: 320rpx;
+	bottom: 148rpx;
+	left: 30rpx;
+	flex-direction: column;
+}
+.msg {
+	flex-direction: row;
+	padding: 15rpx 20rpx;
+	width: 222rpx;
+	height: 50rpx;
+	background-color: rgba(0,0,0,0.2);
+	border-radius: 25rpx;
+	margin-bottom: 5rpx;
+}
+.uname {
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FE3149;
+}
+.umsg {
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+
+.bottom {
+	position: fixed;
+	flex-direction: row;
+	left: 32rpx;
+	bottom: 63rpx;
+	width: 750rpx;
+	height: 64rpx;
+}
+.bottom-l {
+	flex-direction: row;
+	width: 350rpx;
+	height: 64rpx;
+	background-color: rgba(0,0,0,0.2);
+	border-radius: 32rpx;
+}
+.bottom-l-l {
+	margin-top: 20rpx;
+	margin-left: 20rpx;
+	width: 270rpx;
+	height: 32rpx;
+	line-height: 32rpx;
+	font-size: 25rpx;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+.bottom-l-r {
+	width: 30rpx;
+	height: 40rpx;
+	margin-top: 12rpx;
+	margin-left: 12rpx;
+}
+.bottom-r {
+	flex-direction: row;
+	margin-left: 193rpx;
+}
+.bottom-r-i {
+	width: 64rpx;
+	height: 64rpx;
+	border-radius: 32rpx;
+	background-color: rgba(0,0,0,0.2);
+	margin-right: 17rpx;
+}
+.bottom-r-l-img {
+	width: 28rpx;
+	height: 28rpx;
+	margin-top: 18rpx;
+	margin-left: 18rpx;
+}
+.bottom-r-r-img {
+	width: 27rpx;
+	height: 27rpx;
+	margin-top: 19rpx;
+	margin-left: 19rpx;
+}
+
+.box {
+	position: fixed;
+	bottom: 0;
+	width: 750rpx;
+	height: 781rpx;
+	background-color: #323232;
+	border-radius: 20rpx 20rpx 0rpx 0rpx;
+}
+.box-t {
+	width: 750rpx;
+	height: 89rpx;
+	border-bottom: 1rpx;
+	border-bottom-color: #FFFFFF;
+}
+.box-tt {
+	font-size: 30rpx;
+	font-weight: bold;
+	color: #FFFFFF;
+	margin-top: 31rpx;
+	margin-left: 31rpx;
+}
+.box-c {
+	width: 800rpx;
+	height: 536rpx;
+	margin-top: 39rpx;
+	margin-left: 16rpx;
+}
+.box-c-swiper {
+	width: 800rpx;
+	height: 489rpx;
+}
+.swiper-item {
+	flex-direction: row;
+	flex-wrap: wrap;
+	width: 800rpx;
+}
+.box-c-swiper-item {
+	width: 175rpx;
+	height: 240rpx;
+	align-items: center;
+	margin-right: 10rpx;
+	margin-bottom: 10rpx;
+}
+.box-c-swiper-item-curr {
+	border: 5rpx;
+	border-color: #FFF33D;
+	padding: 5rpx;
+}
+.box-c-swiper-item-img {
+	width: 120rpx;
+	height: 120rpx;
+}
+.box-c-swiper-item-name {
+	font-size: 25rpx;
+	font-weight: bold;
+	color: #FFFFFF;
+	opacity: 0.8;
+	margin-top: 21rpx;
+}
+.box-c-swiper-item-yy {
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FFFFFF;
+	opacity: 0.6;
+	flex-direction: row;
+}
+.row {
+	flex-direction: row;
+}
+
+.box-b {
+	position: fixed;
+	bottom: 42rpx;
+	left: 36rpx;
+	width: 684rpx;
+	height: 44rpx;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+.tabs {
+	flex-direction: row;
+}
+.tab {
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FFFFFF;
+	margin-right: 41rpx;
+}
+.tab-curr {
+	color: #FFF33D;
+}
+.box-btns {
+	flex-direction: row;
+}
+.box-btn {
+	width: 91rpx;
+	height: 44rpx;
+	line-height: 44rpx;
+	background-color: #FE3149;
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FFFFFF;
+	text-align: center;
+	margin-left: 10rpx;
+}
+.box-mb {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 750rpx;
+	height: 1000rpx;
+}

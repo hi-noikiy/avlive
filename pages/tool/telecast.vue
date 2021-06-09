@@ -1,6 +1,6 @@
 <template>
 	<view class="main">
-		<image class="colse" src="../../static/images/lclose.png"></image>
+		<image class="colse" src="../../static/images/lclose.png" @click="closePage()"></image>
 		<view class="select">
 			<view>直播分类（非必选）</view>
 			<image src="../../static/images/xiala_icon.png"></image>
@@ -22,15 +22,17 @@
 			</label>
 			<view class="slider">
 				<u-slider
+					min="0" max="100" step="10"
 					inactive-color="#BBBBBC"
 					active-color="#232323"
 					height="6"
 					block-width="28"
 					:block-style="{border: '1px solid #000000'}"
+					v-model="beauty_rating"
 				></u-slider>
 			</view>
 		</view>
-		<view class="btn">开始直播</view>
+		<view class="btn" @click="startLive()">开始直播</view>
 	</view>
 </template>
 
@@ -38,11 +40,22 @@
 	export default {
 		data() {
 			return {
-				
+				beauty_rating: 0
 			}
 		},
 		methods: {
-			
+			// 退出此页
+			closePage() {
+				uni.switchTab({
+					url: '../index/components/Me'
+				})
+			},
+			// 开启直播
+			startLive() {
+				uni.navigateTo({
+					url: './video_live/live'
+				})
+			}
 		}
 	}
 </script>
@@ -51,6 +64,7 @@
 	.main {
 		width: 690rpx;
 		margin: 0 auto;
+		margin-top: 40rpx;
 	}
 	.colse {
 		width: 45rpx;

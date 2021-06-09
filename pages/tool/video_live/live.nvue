@@ -1,0 +1,274 @@
+<template>
+	<view>
+		<live-pusher id='livePusher' ref="livePusher" class="livePusher"
+		:url="push_url"
+		:style="{height: 780+'px'}"
+		mode="FHD" :muted="true" :enable-camera="true" :auto-focus="true" :beauty="9" whiteness="9"
+		aspect="9:16" @statechange="statechange" @netstatus="netstatus" @error = "error"
+		></live-pusher>
+		<view class="top">
+			<view class="user">
+				<image class="user-head" src="../../users/static/1.png"></image>
+				<image class="user-head" src="../../users/static/1.png"></image>
+				<image class="user-head" src="../../users/static/1.png"></image>
+				<text class="user-num">{{userNum}}</text>
+				<image class="user-close" src="../../../static/images/live_close.png" @click="stop()"></image>
+			</view>
+		</view>
+		<scroll-view class="msgs" id="msgs" :scroll-y="true" :show-scrollbar="false">
+			<view class="msg" v-for="(item, index) in msgAll">
+				<text class="uname">测试：</text>
+				<text class="umsg">{{item}}</text>
+			</view>
+			<view class="msg">
+				<text class="umsg">开始直播</text>
+			</view>
+		</scroll-view>
+	</view>
+</template>
+
+<script>
+	import store from '../../../store';
+	export default {
+		data() {
+			return {
+				id: '',
+				push_url: '',
+				ping: '',
+				// 直播间人数
+				userNum: 0,
+				// 消息列表
+				msgAll: [],
+				msg: ''
+			}
+		},
+		onReady() {
+			// 保持屏幕常亮
+			uni.setKeepScreenOn({
+			    keepScreenOn: true
+			});
+			
+			var _this = this;
+			
+			// 注意：需要在onReady中 或 onLoad 延时
+			this.context = uni.createLivePusherContext("livePusher", this);
+			
+			uni.connectSocket({
+			    url: 'ws://39.106.196.170:20196'
+			});
+			uni.onSocketOpen(function (res) {
+				console.log('WebSocket连接已打开！');
+			});
+			uni.onSocketError(function (res) {
+			  console.log('WebSocket连接打开失败，请检查！');
+			});
+			uni.onSocketMessage(function (res) {
+				var datas = JSON.parse(res.data);
+				switch(datas.type) {
+					// 有人加入直播间
+				    case 'enter':
+						_this.msgAll.push('欢迎：'+datas.data);
+				    break;
+					// 有人退出直播间
+				    case 'logout':
+				        _this.msgAll.push(datas.data);
+				    break;
+					// 直播间消息
+					case 'msg':
+					    _this.msgAll.push(datas.data);
+					break;
+					// 直播间礼物
+					case 'gift':
+						uni.showToast({
+							title: datas.data
+						})
+					break;
+					// 主播心跳检测
+					case 'ping':
+						// console.log('pong')
+					break;
+					// 直播间用户数量
+					case 'userNum':
+						_this.userNum = datas.data;
+					break;
+				}
+			});
+			
+			// 开始直播
+			this.start()
+		},
+		methods: {
+			statechange(e) {
+			    console.log("statechange:" + JSON.stringify(e));
+			},
+			netstatus(e) {
+			    console.log("netstatus:" + JSON.stringify(e));
+			},
+			error(e) {
+			    console.log("error:" + JSON.stringify(e));
+			},
+			onUnload() {
+				// uni.closeSocket();
+			},
+			// 心跳检测,两秒一次
+			heartbeat() {
+				var _this = this;
+				_this.ping = setInterval(function(){
+					_this.send('ping', '心跳检测')
+				}, 2000)
+			},
+			start: function() {
+				var _this = this;
+				uni.request({
+					url: 'https://qyh.ugekeji.com/api/v3/createLiveRoom',
+					method: "POST",
+					header: {
+						'content-type': 'application/x-www-form-urlencoded',
+					},
+					success(res) {
+						
+						_this.send('startLive', '{"roomId":"1","msg":"开始直播"}')
+						
+						_this.heartbeat()
+						
+						if(res.data.status == 200) {
+							_this.id = res.data.data.id;
+							_this.push_url = res.data.data.push_url;
+							
+							_this.context.start({
+							    success: (a) => {
+							        console.log("livePusher.start:" + JSON.stringify(a));
+							    },
+								fail: (err) => {
+									console.log('fail')
+								}
+							});
+						}
+					},
+					fail() {
+						console.log('fail')
+					}
+				})
+			},
+			close() {
+			    this.context.close({
+			        success: (a) => {
+			            console.log("livePusher.close:" + JSON.stringify(a));
+			        }
+			    });
+			},
+			stop() {
+				var _this = this;
+				uni.request({
+					url: 'https://qyh.ugekeji.com/api/v3/stopLiveRoom',
+					method: "POST",
+					header: {
+						'content-type': 'application/x-www-form-urlencoded',
+					},
+					data: {
+						id: _this.id
+					},
+					success(res) {
+						_this.send('endLive', '{"roomId":"1","msg":"下播"}')
+						// uni.closeSocket();
+						uni.onSocketClose(function () {
+							console.log('直播已关闭');
+						});
+					},
+					fail() {
+						console.log('fail')
+					}
+				})
+			    this.context.stop({
+			        success: (a) => {
+			            console.log(JSON.stringify(a));
+			        }
+			    });
+				uni.switchTab({
+					url: '../../index/components/Me'
+				})
+			},
+			send(type, data) {
+				var data = JSON.stringify(data);
+				uni.sendSocketMessage({
+					data: '{"type":"'+type+'","data":'+data+'}'
+				})
+			}
+			
+			
+		}
+	}
+</script>
+
+<style>
+	.top {
+		position: fixed;
+		width: 750rpx;
+		height: 64rpx;
+		top: 80rpx;
+		right: 30rpx;
+		flex-direction: row;
+		justify-content: flex-end;
+	}
+	
+	.user {
+		flex-direction: row;
+	}
+	
+	.user-head {
+		width: 50rpx;
+		height: 50rpx;
+		border-radius: 25rpx;
+		margin-top: 5rpx;
+		margin-right: 10rpx;
+	}
+	
+	.user-num {
+		margin-top: 5rpx;
+		width: 70rpx;
+		height: 50rpx;
+		line-height: 50rpx;
+		text-align: center;
+		background: rgba(0,0,0,0.2);
+		border-radius: 25rpx;
+		color: #FFFFFF;
+		font-size: 20rpx;
+		font-weight: bold;
+	}
+	
+	.user-close {
+		width: 21rpx;
+		height: 21rpx;
+		margin-top: 16rpx;
+		margin-left: 27rpx;
+	}
+	
+	.msgs {
+		position: fixed;
+		width: 400rpx;
+		height: 320rpx;
+		bottom: 148rpx;
+		left: 30rpx;
+		flex-direction: column;
+	}
+	.msg {
+		flex-direction: row;
+		padding: 15rpx 20rpx;
+		width: 222rpx;
+		height: 50rpx;
+		background-color: rgba(0,0,0,0.2);
+		border-radius: 25rpx;
+		margin-bottom: 5rpx;
+	}
+	.uname {
+		font-size: 20rpx;
+		font-weight: bold;
+		color: #FE3149;
+	}
+	.umsg {
+		font-size: 20rpx;
+		font-weight: bold;
+		color: #FFFFFF;
+	}
+	
+</style>

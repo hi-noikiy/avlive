@@ -1,7 +1,7 @@
 <template>
 	<view class="live-list">
-		<view class="live-item" v-for="i in 5" @click="liveroom">
-			<image class="bg" src="../../static/images/bg.png"></image>
+		<view class="live-item" v-for="(item, index) in liveList" @click="liveroom(item.id)">
+			<image class="bg" :src="item.image"></image>
 			<view class="info">
 				<image src="../../pages/users/static/1.png"></image>
 				<view>安妮爱主持</view>
@@ -13,15 +13,17 @@
 <script>
 	export default {
 		name:"live-list",
+		props: ['liveList'],
 		data() {
 			return {
 				
 			};
 		},
 		methods: {
-			liveroom() {
+			// 直播间详情
+			liveroom(id) {
 				uni.navigateTo({
-					url: "/pages/tool/video_live/look"
+					url: "/pages/tool/video_live/look?id="+id
 				})
 			}
 		}

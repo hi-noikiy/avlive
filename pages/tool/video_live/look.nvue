@@ -1,7 +1,9 @@
 <template>
 	<view>
-		<video :style="'object-fit: fill;height: 572px;'"
-			src="http://mp4.vjshi.com/2021-05-19/e141f65baf6e46b4dd384fafbb5a6274.mp4"
+		<!-- src="http://mp4.vjshi.com/2021-05-19/e141f65baf6e46b4dd384fafbb5a6274.mp4" -->
+		<video :style="{height: 640+'px'}"
+			object-fit="fill"
+			src="rtmp://pull.qilinjit.com/live/1?auth_key=1623152930-0-0-ecd93fb6c4dd846f447330b572782bca"
 			:autoplay="true"
 			:loop="true"
 			:controls="false"
@@ -11,39 +13,44 @@
 		<view class="top">
 			<view class="author">
 				<view class="author-l">
-					<image class="author-l-head" src="../../users/static/1.png"></image>
+					<image class="author-l-head" :src="anchorInfo.avatar"></image>
 					<view class="author-l-info">
-						<text class="author-l-info-name">王保保</text>
+						<text class="author-l-info-name">{{anchorInfo.nickname}}</text>
 						<text class="author-l-info-zan">432本场点赞</text>
 					</view>
 				</view>
-				<text class="author-r">关注</text>
+				<text class="author-r" @click="userFollow()">{{isFollow == 0 ? '关注' : '已关注'}}</text>
 			</view>
 			<view class="user">
 				<image class="user-head" src="../../users/static/1.png"></image>
 				<image class="user-head" src="../../users/static/1.png"></image>
 				<image class="user-head" src="../../users/static/1.png"></image>
-				<text class="user-num">20</text>
-				<image class="user-close" src="../../../static/images/lclose.png"></image>
+				<text class="user-num">{{userNum}}</text>
+				<image class="user-close" src="../../../static/images/live_close.png" @click="closePage()"></image>
 			</view>
 		</view>
-		<scroll-view class="msgs" :scroll-y="true" :show-scrollbar="false">
-			<view class="msg" v-for="(item, index) in bodd">
-				<text class="uname">测试：</text>
-				<text class="umsg">{{item}}</text>
+		<scroll-view class="msgs" id="msgs" :scroll-y="true" :show-scrollbar="false">
+			<view class="msg" v-for="(item, index) in msgAll">
+				<block v-if="item.type == 'msg'">
+					<text class="uname">{{item.nickname}}：</text>
+					<text class="umsg">{{item.msg}}</text>
+				</block>
+			</view>
+			<view class="msg">
+				<text class="umsg">xxx进入了直播间</text>
 			</view>
 		</scroll-view>
 		<view class="bottom">
 			<view class="bottom-l">
-				<input class="bottom-l-l" type="text" value="" placeholder="说点什么" placeholder-style="color:#FFFFFF;" />
-				<image class="bottom-l-r" src="../../users/static/1.png"></image>
+				<input class="bottom-l-l" type="text" :value="msg" v-model="msg" placeholder="说点什么" placeholder-style="color:#FFFFFF;" />
+				<image class="bottom-l-r" src="../../../static/images/yuyin.png" @click="sendMessage()"></image>
 			</view>
 			<view class="bottom-r">
 				<view class="bottom-r-i">
-					<image class="bottom-r-l-img" src="../../users/static/1.png"></image>
+					<image class="bottom-r-l-img" src="../../../static/images/live_zf.png"></image>
 				</view>
 				<view class="bottom-r-i" @click="showBox(true)">
-					<image class="bottom-r-r-img" src="../../users/static/1.png"></image>
+					<image class="bottom-r-r-img" src="../../../static/images/live_lw.png"></image>
 				</view>
 			</view>
 		</view>
@@ -52,376 +59,261 @@
 			<view class="box-t">
 				<text class="box-tt">直播礼物</text>
 			</view>
-			<view class="box-c" v-if="this_box == 1">
+			<view class="box-c" v-if="box_tab == 1">
 				<swiper class="box-c-swiper">
-					<swiper-item>
+					<swiper-item v-for="(item, index) in gifts">
 						<view class="swiper-item">
-							<view class="box-c-swiper-item" v-for="i in 8">
-								<image class="box-c-swiper-item-img" src="../../users/static/1.png"></image>
-								<text class="box-c-swiper-item-name">玫瑰</text>
-								<text class="box-c-swiper-item-yy">1音贝 | 10音铢</text>
-								<text class="box-c-swiper-item-yy">100音宝</text>
-							</view>
-						</view>
-					</swiper-item>
-					<swiper-item>
-						<view class="swiper-item">
-							<view class="box-c-swiper-item" v-for="i in 2">
-								<image class="box-c-swiper-item-img" src="../../users/static/1.png"></image>
-								<text class="box-c-swiper-item-name">玫瑰</text>
-								<text class="box-c-swiper-item-yy">1音贝 | 10音铢</text>
-								<text class="box-c-swiper-item-yy">100音宝</text>
+							<view :class="'box-c-swiper-item'+(gift_id==val.id ? ' box-c-swiper-item-curr' : '')" v-for="(val, key) in item" @click="selectGift(val.id)">
+								<image class="box-c-swiper-item-img" :src="val.image"></image>
+								<text class="box-c-swiper-item-name">{{val.name}}</text>
+								<view class="row">
+									<text class="box-c-swiper-item-yy" v-if="val.yinbei != null">{{val.yinbei}}音贝</text>
+									<text class="box-c-swiper-item-yy" v-if="val.yinbei != null && val.yinzhu != null"> | </text>
+									<text class="box-c-swiper-item-yy" v-if="val.yinzhu != null">{{val.yinzhu}}音铢</text>
+								</view>
+								<view class="row">
+									<text class="box-c-swiper-item-yy" v-if="val.yinbao != null">{{val.yinbao}}音宝</text>
+								</view>
 							</view>
 						</view>
 					</swiper-item>
 				</swiper>
 			</view>
-			<view class="box-c" v-if="this_box == 2">表情</view>
-			<view class="box-c" v-if="this_box == 3">特效</view>
+			<view class="box-c" v-if="box_tab == 2">表情</view>
+			<view class="box-c" v-if="box_tab == 3">特效</view>
 			<view class="box-b">
 				<view class="tabs">
-					<text :class="'tab '+(this_box == 1 ? 'tab-curr' : '')" @click="switchBox(1)">礼物</text>
-					<text :class="'tab '+(this_box == 2 ? 'tab-curr' : '')" @click="switchBox(2)">表情</text>
-					<text :class="'tab '+(this_box == 3 ? 'tab-curr' : '')" @click="switchBox(3)">特效</text>
+					<text :class="'tab '+(box_tab == 1 ? 'tab-curr' : '')" @click="switchBox(1)">礼物</text>
+					<text :class="'tab '+(box_tab == 2 ? 'tab-curr' : '')" @click="switchBox(2)">表情</text>
+					<text :class="'tab '+(box_tab == 3 ? 'tab-curr' : '')" @click="switchBox(3)">特效</text>
 				</view>
-				<text class="chongzhi">充值</text>
+				<view class="box-btns">
+					<text class="box-btn">充值</text>
+					<text class="box-btn" @click="give()">赠送</text>
+				</view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import store from '../../../store';
+	import {
+		getDemandForm,
+		getLiveRoomDetail,
+		getGift,
+		userFollow
+	} from '@/api/liveApp.js';
 	export default {
-		components: {
-
-		},
 		data() {
 			return {
 				windowWidth: '',
 				windowHeight: '',
+				// 直播间详情
+				row: '',
+				// 礼物框
 				box: false,
-				this_box: 1,
-				say: '',
-				show: false,
-				isShow: 1,
-				bodd: [
-					'测试',
-					'主播真好看主播真好看主播真好看主播真好看主播真好看主播真好看111',
-					'主播在反驳吗',
-					'111111111',
-					'1',
-					'2',
-					'3',
-					'4'
-				]
+				box_tab: 1,
+				// 主播信息
+				anchorInfo: '',
+				// 当前观看人信息
+				userInfo: '',
+				// 是否关注该主播,
+				isFollow: 0,
+				// 直播间人数
+				userNum: 0,
+				// 心跳
+				ping: '',
+				// 礼物列表
+				gifts: [],
+				// 消息列表
+				msgAll: [],
+				// 聊天框消息
+				msg: '',
+				// 选中礼物
+				gift_id: ''
 			}
 		},
 		onReady() {
-			uni.getSystemInfo({
-			　　success: function(res) { // res - 各种参数
-			　　 	this.windowWidth = res.windowWidth; // 屏幕的宽度 
-					this.windowHeight = res.windowHeight;// 屏幕的高度
+			// 保持屏幕常亮
+			uni.setKeepScreenOn({
+			    keepScreenOn: true
+			});
+			var _this = this;
+			
+			uni.connectSocket({
+			    url: 'ws://39.106.196.170:20196'
+			});
+			uni.onSocketOpen(function (res) {
+				console.log('WebSocket连接已打开！');
+				// 发送进入聊天室提醒
+				_this.send('enter', '{"roomId":"1","msg":"xxx进入了直播间"}')
+				// 开启心跳监听
+				_this.heartbeat()
+			});
+			uni.onSocketError(function (res) {
+				uni.showLoading({
+					title: '断线重连中...'
+				})
+				// 请求重新连接
+				clearInterval(_this.ping)	//关闭心跳检测
+				var reconnect = setInterval(function (){
+					uni.connectSocket({
+					    url: 'ws://39.106.196.170:20196',
+						success() {
+							// 重连成功
+							clearInterval(reconnect) //关闭重连
+							_this.heartbeat()	//重新开启心跳
+							uni.hideLoading()	//隐藏加载框
+						}
+					});
+				}, 2000)
+			});
+			uni.onSocketMessage(function (res) {
+				var datas = JSON.parse(res.data);
+				console.log(res.data.data);
+				
+				switch(datas.type) {
+					case 'endLive':
+						uni.showToast({
+							title: datas.data,
+							icon: 'none'
+						})
+						// uni.switchTab({
+						// 	url: '../../index/components/Home'
+						// })
+					break;
+				    case 'enter':
+						_this.msgAll.push('欢迎：'+datas.data);
+				    break;
+				    case 'logout':
+				        _this.msgAll.push(datas.data);
+				    break;
+					case 'msg':
+					    _this.msgAll.push(datas.data);
+					break;
+					case 'gift':
+						uni.showToast({
+							title: datas.data
+						})
+					break;
+					case 'ping':
+						// console.log('pong')
+					break;
+					case 'userNum':
+						_this.userNum = datas.data;
+					break;
 				}
 			});
+			// 获取设备屏幕参数
+			// uni.getSystemInfo({
+			// 　　success: function(res) { // res - 各种参数
+			// 　　 	this.windowWidth = res.windowWidth; // 屏幕的宽度 
+			// 		this.windowHeight = res.windowHeight;// 屏幕的高度
+			// 		console.log(this.windowHeight)
+			// 	}
+			// });
 		},
+		onLoad(options) {
+			var _this = this;
+			// 获取主播信息、拉流地址
+			var data = {
+				id: options.id
+			}
+			getLiveRoomDetail(data).then(res=> {
+				_this.row = res.data.row;
+				_this.src = res.data.row.pull_url;
+				_this.anchorInfo = res.data.anchorInfo;
+				_this.userInfo = res.data.userInfo;
+			})
+			// 获取礼物
+			getGift({}).then(res => {
+				_this.gifts = res.data.list;
+			})
+		},
+		// 退出直播间
+		// onUnload() {
+		// 	this.send('logout', '{"roomId":"1", "msg":"xxx退出了"}')
+		// 	uni.closeSocket();
+		// 	uni.onSocketClose(function (res) {
+		// 		console.log('WebSocket 已关闭！');
+		// 	});
+		// },
 		methods: {
-			open() {
-				this.show = !this.show
+			// 退出直播间
+			closePage() {
+				uni.navigateBack({
+					delta: 1
+				})
 			},
-			handleTab(val) {
-				this.isShow = val;
-			},
-			fas() {
-				this.bodd.push(this.say)
-				this.say = ''
-			},
+			// 打开底部盒子
 			showBox(bool) {
-				console.log('执行了')
 				this.box = bool;
 			},
+			// 切换底部盒子
 			switchBox(box) {
-				this.this_box = box;
+				this.box_tab = box;
+			},
+			// 用户关注/取消关注
+			userFollow() {
+				var _this = this;
+				var operation = (_this.isFollow == 1) ? 0 : 1;
+				var data = {
+					to_user_id: _this.row.anchor_id,
+					operation: operation
+				};
+				userFollow(data).then(res=>{
+					
+					_this.isFollow = operation;
+				})
+			},
+			// 选中礼物
+			selectGift(id) {
+				this.gift_id = id;
+			},
+			// 赠送礼物
+			give() {
+				if(this.gift_id == '') {
+					uni.showToast({
+						title: '请选择礼物',
+						icon: 'none'
+					})
+					return false;
+				}
+				
+			},
+			// 心跳检测,两秒一次
+			heartbeat() {
+				var _this = this;
+				_this.ping = setInterval(function(){
+					_this.send('ping', '{"roomId":"1", "msg":"心跳检测"}')
+				}, 2000)
+			},
+			// 提交聊天内容
+			sendMessage() {
+				if(this.msg == '') {
+					uni.showToast({
+						title: '请输入聊天内容',
+						icon: 'none'
+					})
+					return false;
+				}
+				// 提交聊天内容并清空输入内容
+				this.send('msg', '{"roomId":"1", "msg":"'+this.msg+'", "nickname":"'+this.userInfo.nickname+'"}');
+				this.msg = '';	//清空输入框内容
+			},
+			send(type, data) {
+				var data = JSON.parse(data);
+				data.userToken = store.state.app.token;
+				var data = JSON.stringify(JSON.stringify(data));
+				uni.sendSocketMessage({
+					data: '{"type":"'+type+'","data":'+data+'}'
+				})
 			}
 		}
 	}
 </script>
 
 <style>
-	.top {
-		position: fixed;
-		width: 750rpx;
-		height: 64rpx;
-		flex-direction: row;
-		margin-top: 44rpx;
-	}
-
-	.author {
-		width: 269rpx;
-		height: 64rpx;
-		background: rgba(0,0,0,0.2);
-		border-radius: 32rpx;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: center;
-		margin-left: 20rpx;
-	}
-
-	.author-l {
-		flex-direction: row;
-	}
-
-	.author-l-head {
-		width: 60rpx;
-		height: 60rpx;
-		border-radius: 30rpx;
-		margin-left: 2rpx;
-	}
-
-	.author-l-info {
-		flex-direction: column;
-		margin-top: 11rpx;
-		margin-left: 10rpx;
-	}
-
-	.author-l-info-name {
-		font-size: 20rpx;
-		font-weight: bold;
-		color: #FFFFFF;
-	}
-
-	.author-l-info-zan {
-		font-size: 16rpx;
-		color: #FFFFFF;
-		margin-top: 4rpx;
-	}
-
-	.author-r {
-		width: 80rpx;
-		height: 58rpx;
-		line-height: 58rpx;
-		text-align: center;
-		background-color: #FE3149;
-		border-radius: 29rpx;
-		font-size: 20rpx;
-		font-weight: bold;
-		color: #FFFFFF;
-		margin-right: 2rpx;
-	}
-
-	.user {
-		flex-direction: row;
-		margin-left: 127rpx;
-	}
-
-	.user-head {
-		width: 50rpx;
-		height: 50rpx;
-		border-radius: 25rpx;
-		margin-top: 5rpx;
-		margin-right: 10rpx;
-	}
-
-	.user-num {
-		margin-top: 5rpx;
-		width: 70rpx;
-		height: 50rpx;
-		line-height: 50rpx;
-		text-align: center;
-		background: rgba(0,0,0,0.2);
-		border-radius: 25rpx;
-		color: #FFFFFF;
-		font-size: 20rpx;
-		font-weight: bold;
-	}
-
-	.user-close {
-		width: 28rpx;
-		height: 28rpx;
-		margin-top: 16rpx;
-		margin-left: 27rpx;
-	}
-
-	.msgs {
-		position: fixed;
-		width: 400rpx;
-		height: 320rpx;
-		bottom: 148rpx;
-		left: 30rpx;
-		flex-direction: column;
-	}
-	.msg {
-		flex-direction: row;
-		padding: 15rpx 20rpx;
-		width: 222rpx;
-		height: 50rpx;
-		background-color: rgba(0,0,0,0.2);
-		border-radius: 25rpx;
-		margin-bottom: 5rpx;
-	}
-	.uname {
-		font-size: 20rpx;
-		font-weight: bold;
-		color: #FE3149;
-	}
-	.umsg {
-		font-size: 20rpx;
-		font-weight: bold;
-		color: #FFFFFF;
-	}
-	
-	.bottom {
-		position: fixed;
-		flex-direction: row;
-		left: 32rpx;
-		bottom: 63rpx;
-		width: 750rpx;
-		height: 64rpx;
-	}
-	.bottom-l {
-		flex-direction: row;
-		width: 350rpx;
-		height: 64rpx;
-		background-color: rgba(0,0,0,0.2);
-		border-radius: 32rpx;
-	}
-	.bottom-l-l {
-		margin-top: 20rpx;
-		margin-left: 20rpx;
-		width: 270rpx;
-		height: 32rpx;
-		line-height: 32rpx;
-		font-size: 25rpx;
-		font-weight: bold;
-		color: #FFFFFF;
-	}
-	.bottom-l-r {
-		width: 30rpx;
-		height: 40rpx;
-		margin-top: 12rpx;
-		margin-left: 12rpx;
-	}
-	.bottom-r {
-		flex-direction: row;
-		margin-left: 193rpx;
-	}
-	.bottom-r-i {
-		width: 64rpx;
-		height: 64rpx;
-		border-radius: 32rpx;
-		background-color: rgba(0,0,0,0.2);
-		margin-right: 17rpx;
-	}
-	.bottom-r-l-img {
-		width: 28rpx;
-		height: 28rpx;
-		margin-top: 18rpx;
-		margin-left: 18rpx;
-	}
-	.bottom-r-r-img {
-		width: 27rpx;
-		height: 27rpx;
-		margin-top: 19rpx;
-		margin-left: 19rpx;
-	}
-	
-	.box {
-		position: fixed;
-		bottom: 0;
-		width: 750rpx;
-		height: 781rpx;
-		background-color: #323232;
-		border-radius: 20rpx 20rpx 0rpx 0rpx;
-	}
-	.box-t {
-		width: 750rpx;
-		height: 89rpx;
-		border-bottom: 1rpx;
-		border-bottom-color: #FFFFFF;
-	}
-	.box-tt {
-		font-size: 30rpx;
-		font-weight: bold;
-		color: #FFFFFF;
-		margin-top: 31rpx;
-		margin-left: 31rpx;
-	}
-	.box-c {
-		width: 701rpx;
-		height: 536rpx;
-		background-color: #0000FF;
-		margin-top: 39rpx;
-		margin-left: 46rpx;
-	}
-	.box-c-swiper {
-		width: 701rpx;
-		height: 489rpx;
-	}
-	.swiper-item {
-		flex-direction: row;
-		flex-wrap: wrap;
-	}
-	.box-c-swiper-item {
-		width: 137rpx;
-		height: 224rpx;
-		align-items: center;
-		margin-right: 40rpx;
-		margin-bottom: 40rpx;
-	}
-	.box-c-swiper-item-img {
-		width: 120rpx;
-		height: 120rpx;
-	}
-	.box-c-swiper-item-name {
-		font-size: 25rpx;
-		font-weight: bold;
-		color: #FFFFFF;
-		opacity: 0.8;
-		margin-top: 21rpx;
-	}
-	.box-c-swiper-item-yy {
-		font-size: 20rpx;
-		font-weight: bold;
-		color: #FFFFFF;
-		opacity: 0.6;
-	}
-	
-	.box-b {
-		position: fixed;
-		bottom: 42rpx;
-		left: 36rpx;
-		width: 684rpx;
-		height: 44rpx;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: center;
-	}
-	.tabs {
-		flex-direction: row;
-	}
-	.tab {
-		font-size: 20rpx;
-		font-weight: bold;
-		color: #FFFFFF;
-		margin-right: 41rpx;
-	}
-	.tab-curr {
-		color: #FFF33D;
-	}
-	.chongzhi {
-		width: 91rpx;
-		height: 44rpx;
-		line-height: 44rpx;
-		background-color: #FE3149;
-		font-size: 20rpx;
-		font-weight: bold;
-		color: #FFFFFF;
-		text-align: center;
-	}
-	.box-mb {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 750rpx;
-		height: 1000rpx;
-	}
+	@import "./look.css";
 </style>
