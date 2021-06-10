@@ -1,0 +1,252 @@
+<template>
+	<view>
+		<swiper
+			:style="'height: '+(emulator_Height)+'rpx;  width:750rpx;'"
+			object-fit="fill"
+			:indicator-dots="false"
+			:duration="1000"
+			:vertical="true"
+			:current="videoIndex"
+			@change="handleSlider"
+		>
+			<swiper-item v-for="(item, index) in vlist">
+				<view class="swiper-item">
+					<video
+						@click="handleClicked(index)"
+						class="video"
+						:style="'height: '+(emulator_Height)+'rpx;  width:750rpx;'"
+						:loop="true"
+						:controls="false"
+						:show-play-btn="false"
+						:enable-progress-gesture="false"
+						:id="'myVideo' + index" :ref="'myVideo' + index"
+						:poster="item.image"
+						:src="item.file"
+					></video>
+					<image src="../../static/images/live_close.png" class="close" @click="close"></image>
+					<block class="operation">
+						<view class="operation-item">
+							<image :src="item.user_avatar" class="author-head"></image>
+							<text class="author-name">{{item.user_nickname}}</text>
+						</view>
+						<view class="operation-item" @click="like(index)">
+							<image class="operation-dianzan" :src="'../../static/images/video_zan'+(item.isLike ? '_curr' : '')+'.png'"></image>
+							<text class="operation-txt">点赞</text>
+						</view>
+						<view class="operation-item">
+							<image class="operation-dashang" src="../../static/images/video_dashang.png"></image>
+							<text class="operation-txt">打赏</text>
+						</view>
+						<view class="operation-item">
+							<image class="operation-pinglun" src="../../static/images/video_pinglun.png"></image>
+							<text class="operation-txt">评论</text>
+						</view>
+						<view class="operation-item">
+							<image class="operation-zhuanfa" src="../../static/images/video_zhuanfa.png"></image>
+							<text class="operation-txt">转发</text>
+						</view>
+					</block>
+				</view>
+			</swiper-item>
+		</swiper>
+	</view>
+</template>
+
+<script>
+	import {
+		getWorksVideoList,
+		worksLike
+	} from '@/api/liveApp.js';
+	export default {
+		data() {
+			return {
+				emulator_Height: 0,
+				videoIndex: 0,
+				initer: false,
+				demand_form_id: '',//作品分类id
+				vlist: [],
+				page: 1,	// 当前页码
+				isPlay: false,    //当前视频是否播放中
+				timer: null,	//记录视频点击时间
+				clickNum: 0,    //记录点击次数
+			}
+		},
+		onLoad(option) {
+			this.demand_form_id = option.demand_form_id;
+			this.videoIndex = parseInt(option.index)||0;
+			
+			this.getData();
+		},
+		// onReady() {
+		//     this.init()
+		// },
+		onShow() {
+			// 获取屏幕高度
+			let self = this;
+			uni.getSystemInfo({
+				success: function(res) {
+					self.emulator_Height = (res.screenHeight * (750 / res.windowWidth)) //将px 转换rpx
+				}
+			});
+		},
+		methods: {
+			// 页面初始化
+			init() {
+			    this.videoContextList = []
+			    for(var i = 0; i < this.vlist.length; i++) {
+			        // this.videoContextList.push(this.$refs['myVideo' + i][0])
+			        this.videoContextList.push(uni.createVideoContext('myVideo' + i, this));
+			    }
+			
+			    setTimeout(() => {
+			        this.play(this.videoIndex)
+			    }, 200)
+			},
+			// 滑动切换视频
+			handleSlider(e) {
+			    let curIndex = e.detail.current
+			    if(this.videoIndex >= 0){
+			        this.videoContextList[this.videoIndex].pause()
+			        this.videoContextList[this.videoIndex].seek(0)
+			        this.isPlay = false
+			    }
+			    if(curIndex === this.videoIndex + 1) {
+			        this.videoContextList[this.videoIndex + 1].play()
+			        this.isPlay = true
+			    }else if(curIndex === this.videoIndex - 1) {
+			        this.videoContextList[this.videoIndex - 1].play()
+			        this.isPlay = true
+			    }
+			    this.videoIndex = curIndex
+			},
+			// 播放视频
+			play(index) {
+			    this.videoContextList[index].play()
+			    this.isPlay = true
+				console.log("play");
+			},
+			// 暂停视频
+			pause(index) {
+			    this.videoContextList[index].pause()
+			    this.isPlay = false
+				console.log("pause");
+			},
+			// 退出页面
+			close() {
+				uni.navigateBack({
+					delta: 1
+				})
+			},
+			// 获取数据
+			getData() {
+				var that = this;
+				var data = {
+					demand_form_id: this.demand_form_id,
+					page: this.page
+				};
+				getWorksVideoList(data).then(res=>{
+					that.vlist = res.data.list;
+					if(!that.initer) {
+						that.init();
+						that.init = true;
+					}
+				})
+			},
+			// 点击视频事件
+			handleClicked(index) {
+			    if(this.timer){
+			        clearTimeout(this.timer)
+			    }
+			    this.clickNum++
+			    this.timer = setTimeout(() => {
+			        if(this.clickNum >= 2){
+			            console.log('双击视频')
+						this.like(index)
+			        }else{
+			            console.log('单击视频')
+			            if(this.isPlay){
+			                this.pause(index)
+			            }else{
+			                this.play(index)
+			            }
+			        }
+			        this.clickNum = 0
+			    }, 300)
+			},
+			// 视频点赞
+			like(index) {
+				console.log('like')
+				// 获取视频id
+				var id = this.vlist[index].id;
+				var isLike = this.vlist[index].isLike;
+				var operation = isLike ? 0 : 1;
+				var data = {
+					id: id,
+					operation: operation
+				};
+				var that = this;
+				worksLike(data).then(res => {
+					console.log(res)
+					that.vlist[index].isLike = !isLike;
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+	.video {
+		position: relative;
+	}
+	.operation {
+		position: absolute;
+		width: 160rpx;
+		top: 300rpx;
+		left: 600rpx;
+		align-items: center;
+	}
+	.close {
+		position: absolute;
+		width: 44rpx;
+		height: 44rpx;
+		box-shadow: 0rpx 3rpx 8rpx 0rpx rgba(0, 0, 0, 0.09);
+		left: 674rpx;
+		top: 103rpx;
+	}
+	.operation-item {
+		align-items: center;
+	}
+	.author-head {
+		width: 96rpx;
+		height: 98rpx;
+		border-radius: 50%;
+	}
+	.author-name {
+		font-size: 28rpx;
+		font-weight: bold;
+		padding-top: 21rpx;
+	}
+	.operation-txt {
+		padding-top: 20rpx;
+		padding-bottom: 48rpx;
+		font-size: 28rpx;
+		font-weight: bold;
+	}
+	.operation-dianzan {
+		margin-top: 110rpx;
+		width: 65rpx;
+		height: 57rpx;
+	}
+	.operation-pinglun {
+		width: 63rpx;
+		height: 63rpx;
+	}
+	.operation-dashang {
+		width: 67rpx;
+		height: 63rpx;
+	}
+	.operation-zhuanfa {
+		width: 65rpx;
+		height: 68rpx;
+	}
+</style>

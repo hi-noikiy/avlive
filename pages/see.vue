@@ -1,4 +1,4 @@
-<<template>
+<template>
 	<view class="wrap" >
 		
 		<view class="content">

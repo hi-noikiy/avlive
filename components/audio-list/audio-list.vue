@@ -2,17 +2,17 @@
 	<view class="">
 		<view class="audio-item" v-for="(item, index) in audioList">
 			<view class="l">
-				<image class="img" :src="item.image"></image>
+				<image class="img" :src="item.image" @click="detail(item.id)"></image>
 				<view class="info">
-					<view class="t" @click="showAuthor">{{item.name}}</view>
-					<view class="b">
+					<view class="t" @click="detail(item.id)">{{item.name}}</view>
+					<view class="b" @click="showAuthor()">
 						<image :src="item.user_avatar"></image>
 						<view>{{item.user_nickname}}</view>
 					</view>
 				</view>
 			</view>
 			<view class="r">
-				<image class="icon" src="../../static/images/audio_player.png"></image>
+				<image class="icon" @click="play(item.file)" src="../../static/images/audio_player.png"></image>
 				<image class="icon" src="../../static/images/audio_love.png"></image>
 				<image class="icon" src="../../static/images/audio_price.png"></image>
 				<image class="icon" src="../../static/images/audio_share.png"></image>
@@ -27,14 +27,45 @@
 		props: ['audioList'],
 		data() {
 			return {
-				
+				// 播放器
+				innerAudioContext: '',
+				// 是否正在播放
+				player: false
 			};
 		},
 		methods: {
+			// 发布人主页
 			showAuthor() {
 				uni.navigateTo({
-					url: '../../pages/liveApp/user/findUser'
+					url: '/pages/liveApp/user/findUser'
 				})
+			},
+			// 音频详情
+			detail(id) {
+				uni.navigateTo({
+					url: '/pages/tool/audio?id='+id
+				})
+			},
+			// 播放或暂停
+			play(src) {
+				const innerAudioContext = uni.createInnerAudioContext();
+				if(!this.player && !this.pause) {
+					innerAudioContext.autoplay = true;
+					innerAudioContext.src = 'https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-hello-uniapp/2cc220e0-c27a-11ea-9dfb-6da8e309e0d8.mp3';
+					innerAudioContext.onPlay(() => {
+					  this.player = true;
+					  console.log('开始播放')
+					});
+				} else {
+					innerAudioContext.onStop(() => {
+						console.log('已暂停')
+					})
+				}
+				
+				innerAudioContext.onError((res) => {
+				  console.log(res.errMsg);
+				  console.log(res.errCode);
+				});
 			}
 		}
 	}

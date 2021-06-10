@@ -63,6 +63,7 @@
 				</view>
 			</u-upload>
 		</view>
+		<view class="submit">上传</view>
 	</view>
 </template>
 
@@ -232,6 +233,17 @@
 				top: 130rpx;
 			}
 		}
+	}
+	.submit {
+		width: 686rpx;
+		height: 98rpx;
+		line-height: 98rpx;
+		text-align: center;
+		background: #323232;
+		border-radius: 15rpx;
+		font-size: 30rpx;
+		color: #D7DCE2;
+		margin-top: 100rpx;
 	}
 	/deep/ .u-list-item {
 		margin: 0 auto!important;

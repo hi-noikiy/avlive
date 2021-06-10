@@ -13,6 +13,24 @@ export function getDemandForm(){
 export function getHomeData(data){
 	return request.get('v3/works', data);
 }
+/**
+ * 视频列表
+ */
+export function getWorksVideoList(data){
+	return request.get('v3/worksVideoList', data);
+}
+/**
+ * 作品详情
+ */
+export function getWorksDetail(data){
+	return request.get('v3/worksDetail', data);
+}
+/**
+ * 点赞作品
+ */
+export function worksLike(data){
+	return request.get('v3/worksLike', data);
+}
 
 /**
  * 获取直播间列表

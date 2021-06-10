@@ -213,6 +213,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/tool/audio",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "音频详情",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"tabBar": {
 		"color": "#8a8a8a",
@@ -266,7 +275,7 @@
 						"navigationBarTitleText": "",
 						"enablePullDownRefresh": false,
 						"app-plus": {
-							"titleView": false
+							"titleNView": false
 						}
 					}
 
@@ -379,10 +388,8 @@
 					}
 
 				}
-
-
-
-			]
+                
+            ]
 		},
 		{
 			"root": "pages/users",

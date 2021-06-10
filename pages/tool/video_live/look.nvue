@@ -1,7 +1,8 @@
 <template>
 	<view>
 		<!-- src="http://mp4.vjshi.com/2021-05-19/e141f65baf6e46b4dd384fafbb5a6274.mp4" -->
-		<video :style="{height: 640+'px'}"
+		<video
+			:style="'height: '+(emulator_Height)+'rpx;  width:750rpx;'"
 			object-fit="fill"
 			src="rtmp://pull.qilinjit.com/live/1?auth_key=1623152930-0-0-ecd93fb6c4dd846f447330b572782bca"
 			:autoplay="true"
@@ -107,8 +108,7 @@
 	export default {
 		data() {
 			return {
-				windowWidth: '',
-				windowHeight: '',
+				emulator_Height: 0,
 				// 直播间详情
 				row: '',
 				// 礼物框
@@ -133,6 +133,15 @@
 				// 选中礼物
 				gift_id: ''
 			}
+		},
+		onShow() {
+			// 获取屏幕高度
+			let self = this;
+			uni.getSystemInfo({
+				success: function(res) {
+					self.emulator_Height = (res.screenHeight * (750 / res.windowWidth)) //将px 转换rpx
+				}
+			});
 		},
 		onReady() {
 			// 保持屏幕常亮

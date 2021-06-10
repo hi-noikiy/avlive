@@ -1,6 +1,6 @@
 <template>
 	<view class="main">
-		<view class="item" v-for="(item, index) in videoList" @click="playVideo()">
+		<view class="item" v-for="(item, index) in videoList" @click="playVideo(item.id, item.demand_form_id)">
 			<image :src="item.image" class="bg"></image>
 			<view class="info">
 				<image :src="item.user_avatar" class="head"></image>
@@ -26,9 +26,15 @@
 			};
 		},
 		methods: {
-			playVideo() {
+			playVideo(id, demand_form_id) {
+				for (let i = 0; i < this.videoList.length; i++) {
+					if(this.videoList[i].id == id) {
+						var index = i;
+						break;
+					}
+				}
 				uni.navigateTo({
-					url: '../../pages/liveApp/playVideo'
+					url: '/pages/liveApp/playVideo?id='+id+'&demand_form_id='+demand_form_id+'&index='+index
 				})
 			}
 		}
