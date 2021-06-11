@@ -4,6 +4,13 @@
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/index/components/Home",
 			"style": {
 				"navigationBarTitleText": "",
@@ -223,36 +230,36 @@
             
         }
     ],
-	"tabBar": {
-		"color": "#8a8a8a",
-		"selectedColor": "#00ff7f",
-		"borderStyle": "black",
-		"backgroundColor": "#ffffff",
-		"list": [{
-				"pagePath": "pages/index/components/Home",
-				"iconPath": "",
-				"selectedIconPath": "",
-				"text": "首页"
-			},
-			{
-				"pagePath": "pages/index/components/Hall",
-				"text": "交易大厅"
-			},
-			{
-				"pagePath": "pages/index/components/Msg",
-				"text": "消息"
-			},
-			{
-				"pagePath": "pages/index/components/MyCircle",
-				"text": "圈子"
-			},
-			{
-				"pagePath": "pages/index/components/Me",
-				"text": "我的"
-			}
-		]
+	// "tabBar": {
+	// 	"color": "#8a8a8a",
+	// 	"selectedColor": "#00ff7f",
+	// 	"borderStyle": "black",
+	// 	"backgroundColor": "#ffffff",
+	// 	"list": [{
+	// 			"pagePath": "pages/index/components/Home",
+	// 			"iconPath": "",
+	// 			"selectedIconPath": "",
+	// 			"text": "首页"
+	// 		},
+	// 		{
+	// 			"pagePath": "pages/index/components/Hall",
+	// 			"text": "交易大厅"
+	// 		},
+	// 		{
+	// 			"pagePath": "pages/index/components/Msg",
+	// 			"text": "消息"
+	// 		},
+	// 		{
+	// 			"pagePath": "pages/index/components/MyCircle",
+	// 			"text": "圈子"
+	// 		},
+	// 		{
+	// 			"pagePath": "pages/index/components/Me",
+	// 			"text": "我的"
+	// 		}
+	// 	]
 
-	},
+	// },
 	"subPackages": [{
 			"root": "pages/liveApp",
 			"name": "live",

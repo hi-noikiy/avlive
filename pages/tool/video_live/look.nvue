@@ -134,7 +134,23 @@
 				gift_id: ''
 			}
 		},
-		onShow() {
+		onLoad(options) {
+			var _this = this;
+			// 获取主播信息、拉流地址
+			var data = {
+				id: options.id
+			}
+			getLiveRoomDetail(data).then(res=> {
+				_this.row = res.data.row;
+				_this.src = res.data.row.pull_url;
+				_this.anchorInfo = res.data.anchorInfo;
+				_this.userInfo = res.data.userInfo;
+			})
+			// 获取礼物
+			getGift({}).then(res => {
+				_this.gifts = res.data.list;
+			})
+			
 			// 获取屏幕高度
 			let self = this;
 			uni.getSystemInfo({
@@ -142,8 +158,8 @@
 					self.emulator_Height = (res.screenHeight * (750 / res.windowWidth)) //将px 转换rpx
 				}
 			});
-		},
-		onReady() {
+			
+			
 			// 保持屏幕常亮
 			uni.setKeepScreenOn({
 			    keepScreenOn: true
@@ -151,7 +167,10 @@
 			var _this = this;
 			
 			uni.connectSocket({
-			    url: 'ws://39.106.196.170:20196'
+			    url: 'ws://39.106.196.170:20196',
+				success(res) {
+					console.log(res)
+				}
 			});
 			uni.onSocketOpen(function (res) {
 				console.log('WebSocket连接已打开！');
@@ -180,8 +199,7 @@
 			});
 			uni.onSocketMessage(function (res) {
 				var datas = JSON.parse(res.data);
-				console.log(res.data.data);
-				
+				console.log(datas);
 				switch(datas.type) {
 					case 'endLive':
 						uni.showToast({
@@ -199,6 +217,7 @@
 				        _this.msgAll.push(datas.data);
 				    break;
 					case 'msg':
+						console.log(datas.data);
 					    _this.msgAll.push(datas.data);
 					break;
 					case 'gift':
@@ -214,31 +233,6 @@
 					break;
 				}
 			});
-			// 获取设备屏幕参数
-			// uni.getSystemInfo({
-			// 　　success: function(res) { // res - 各种参数
-			// 　　 	this.windowWidth = res.windowWidth; // 屏幕的宽度 
-			// 		this.windowHeight = res.windowHeight;// 屏幕的高度
-			// 		console.log(this.windowHeight)
-			// 	}
-			// });
-		},
-		onLoad(options) {
-			var _this = this;
-			// 获取主播信息、拉流地址
-			var data = {
-				id: options.id
-			}
-			getLiveRoomDetail(data).then(res=> {
-				_this.row = res.data.row;
-				_this.src = res.data.row.pull_url;
-				_this.anchorInfo = res.data.anchorInfo;
-				_this.userInfo = res.data.userInfo;
-			})
-			// 获取礼物
-			getGift({}).then(res => {
-				_this.gifts = res.data.list;
-			})
 		},
 		// 退出直播间
 		// onUnload() {
@@ -309,14 +303,19 @@
 				}
 				// 提交聊天内容并清空输入内容
 				this.send('msg', '{"roomId":"1", "msg":"'+this.msg+'", "nickname":"'+this.userInfo.nickname+'"}');
-				this.msg = '';	//清空输入框内容
 			},
 			send(type, data) {
-				var data = JSON.parse(data);
-				data.userToken = store.state.app.token;
-				var data = JSON.stringify(JSON.stringify(data));
+				// var data = JSON.parse(data);
+				// data.userToken = store.state.app.token;
+				var _this = this;
+				var data = JSON.stringify(data);
 				uni.sendSocketMessage({
-					data: '{"type":"'+type+'","data":'+data+'}'
+					data: '{"type":"'+type+'","data":'+data+'}',
+					success() {
+						if(type == 'msg') {
+							_this.msg = '';	//清空输入框内容
+						}
+					}
 				})
 			}
 		}

@@ -120,14 +120,16 @@
 							var data = {
 								order_id: that.order_info.order_id
 							};
-							cancelOrder(data).then(res => {
-								console.log(res)
+							cancelOrder(data).then(result => {
 								uni.showToast({
 									title: res.data.msg
 								})
-								if(res.data.status == 200) {
+								if(result.data.status == 200) {
 									setTimeout(()=>{
 										// 跳转到指定组件
+										uni.switchTab({
+											url: '/pages/index/components/Hall'
+										})
 									},1000)
 								}
 							})

@@ -65,6 +65,12 @@ export function getOrderList(data){
 	return request.get('demand/order_list', data);
 }
 /**
+ * 提交需求
+ */
+export function createOrder(data){
+	return request.post('demand/create_order', data);
+}
+/**
  * 需求详情
  */
 export function getUserOrderList(data){
@@ -75,4 +81,11 @@ export function getUserOrderList(data){
  */
 export function cancelOrder(data){
 	return request.get('demand/cancel_order', data);
+}
+
+/**
+ * 音色要求
+ */
+export function getDemandTimbreList(){
+	return request.get('demand/demand_timbre_list');
 }

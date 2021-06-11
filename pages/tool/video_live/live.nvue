@@ -21,7 +21,7 @@
 				<text class="umsg">{{item}}</text>
 			</view>
 			<view class="msg">
-				<text class="umsg">开始直播</text>
+				<text class="umsg" @click="st()">开始直播</text>
 			</view>
 		</scroll-view>
 	</view>
@@ -32,6 +32,7 @@
 	export default {
 		data() {
 			return {
+				context: '',
 				id: '',
 				push_url: '',
 				ping: '',
@@ -45,16 +46,13 @@
 		onReady() {
 			// 保持屏幕常亮
 			uni.setKeepScreenOn({
-			    keepScreenOn: true
+				keepScreenOn: true
 			});
 			
 			var _this = this;
 			
-			// 注意：需要在onReady中 或 onLoad 延时
-			this.context = uni.createLivePusherContext("livePusher", this);
-			
 			uni.connectSocket({
-			    url: 'ws://39.106.196.170:20196'
+				url: 'ws://39.106.196.170:20196'
 			});
 			uni.onSocketOpen(function (res) {
 				console.log('WebSocket连接已打开！');
@@ -66,16 +64,17 @@
 				var datas = JSON.parse(res.data);
 				switch(datas.type) {
 					// 有人加入直播间
-				    case 'enter':
+					case 'enter':
 						_this.msgAll.push('欢迎：'+datas.data);
-				    break;
+					break;
 					// 有人退出直播间
-				    case 'logout':
-				        _this.msgAll.push(datas.data);
-				    break;
+					case 'logout':
+						_this.msgAll.push(datas.data);
+					break;
 					// 直播间消息
 					case 'msg':
-					    _this.msgAll.push(datas.data);
+						console.log(datas.data);
+						_this.msgAll.push(datas.data);
 					break;
 					// 直播间礼物
 					case 'gift':
@@ -85,7 +84,7 @@
 					break;
 					// 主播心跳检测
 					case 'ping':
-						// console.log('pong')
+						console.log('pong')
 					break;
 					// 直播间用户数量
 					case 'userNum':
@@ -94,15 +93,28 @@
 				}
 			});
 			
+			// 注意：需要在onReady中 或 onLoad 延时
+			_this.context = uni.createLivePusherContext("livePusher", this);
+			
 			// 开始直播
-			this.start()
+			this.start();
 		},
 		methods: {
+			st() {
+				this.context.start({
+					success: (a) => {
+						console.log("livePusher.start:" + JSON.stringify(a));
+					},
+					fail: (err) => {
+						console.log('fail')
+					}
+				});
+			},
 			statechange(e) {
-			    console.log("statechange:" + JSON.stringify(e));
+			    // console.log("statechange:" + JSON.stringify(e));
 			},
 			netstatus(e) {
-			    console.log("netstatus:" + JSON.stringify(e));
+			    // console.log("netstatus:" + JSON.stringify(e));
 			},
 			error(e) {
 			    console.log("error:" + JSON.stringify(e));
@@ -126,23 +138,12 @@
 						'content-type': 'application/x-www-form-urlencoded',
 					},
 					success(res) {
-						
 						_this.send('startLive', '{"roomId":"1","msg":"开始直播"}')
-						
 						_this.heartbeat()
 						
 						if(res.data.status == 200) {
 							_this.id = res.data.data.id;
 							_this.push_url = res.data.data.push_url;
-							
-							_this.context.start({
-							    success: (a) => {
-							        console.log("livePusher.start:" + JSON.stringify(a));
-							    },
-								fail: (err) => {
-									console.log('fail')
-								}
-							});
 						}
 					},
 					fail() {

@@ -1,25 +1,25 @@
 <template>
 	<view class="main">
-		<view class="i i1">
+		<view class="i i1" v-show="false">
 			<view class="title">指定制作方</view>
 			<input type="text" value="" placeholder="选填" />
 			<view class="info">安妮爱主持</view>
 		</view>
-		<view class="i i1">
+		<view class="i i1" v-show="false">
 			<view class="title">指定雇主</view>
 			<input type="text" value="" placeholder="选填" />
 			<view class="info">安妮爱主持</view>
 		</view>
 		<view class="i i2">
 			<view class="title">预算（非必填）</view>
-			<input type="text" value="" placeholder="请输入" />
+			<input type="text" v-model="pay_price" placeholder="请输入" />
 		</view>
 		<view class="i i3">
 			<view class="title">期望制作周期（非必填）</view>
-			<input type="text" value="" placeholder="请输入" />
+			<input type="text" v-model="cycle_data" placeholder="请输入" />
 			<view class="info">
-				<picker mode="selector">
-					<view>小时</view>
+				<picker :range="unitArr" @change="unitChange" :value="unitIndex">
+					<view>{{unit}}</view>
 				</picker>
 				<image src="../../../static/images/bs_icon.png"></image>
 			</view>
@@ -29,62 +29,124 @@
 			<view class="inputs">
 				<u-checkbox-group>
 					<u-checkbox
-						v-model="item.checked"
 						v-for="(item, index) in checkboxList"
+						v-model="item.checked"
 						shape="square"
 						active-color="#000000"
-					>明月</u-checkbox>
+						:name="item.timbre_type_name"
+					>{{item.timbre_type_name}}</u-checkbox>
 				</u-checkbox-group>
 			</view>
 		</view>
 		<view class="m m1">
 			<view>请一句话描述您的需求</view>
-			<input type="text" value="" placeholder="请输入您的需求简介" />
+			<input type="text" v-model="desc" placeholder="请输入您的需求简介" />
 		</view>
 		<view class="m m2">
 			<view>详细描述您的需求</view>
-			<textarea value="" placeholder="请输入详情" />
+			<textarea v-model="remake" placeholder="请输入详情" />
 		</view>
-		<u-upload></u-upload>
-		<view class="sub">提交</view>
+		<u-upload :action="action" ref="uUpload"></u-upload>
+		<view class="sub" @click="submit">提交</view>
 	</view>
 </template>
 
 <script>
+	import {
+		getDemandTimbreList,
+		createOrder
+	} from '@/api/liveApp';
 	export default {
 		data() {
 			return {
-				checkboxList: [
-					{
-						name: '男声',
-						checked: false,
-						disabled: false
-					},
-					{
-						name: '女声',
-						checked: false,
-						disabled: false
-					},
-					{
-						name: '娃娃',
-						checked: false,
-						disabled: false
-					},
-					{
-						name: '中年',
-						checked: false,
-						disabled: false
-					},
-					{
-						name: '老人',
-						checked: false,
-						disabled: false
-					}
-				]
+				action: 'http://qyh.ugekeji.com/api/v3/upload',
+				unitArr: ['小时','天','周','月'],
+				unit: '小时',
+				unitIndex: 0,
+				checkboxList: [],
+				// 预算
+				pay_price: '',
+				// 制作周期
+				cycle_data: '',
+				// 需求描述
+				desc: '',
+				// 需求详情
+				remake: '',
+				// 图片
+				enclosure: ''
 			}
 		},
+		onLoad() {
+			var that = this;
+			getDemandTimbreList().then(res => {
+				var checkboxList = res.data;
+				for(let i = 0; i < checkboxList.length; i++) {
+					checkboxList[i].checked = false;
+					checkboxList[i].disabled= false;
+				}
+				that.checkboxList = checkboxList;
+			});
+		},
 		methods: {
-			
+			// 周期选中
+			unitChange(e) {
+				this.unitIndex = e.detail.value;
+				this.unit = this.unitArr[e.detail.value];
+			},
+			// 提交
+			submit() {
+				var that = this;
+				// 音色要求
+				var timbre_type_id = '';
+				var timbre_type_name = '';
+				if(that.checkboxList.length > 0) {
+					for(let i = 0; i < that.checkboxList.length; i++) {
+						if(that.checkboxList[i].checked === true) {
+							timbre_type_id += that.checkboxList[i].id + ',';
+							timbre_type_name += that.checkboxList[i].timbre_type_name + ',';
+						}
+					}
+					timbre_type_id = timbre_type_id.substr(0, timbre_type_id.length - 1);  
+					timbre_type_name = timbre_type_name.substr(0, timbre_type_name.length - 1);  
+				}
+				// 图片
+				let files = [];
+				files = that.$refs.uUpload.lists.filter(val => {
+					return val.progress == 100;
+				})
+				if(files.length > 0) {
+					that.enclosure = files[0].response;
+				}
+				// 制作周期
+				var cycle = '';
+				if(that.cycle_data != '') {
+					cycle = that.cycle_data + that.unit;
+				}
+				// 数据整合
+				var data = {
+					pay_price: that.pay_price,
+					cycle: cycle,
+					desc: that.desc,
+					remake: that.remake,
+					enclosure: that.enclosure,
+					timbre_type_id: timbre_type_id,
+					timbre_type_name: timbre_type_name
+				}
+				// 请求接口
+				createOrder(data).then(res => {
+					uni.showToast({
+						title: res.msg,
+						icon: 'none'
+					})
+					if(res.status == 200) {
+						setTimeout(function(){
+							uni.switchTab({
+								url: '/pages/index/components/Hall'
+							})
+						}, 1000);
+					}
+				});
+			}
 		}
 	}
 </script>
@@ -93,6 +155,7 @@
 	.main {
 		width: 690rpx;
 		margin: 0 auto;
+		margin-top: 20rpx;
 	}
 	.i {
 		width: 100%;
@@ -183,10 +246,16 @@
 		height: 98rpx;
 		line-height: 98rpx;
 		background-color: #323232;
-		background-color: rgba($color: #D7DCE2, $alpha: 0.95);
+		background-color: rgba($color: #323232, $alpha: 0.95);
 		border-radius: 15rpx;
 		font-size: 30rpx;
 		text-align: center;
+		margin-top: 109rpx;
 		margin-bottom: 40rpx;
+		font-size: 30rpx;
+		color: #D7DCE2;
+	}
+	/deep/ .u-add-wrap {
+		background-color: #FFFFFF;
 	}
 </style>

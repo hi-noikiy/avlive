@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="u-page">
-			<!-- 所有内容的容器 -->   
+			<!-- 所有内容的容器 -->
 			<Home v-if="drawComp[0]" v-show="showComp[0]"></Home> 
 			<!-- 消息 -->
 			<Msg ref="msg" v-if="drawComp[1]" v-show="showComp[1]"></Msg> 
@@ -47,7 +47,7 @@
 				list: [{
 					iconPath: "home",
 					selectedIconPath: "home-fill",
-					text: '首页',
+					text: '首页123',
 					// count: 2,
 					// isDot: true,
 					// customIcon: false,
