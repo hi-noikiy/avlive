@@ -71,6 +71,12 @@ export function createOrder(data){
 	return request.post('demand/create_order', data);
 }
 /**
+ * 修改需求
+ */
+export function saveOrder(data){
+	return request.post('demand/save_order', data);
+}
+/**
  * 需求详情
  */
 export function getUserOrderList(data){
@@ -82,10 +88,35 @@ export function getUserOrderList(data){
 export function cancelOrder(data){
 	return request.get('demand/cancel_order', data);
 }
+/**
+ * 提交报价
+ */
+export function takeOffer(data){
+	return request.post('demand/take_offer', data);
+}
+/**
+ * 我的报价
+ */
+export function myTakeOffer(data){
+	return request.get('demand/my_take_offer', data);
+}
 
 /**
  * 音色要求
  */
 export function getDemandTimbreList(){
 	return request.get('demand/demand_timbre_list');
+}
+
+/**
+ * 圈子列表
+ */
+export function getCircleList(data){
+	return request.get('v3/circle', data);
+}
+/**
+ * 发布圈子
+ */
+export function saveCircle(data){
+	return request.post('v3/saveCircle', data);
 }

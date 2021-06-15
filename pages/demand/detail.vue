@@ -3,7 +3,7 @@
 		<view class="module module1">
 			<view>项目名称：{{order_info.desc}}</view>
 			<view>项目类型：音频</view>
-			<view>预算：<span>{{order_info.pay_price}}</span>元</view>
+			<view>预算：<span>{{order_info.pay_num == 0 ? order_info.pay_price : order_info.pay_num}}</span>元</view>
 			<view>期望周期：{{order_info.cycle}}</view>
 			<view>音色要求：{{order_info.timbre_type_name}}</view>
 		</view>
@@ -26,8 +26,10 @@
 			<view class="status">等待作者确认订单...</view>
 		</view>
 		<view class="operation">
-			<view @click="cancel">取消订单</view>
-			<view @click="edit">修改订单</view>
+			<view @click="cancel" v-if="order_info.order_message == 1">取消订单</view>
+			<view @click="edit" v-if="order_info.order_message == 1">修改订单</view>
+			<view v-if="order_info.order_message == 0">联系雇主</view>
+			<view @click="offer" v-if="order_info.order_message == 0">报价</view>
 		</view>
 	</view>
 </template>
@@ -48,11 +50,16 @@
 				order_info: [],
 				// 下面的列表
 				order_list: [],
+				// 查询条件
+				uid: '',
+				order_id: ''
 			}
 		},
 		// 获取数据
 		onLoad(options) {
 			var that = this;
+			that.uid = options.uid;
+			that.order_id = options.order_id;
 			var data = {
 				uid: options.uid,
 				order_id: options.order_id
@@ -141,7 +148,15 @@
 			},
 			// 修改订单
 			edit() {
-				console.log('修改订单')
+				uni.navigateTo({
+					url: '/pages/liveApp/hall/index?uid='+this.uid+'&order_id='+this.order_id
+				})
+			},
+			// 报价
+			offer() {
+				uni.navigateTo({
+					url: '/pages/liveApp/offer?order_id='+this.order_id
+				})
 			}
 		}
 	}

@@ -175,7 +175,7 @@
 			},
 			// 视频点赞
 			like(index) {
-				console.log('like')
+				console.log('like');
 				// 获取视频id
 				var id = this.vlist[index].id;
 				var isLike = this.vlist[index].isLike;

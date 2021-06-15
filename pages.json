@@ -396,6 +396,15 @@
 
 				}
                 
+                ,{
+                    "path" : "offer",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "报价",
+                    "enablePullDownRefresh": false
+                }
+                
+                }
             ]
 		},
 		{

@@ -10,37 +10,37 @@
 			</view>
 		</u-navbar>
 		<view class="list">
-			<view class="item" v-for="i in 2">
+			<view class="item" v-for="(item, index) in list">
 				<view class="info">
 					<view class="l">
-						<image src="../../users/static/1.png" class="head"></image>
+						<image :src="item.user_avatar" class="head"></image>
 						<view class="u">
-							<view class="name">安妮爱主持</view>
-							<view class="time">3h前</view>
+							<view class="name">{{item.user_nickname}}</view>
+							<view class="time">{{item.update_time}}前</view>
 						</view>
 					</view>
 					<view class="follow">关注</view>
 				</view>
 				<u-gap height="2" bg-color="#E0DEDE" margin-top="30" margin-bottom="29"></u-gap>
 				<view class="content">
-					<view class="title">我爱主持我爱主持我爱主持我爱主持我爱主持我爱 主持我爱主持我爱主持我爱主持我爱主持我爱主持 我爱主持我爱主持我爱主持我爱。</view>
+					<view class="title">{{item.title}}</view>
 					<view class="imgs">
-						<image v-for="i in 5" src="../../../static/images/bg.png"></image>
+						<image v-for="(image, key) in item.images" :src="image"></image>
 					</view>
 				</view>
 				<u-gap height="2" bg-color="#E0DEDE" margin-top="44" margin-bottom="26"></u-gap>
 				<view class="operation">
 					<view class="like ico">
 						<image src="../../../static/images/circle_like.png"></image>
-						<view>12</view>
+						<view>{{item.like_num}}</view>
 					</view>
 					<view class="comment ico">
 						<image src="../../../static/images/circle_comment.png"></image>
-						<view>12</view>
+						<view>{{item.comment_num}}</view>
 					</view>
 					<view class="share ico">
 						<image src="../../../static/images/circle_share.png"></image>
-						<view>06</view>
+						<view>{{item.forward_num}}</view>
 					</view>
 				</view>
 			</view>
@@ -49,16 +49,32 @@
 </template>
 
 <script>
+	import {
+		getCircleList
+	} from '@/api/liveApp.js';
 	export default {
 		data() {
 			return {
-				
+				list: [],
+				page: 1
 			}
+		},
+		onLoad() {
+			this.getData();
 		},
 		methods: {
 			urlTo(url) {
 				uni.navigateTo({
 					url: url
+				})
+			},
+			getData() {
+				var that = this;
+				var data = {
+					page: that.page
+				}
+				getCircleList(data).then(res => {
+					that.list = res.data.list;
 				})
 			}
 		}

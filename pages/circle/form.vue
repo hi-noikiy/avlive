@@ -1,27 +1,32 @@
 <template>
 	<view class="main">
-		<input class="title" type="text" value="" placeholder="请输入标题" />
-		<textarea class="content" value="" placeholder="请输入内容..." />
-		<view class="img">
-			<image class="t" src="../../static/images/jia.png"></image>
-			<view class="b">上传封面</view>
-		</view>
+		<input class="title" type="text" v-model="title" placeholder="请输入标题" />
+		<textarea class="content" v-model="content" placeholder="请输入内容..." />
+		<u-upload :action="action" ref="uUpload"></u-upload>
 		<view class="info">
 			<view class="l">
-				<label class="radio"><radio name="rname" value="1" checked="true" />所有人</label>
-				<label class="radio"><radio name="rname" value="2" />仅限好友</label>
+				<label class="radio" @click="radioChange(1)"><radio name="rname" value="1" :checked="show_auth === 1"/>所有人</label>
+				<label class="radio" @click="radioChange(2)"><radio name="rname" value="2" :checked="show_auth === 2"/>仅限好友</label>
 			</view>
 			<view class="r">只支持图片格式</view>
 		</view>
-		<view class="btn">发布</view>
+		<view class="btn" @click="submit">发布</view>
 	</view>
 </template>
 
 <script>
+	import {
+		saveCircle
+	} from '@/api/liveApp.js';
 	export default {
 		data() {
 			return {
-				editorCtx: ''
+				editorCtx: '',
+				action: 'http://qyh.ugekeji.com/api/v3/upload',
+				title: '',
+				content: '',
+				show_auth: 1,
+				images: ''
 			}
 		},
 		methods: {
@@ -30,6 +35,42 @@
 				  this.editorCtx = res.context
 				}).exec()
 			},
+			radioChange(item) {
+				this.show_auth = item;
+			},
+			submit() {
+				var that = this;
+				// 图片
+				let files = [];
+				files = that.$refs.uUpload.lists.filter(val => {
+					return val.progress == 100;
+				})
+				if(files.length > 0) {
+					for(let i = 0; i < files.length; i++) {
+						that.images += files[i].response + ',';
+					}
+					that.images = that.images.substr(0, that.images.length - 1);  
+				}
+				var data = {
+					title: that.title,
+					content: that.content,
+					images: that.images,
+					show_auth: that.show_auth
+				};
+				saveCircle(data).then(res => {
+					uni.showToast({
+						title: res.data.msg,
+						icon: 'none'
+					})
+					if(res.data.status == 200) {
+						setTimeout(function(){
+							uni.switchTab({
+								url: '/pages/index/components/MyCircle'
+							})
+						}, 1000);
+					}
+				})
+			}
 		}
 	}
 </script>
@@ -59,6 +100,7 @@
 		color: #999999;
 		margin-top: 30rpx;
 		padding: 30rpx;
+		margin-bottom: 24rpx;
 	}
 	.img {
 		width: 100%;
@@ -105,5 +147,8 @@
 		text-align: center;
 		color: #D7DCE2;
 		font-size: 30rpx;
+	}
+	/deep/ .u-add-wrap {
+		background-color: #FFFFFF;
 	}
 </style>

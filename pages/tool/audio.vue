@@ -1,8 +1,8 @@
 <template>
 	<view class="main">
-		<view class="title">甄嬛传朗读</view>
-		<image class="img" src="../users/static/value.jpg"></image>
-		<view class="author">作者：安妮爱主持</view>
+		<view class="title">{{row.name}}</view>
+		<image class="img" :src="row.image"></image>
+		<view class="author">作者：{{row.user_nickname}}</view>
 		<view class="progress-bar">
 			<image src="../../static/images/audio-kuaitui.png"></image>
 			<view class="slider">
@@ -59,16 +59,26 @@
 	export default {
 		data() {
 			return {
+				innerAudioContext: '',
+				paused: '',
 				value: '1:58/9:58',
 				row: []
 			}
 		},
 		onLoad(option) {
+			var that = this;
 			var data = {
 				id: option.id
 			};
 			getWorksDetail(data).then(res => {
-				this.row = res.data.row
+				that.row = res.data.row;
+				that.innerAudioContext = uni.createInnerAudioContext();
+				that.innerAudioContext.src = that.row.file;		//播放地址
+				that.innerAudioContext.autoplay = true;			//自动播放
+				that.paused = that.innerAudioContext.paused;	//播放状态
+				that.innerAudioContext.offTimeUpdate((res) => {
+					console.log(res)
+				})
 			})
 		},
 		methods: {

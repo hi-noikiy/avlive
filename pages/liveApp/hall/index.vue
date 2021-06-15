@@ -54,7 +54,9 @@
 <script>
 	import {
 		getDemandTimbreList,
-		createOrder
+		createOrder,
+		getUserOrderList,
+		saveOrder
 	} from '@/api/liveApp';
 	export default {
 		data() {
@@ -73,10 +75,15 @@
 				// 需求详情
 				remake: '',
 				// 图片
-				enclosure: ''
+				enclosure: '',
+				// 详情
+				order_id: '',
+				order_info: '',
+				order_list: '',
+				edit: false
 			}
 		},
-		onLoad() {
+		onLoad(options) {
 			var that = this;
 			getDemandTimbreList().then(res => {
 				var checkboxList = res.data;
@@ -86,6 +93,44 @@
 				}
 				that.checkboxList = checkboxList;
 			});
+			if(JSON.stringify(options) != "{}") {
+				that.edit = true;
+				that.order_id = options.order_id;
+				// 修改
+				var data = {
+					uid: options.uid,
+					order_id: options.order_id
+				};
+				getUserOrderList(data).then(res => {
+					that.order_info = res.data.order_info;
+					// 需求详情
+					// that.htmlNodes = HTMLParser(that.order_info.remake);
+					
+					that.order_list = res.data.order_list;
+					
+					// 表单赋值
+					that.pay_price = (that.order_info.pay_num == 0) ? that.order_info.pay_price : that.order_info.pay_num;
+					that.cycle_data = that.order_info.cycle_value;
+					that.unit = that.order_info.cycle_type;
+					for(let i = 0; i < that.unitArr.length; i++) {
+						if(that.unitArr[i] == that.unit) {
+							that.unitIndex = i;
+							break;
+						}
+					}
+					var timbreTypeIdArr = that.order_info.timbre_type_name.split(/[ ]+/);// 以空格分开
+					for(var i = 0; i < that.checkboxList.length; i++) {
+						for(var j = 0; j < timbreTypeIdArr.length; j++) {
+							if(that.checkboxList[i].timbre_type_name == timbreTypeIdArr[j]) {
+								that.checkboxList[i].checked = true;
+							}
+						}
+					}
+					that.desc = that.order_info.desc;
+					that.remake = that.order_info.remake;
+					that.enclosure = that.order_info.enclosure;
+				})
+			}
 		},
 		methods: {
 			// 周期选中
@@ -107,7 +152,7 @@
 						}
 					}
 					timbre_type_id = timbre_type_id.substr(0, timbre_type_id.length - 1);  
-					timbre_type_name = timbre_type_name.substr(0, timbre_type_name.length - 1);  
+					timbre_type_name = timbre_type_name.substr(0, timbre_type_name.length - 1);
 				}
 				// 图片
 				let files = [];
@@ -117,35 +162,51 @@
 				if(files.length > 0) {
 					that.enclosure = files[0].response;
 				}
-				// 制作周期
-				var cycle = '';
-				if(that.cycle_data != '') {
-					cycle = that.cycle_data + that.unit;
-				}
 				// 数据整合
 				var data = {
-					pay_price: that.pay_price,
-					cycle: cycle,
 					desc: that.desc,
 					remake: that.remake,
 					enclosure: that.enclosure,
 					timbre_type_id: timbre_type_id,
-					timbre_type_name: timbre_type_name
+					timbre_type_name: timbre_type_name,
+					cycle_type: that.unit,
+					cycle_value: that.cycle_data
 				}
 				// 请求接口
-				createOrder(data).then(res => {
-					uni.showToast({
-						title: res.msg,
-						icon: 'none'
+				if(that.edit) {
+					// 修改
+					data.order_id = that.order_id;
+					data.pay_num = that.pay_price;
+					saveOrder(data).then(res => {
+						uni.showToast({
+							title: res.msg,
+							icon: 'none'
+						})
+						if(res.status == 200) {
+							setTimeout(function(){
+								uni.switchTab({
+									url: '/pages/index/components/Hall'
+								})
+							}, 1000);
+						}
 					})
-					if(res.status == 200) {
-						setTimeout(function(){
-							uni.switchTab({
-								url: '/pages/index/components/Hall'
-							})
-						}, 1000);
-					}
-				});
+				} else {
+					// 新增
+					data.pay_price = that.pay_price;
+					createOrder(data).then(res => {
+						uni.showToast({
+							title: res.msg,
+							icon: 'none'
+						})
+						if(res.status == 200) {
+							setTimeout(function(){
+								uni.switchTab({
+									url: '/pages/index/components/Hall'
+								})
+							}, 1000);
+						}
+					})
+				}
 			}
 		}
 	}
