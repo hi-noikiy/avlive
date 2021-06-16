@@ -19,7 +19,7 @@
 							<view class="time">{{item.update_time}}前</view>
 						</view>
 					</view>
-					<view class="follow">关注</view>
+					<view class="follow" v-if="uid != item.user_id" @click="follow(item, item.user_id)">{{item.is_follow ? '已' : ''}}关注</view>
 				</view>
 				<u-gap height="2" bg-color="#E0DEDE" margin-top="30" margin-bottom="29"></u-gap>
 				<view class="content">
@@ -30,16 +30,16 @@
 				</view>
 				<u-gap height="2" bg-color="#E0DEDE" margin-top="44" margin-bottom="26"></u-gap>
 				<view class="operation">
-					<view class="like ico">
-						<image src="../../../static/images/circle_like.png"></image>
+					<view class="like ico" @click="like(item, index)">
+						<image :src="'/static/images/'+(item.is_like ? 'video_zan_curr' : 'circle_like')+'.png'"></image>
 						<view>{{item.like_num}}</view>
 					</view>
 					<view class="comment ico">
-						<image src="../../../static/images/circle_comment.png"></image>
+						<image src="/static/images/circle_comment.png"></image>
 						<view>{{item.comment_num}}</view>
 					</view>
 					<view class="share ico">
-						<image src="../../../static/images/circle_share.png"></image>
+						<image src="/static/images/circle_share.png"></image>
 						<view>{{item.forward_num}}</view>
 					</view>
 				</view>
@@ -50,31 +50,84 @@
 
 <script>
 	import {
-		getCircleList
+		getCircleList,
+		userFollow,
+		circleLike
 	} from '@/api/liveApp.js';
 	export default {
 		data() {
 			return {
+				uid: '',
 				list: [],
 				page: 1
 			}
 		},
-		onLoad() {
-			this.getData();
+		mounted() {
+			this.getData()
 		},
 		methods: {
+			// 跳转页面
 			urlTo(url) {
 				uni.navigateTo({
 					url: url
 				})
 			},
+			// 获取列表数据
 			getData() {
 				var that = this;
 				var data = {
 					page: that.page
 				}
 				getCircleList(data).then(res => {
+					that.uid = res.data.uid;
 					that.list = res.data.list;
+				})
+			},
+			// 关注
+			follow(item, user_id) {
+				var that = this;
+				var operation = !item.is_follow ? 1 : 0;
+				var data = {
+					to_user_id: item.user_id,
+					operation: operation
+				};
+				userFollow(data).then(res => {
+					if(res.status == 200) {
+						for(let i = 0; i < that.list.length; i++) {
+							if(that.list[i].user_id == user_id) {
+								that.list[i].is_follow = !item.is_follow;
+							}
+						}
+					} else {
+						uni.showToast({
+							title: res.msg,
+							icon: 'none'
+						})
+					}
+				})
+			},
+			// 点赞
+			like(item, index) {
+				var that = this;
+				var operation = !item.is_like ? 1 : 0;
+				var data = {
+					circle_id: item.id,
+					operation: operation
+				};
+				circleLike(data).then(res => {
+					if(res.status == 200) {
+						that.list[index].is_like = !item.is_like;
+						if(operation == 1) {
+							that.list[index].like_num += 1;
+						} else {
+							that.list[index].like_num -= 1;
+						}
+					} else {
+						uni.showToast({
+							title: res.msg,
+							icon: 'none'
+						})
+					}
 				})
 			}
 		}

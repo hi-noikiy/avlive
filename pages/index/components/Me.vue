@@ -4,11 +4,11 @@
 		<view class="main">
 			<view class="top box">
 				<view class="line1">
-					<image src="/static/images/jiaqun2x.png" class="head"></image>
+					<image :src="userInfo.avatar" class="head"></image>
 					<view class="info">
 						<view class="t">
-							<view>昵称：安妮爱主持</view>
-							<view>ID 950027</view>
+							<view>昵称：{{userInfo.nickname}}</view>
+							<view>ID {{userInfo.uid}}</view>
 						</view>
 						<view class="b">
 							<view>10粉丝</view><view class="c">|</view><view>8关注</view>
@@ -24,8 +24,8 @@
 				<view class="line3">
 					<view class="title">技能标签</view>
 					<u-tag
-						v-for="i in 2"
-						text="主持人"
+						v-for="(tag, tagIndex) in userInfo.class_name"
+						:text="tag"
 						mode="plain"
 						shape="circle"
 						size="mini"
@@ -55,7 +55,50 @@
 </template>
 
 <script>
+	let sysHeight = uni.getSystemInfoSync().statusBarHeight + 'px';
+	import {
+		getMenuList,
+		getUserInfo,
+		setVisit,
+		updateUserInfo
+	} from '@/api/user.js';
+	 
+	import {
+		toLogin
+	} from '@/libs/login.js';
+	import {
+		mapGetters
+	} from "vuex";
+	// #ifdef MP
+	import authorize from '@/components/Authorize';
+	// #endif
+	// #ifdef H5
+	import Auth from '@/libs/wechat';
+	// #endif
+	const app = getApp();
+	import pageFooter from '@/components/pageFooter/index.vue'
+	import dayjs from '@/plugin/dayjs/dayjs.min.js';
 	export default {
+		components: {
+			pageFooter,
+			// #ifdef MP
+			authorize
+			// #endif
+		},
+		computed: mapGetters(['isLogin']),
+		filters: {
+			coundTime(val) {
+				var setTime = val * 1000
+				var nowTime = new Date()
+				var rest = setTime - nowTime.getTime()
+				var day = parseInt(rest / (60 * 60 * 24 * 1000))
+				// var hour = parseInt(rest/(60*60*1000)%24) //小时
+				return day + '天'
+			},
+			dateFormat: function(value) {
+				return dayjs(value * 1000).format('YYYY-MM-DD');
+			}
+		},
 		data() {
 			return {
 				list: [{
@@ -182,15 +225,182 @@
 						mright: '0',
 						url: ''
 					}]
-				}]
+				}],
+				imgUrls: [],
+				autoplay: true,
+				circular: true,
+				interval: 3000,
+				duration: 500,
+				isAuto: false, //没有授权的不会自动授权
+				isShowAuth: false, //是否隐藏授权
+				orderStatusNum: {},
+				userInfo: {},
+				MyMenus: [],
+				sysHeight: sysHeight,
+				mpHeight: 0,
+				showStatus: 1, 
+				activeRouter: '',
+				// #ifdef MP
+				pageHeight: '100%',
+				// #endif
+				// #ifdef H5 || APP-PLUS
+				pageHeight: app.globalData.windowHeight,
+				// #endif
+				// #ifdef H5
+				isWeixin: Auth.isWeixin()
+				//#endif
 			}
 		},
+		mounted() {
+			let self = this
+			// #ifdef MP
+			let info = uni.createSelectorQuery().select(".sys-head");
+			info.boundingClientRect(function(data) { //data - 各种参数
+				self.mpHeight = data.height
+			}).exec()
+			// #endif 
+			// #ifdef H5
+			uni.getSystemInfo({
+				success: function(res) {
+					self.pageHeight = res.windowHeight + 'px'
+				}
+			});
+			// #endif 
+			if (self.isLogin) {
+				this.getUserInfo();
+				this.getMyMenus();
+				this.setVisit();
+			};
+		}, 
 		methods: {
 			urlTo(url) {
 				uni.navigateTo({
 					url: url
 				})
-			}
+			},
+			getWechatuserinfo() {
+				//#ifdef H5
+				 
+				Auth.isWeixin() && Auth.oAuth('snsapi_userinfo', '/pages/user/index');
+				//#endif
+			},
+			getRoutineUserInfo(e) {
+				updateUserInfo({
+					userInfo: e.detail.userInfo
+				}).then(res => {
+					this.getUserInfo();
+					return this.$util.Tips('更新用户信息成功');
+				}).catch(res => {
+				 
+				})
+				console.log(e);
+			},
+			// 记录会员访问
+			setVisit() {
+				setVisit({
+					url: '/pages/user/index'
+				}).then(res => {})
+			},
+			// 打开授权
+			openAuto() {
+				toLogin();
+			},
+			// 授权回调
+			onLoadFun() {
+				this.getUserInfo();
+				this.getMyMenus();
+				this.setVisit();
+			},
+			Setting: function() {
+				uni.openSetting({
+					success: function(res) {
+						console.log(res.authSetting)
+					}
+				});
+			},
+			// 授权关闭
+			authColse: function(e) {
+				this.isShowAuth = e
+			},
+			// 绑定手机
+			bindPhone() {
+				uni.navigateTo({
+					url: '/pages/users/user_phone/index'
+				})
+			},
+			/**
+			 * 获取个人用户信息
+			 */
+			getUserInfo: function() {
+				let that = this;
+				getUserInfo().then(res => {
+					console.log(res.data);
+					that.userInfo = res.data
+					that.$store.commit("SETUID", res.data.uid);
+				});
+			},
+			/**
+			 * 
+			 * 获取个人中心图标
+			 */
+			getMyMenus: function() {
+				let that = this;
+				// if (this.MyMenus.length) return;
+				getMenuList().then(res => { 
+					let myMenu = []
+					res.data.routine_my_menus.forEach((el, index, arr) => {
+						if (el.url == '/pages/admin/order/index' || el.url == '/pages/admin/order_cancellation/index' || el.name ==
+							'客服接待') { 
+						} else {
+							myMenu.push(el)
+						}
+					})
+					this.MyMenus = myMenu
+					this.imgUrls = res.data.routine_my_banner
+				});
+			},
+			// 编辑页面
+			goEdit() {
+				if (this.isLogin == false) {
+					toLogin();
+				} else {
+					uni.navigateTo({
+						url: '/pages/users/user_info/index'
+					})
+				}
+				 
+			},
+			// 签到
+			goSignIn() {
+				uni.navigateTo({
+					url: '/pages/users/user_sgin/index'
+				})
+			},
+			// goMenuPage
+			goMenuPage(url, name) {
+				if (this.isLogin) {
+					if (url.indexOf('http') === -1) {
+						// #ifdef H5
+						if (name && name === '客服接待') {
+							return uni.navigateTo({
+								url: `/pages/annex/web_view/index?url=${location.origin}${url}`
+							});
+						}
+						// #endif
+						uni.navigateTo({
+							url: url
+						})
+					} else {
+						uni.navigateTo({
+							url: `/pages/annex/web_view/index?url=${url}`
+						});
+					}
+				} else {
+					// #ifdef MP
+					this.openAuto()
+					// #endif
+				}
+			},
 		}
 	}
 </script>

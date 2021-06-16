@@ -120,3 +120,9 @@ export function getCircleList(data){
 export function saveCircle(data){
 	return request.post('v3/saveCircle', data);
 }
+/**
+ * 圈子点赞
+ */
+export function circleLike(data){
+	return request.get('v3/circleLike', data);
+}

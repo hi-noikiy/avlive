@@ -13,7 +13,7 @@
 		</view>
 		<view class="download">
 			<image src="../../static/images/link_icon.png" class="icon"></image>
-			<view class="name">文档.docx</view>
+			<view class="name">附件文件</view>
 			<view class="progress">
 				<view :style="'width: '+download_progress+'%'"></view>
 			</view>

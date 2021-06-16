@@ -35,10 +35,10 @@
 				drawComp:[true,false,false,false,false],
 				newData:{
 					activeTxtColor:{
-						color:[{item: "#F62C2C"}]
+						color:[{item: "#000000"}]
 					},
 					txtColor:{
-						color:[{item: "#282828"}]
+						color:[{item: "#575757"}]
 					},
 					bgColor:{
 						color:[{item: "#fff"}]
@@ -47,10 +47,7 @@
 				list: [{
 					iconPath: "home",
 					selectedIconPath: "home-fill",
-					text: '首页123',
-					// count: 2,
-					// isDot: true,
-					// customIcon: false,
+					text: '首页',
 				},
 				{
 					iconPath: "photo",
@@ -74,8 +71,6 @@
 					iconPath: "account",
 					selectedIconPath: "account-fill",
 					text: '我的',
-					count: 23,
-					isDot: false,
 					customIcon: false,
 				},
 			],

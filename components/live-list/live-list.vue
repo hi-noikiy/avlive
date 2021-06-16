@@ -3,8 +3,8 @@
 		<view class="live-item" v-for="(item, index) in liveList" @click="liveroom(item.id)">
 			<image class="bg" :src="item.image"></image>
 			<view class="info">
-				<image src="../../pages/users/static/1.png"></image>
-				<view>安妮爱主持</view>
+				<image :src="item.user_avatar"></image>
+				<view>{{item.user_nickname}}</view>
 			</view>
 		</view>
 	</view>

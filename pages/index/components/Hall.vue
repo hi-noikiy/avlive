@@ -36,7 +36,7 @@
 			<view class="list_item" v-for="(item,index) in list" :key="index"  @click="see(item)">
 				<view class="title">招标</view>
 				<view class="info">{{item.desc}}</view>
-				<view class="price">￥{{item.pay_num == 0 ? item.pay_price : item.pay_num}}</view>
+				<view class="price">￥{{item.pay_num == 0 || item.diff_false ? item.pay_price : item.pay_num}}</view>
 				<view class="num">{{item.order_count}}个投标</view>
 				<view class="end-time" v-if="!item.diff_false">截止日还剩{{item.diff_day}}天{{item.diff_hour}}个小时</view>
 				<view class="end-time" v-else>已过期</view>

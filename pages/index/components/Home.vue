@@ -60,11 +60,11 @@
 				<swiper-item class="swiper-item" v-for="(item, index) in list3" :key="index">
 						 <template v-if="index==0">
 						 	<!-- 视频 -->
-						 	<video-list :videoList="data_list"></video-list>
+						 	<video-list :videoList="video_list"></video-list>
 						 </template>
 						<template v-else-if="index==1">
 							<!-- 音频 -->
-							<audio-list :audioList="data_list"></audio-list>
+							<audio-list :audioList="audio_list"></audio-list>
 						</template>
 				</swiper-item>
 			 </swiper>
@@ -139,14 +139,16 @@
 				// 当前页码
 				page: 1,
 				// 当前选中的作品分类id
-				menu_id: ''
+				menu_id: '',
+				// 关注，视频、音频
+				video_list: [],
+				audio_list: []
 			};
 		},
 		created() {
 			this.getDemandForm();
 		},
 		mounted() {
-			this.initData();
 			uni.getSystemInfo({
 			    success:  res=> {
 					this.windowHeight=res.windowHeight;
@@ -206,6 +208,8 @@
 				getDemandForm().then(res => {
 					that.demand_form = res.data.demand_form;
 					that.menu_id = res.data.demand_form[0].id;
+					
+					that.initData();
 				})
 			},
 			// 获取数据
@@ -230,10 +234,27 @@
 					}
 					getLiveRoomList(data).then(res => {
 						that.data_list = res.data.list;
-						console.log(res.data.list)
 					})
 				} else if (type == 4) {
-					// 关注
+					// 关注 视频
+					var vdata = {
+						'type': 1,
+						'follow': true,
+						'page':that.page
+					}
+					getHomeData(vdata).then(res => {
+						that.video_list = res.data.list;
+						
+						// 关注 音频
+						var adata = {
+							'type': 2,
+							'follow': true,
+							'page':that.page
+						}
+						getHomeData(adata).then(res => {
+							that.audio_list = res.data.list;
+						})
+					})
 				}
 			},
 			// 初始化数据
