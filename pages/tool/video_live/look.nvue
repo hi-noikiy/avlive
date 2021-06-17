@@ -17,7 +17,7 @@
 					<image class="author-l-head" :src="anchorInfo.avatar"></image>
 					<view class="author-l-info">
 						<text class="author-l-info-name">{{anchorInfo.nickname}}</text>
-						<text class="author-l-info-zan">432本场点赞</text>
+						<text class="author-l-info-zan">520本场点赞</text>
 					</view>
 				</view>
 				<text class="author-r" @click="userFollow()">{{isFollow == 0 ? '关注' : '已关注'}}</text>
@@ -32,13 +32,10 @@
 		</view>
 		<scroll-view class="msgs" id="msgs" :scroll-y="true" :show-scrollbar="false">
 			<view class="msg" v-for="(item, index) in msgAll">
-				<block v-if="item.type == 'msg'">
-					<text class="uname">{{item.nickname}}：</text>
-					<text class="umsg">{{item.msg}}</text>
-				</block>
-			</view>
-			<view class="msg">
-				<text class="umsg">xxx进入了直播间</text>
+				<text class="uname" v-if="item.type == 'msg'">{{item.nickname}}：</text>
+				<text class="umsg" v-if="item.type == 'msg'">{{item.msg}}</text>
+				<text class="enter-msg" v-if="item.type == 'enter'">{{item.msg}}</text>
+				<text class="logout-msg" v-if="item.type == 'logout'">{{item.msg}}</text>
 			</view>
 		</scroll-view>
 		<view class="bottom">
@@ -175,7 +172,7 @@
 			uni.onSocketOpen(function (res) {
 				console.log('WebSocket连接已打开！');
 				// 发送进入聊天室提醒
-				_this.send('enter', '{"roomId":"1","msg":"xxx进入了直播间"}')
+				_this.send('enter', '{"roomId":"1","nickname":"'+_this.userInfo.nickname+'"}')
 				// 开启心跳监听
 				_this.heartbeat()
 			});
@@ -199,7 +196,9 @@
 			});
 			uni.onSocketMessage(function (res) {
 				var datas = JSON.parse(res.data);
+				var msgData = JSON.parse(datas.data);
 				console.log(datas);
+				console.log(msgData);
 				switch(datas.type) {
 					case 'endLive':
 						uni.showToast({
@@ -211,14 +210,13 @@
 						// })
 					break;
 				    case 'enter':
-						_this.msgAll.push('欢迎：'+datas.data);
+						_this.msgAll.push(msgData);
 				    break;
 				    case 'logout':
-				        _this.msgAll.push(datas.data);
+				        _this.msgAll.push(msgData);
 				    break;
 					case 'msg':
-						console.log(datas.data);
-					    _this.msgAll.push(datas.data);
+					    _this.msgAll.push(msgData);
 					break;
 					case 'gift':
 						uni.showToast({
@@ -305,8 +303,6 @@
 				this.send('msg', '{"roomId":"1", "msg":"'+this.msg+'", "nickname":"'+this.userInfo.nickname+'"}');
 			},
 			send(type, data) {
-				// var data = JSON.parse(data);
-				// data.userToken = store.state.app.token;
 				var _this = this;
 				var data = JSON.stringify(data);
 				uni.sendSocketMessage({

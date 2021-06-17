@@ -38,23 +38,28 @@
 						<image src="/static/images/circle_comment.png"></image>
 						<view>{{item.comment_num}}</view>
 					</view>
-					<view class="share ico">
+					<view class="share ico" @click="showShare(true)">
 						<image src="/static/images/circle_share.png"></image>
 						<view>{{item.forward_num}}</view>
 					</view>
 				</view>
 			</view>
 		</view>
+		<share-box ref="shareBox"></share-box>
 	</view>
 </template>
 
 <script>
+	import shareBox from '@/components/shareBox/shareBox';
 	import {
 		getCircleList,
 		userFollow,
 		circleLike
 	} from '@/api/liveApp.js';
 	export default {
+		components: {
+			'share-box': shareBox
+		},
 		data() {
 			return {
 				uid: '',
@@ -129,6 +134,9 @@
 						})
 					}
 				})
+			},
+			showShare(bool) {
+				this.$refs.shareBox.showShare(bool);
 			}
 		}
 	}

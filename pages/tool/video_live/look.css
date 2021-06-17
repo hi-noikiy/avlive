@@ -120,6 +120,17 @@
 	color: #FFFFFF;
 }
 
+.enter-msg {
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FE3149;
+}
+.logout-msg {
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FE3149;
+}
+
 .bottom {
 	position: fixed;
 	flex-direction: row;

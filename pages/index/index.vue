@@ -144,5 +144,11 @@
 </script>
 
 <style>
-
+	/deep/ .u-tabbar__content {
+		height: 120rpx!important;
+	}
+	/deep/ .u-icon__img {
+		width: 70rpx!important;
+		height: 70rpx!important;
+	}
 </style>

@@ -15,16 +15,21 @@
 				<image class="icon" @click="play(item.file)" src="../../static/images/audio_player.png"></image>
 				<image class="icon" src="../../static/images/audio_love.png"></image>
 				<image class="icon" src="../../static/images/audio_price.png"></image>
-				<image class="icon" src="../../static/images/audio_share.png"></image>
+				<image class="icon" src="../../static/images/audio_share.png" @click="showShare(true)"></image>
 			</view>
 		</view>
+		<share-box ref="shareBox"></share-box>
 	</view>
 </template>
 
 <script>
+	import shareBox from '@/components/shareBox/shareBox';
 	export default {
 		name:"audio-list",
 		props: ['audioList'],
+		components: {
+			'share-box': shareBox
+		},
 		data() {
 			return {
 				// 播放器
@@ -66,6 +71,9 @@
 				  console.log(res.errMsg);
 				  console.log(res.errCode);
 				});
+			},
+			showShare(bool) {
+				this.$refs.shareBox.showShare(bool);
 			}
 		}
 	}

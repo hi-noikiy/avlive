@@ -41,7 +41,7 @@
 							<image class="operation-pinglun" src="../../static/images/video_pinglun.png"></image>
 							<text class="operation-txt">评论</text>
 						</view>
-						<view class="operation-item">
+						<view class="operation-item" @click="showShare(true)">
 							<image class="operation-zhuanfa" src="../../static/images/video_zhuanfa.png"></image>
 							<text class="operation-txt">转发</text>
 						</view>
@@ -49,15 +49,20 @@
 				</view>
 			</swiper-item>
 		</swiper>
+		<share-box ref="shareBox"></share-box>
 	</view>
 </template>
 
 <script>
+	import shareBox from '@/components/shareBox/shareBox';
 	import {
 		getWorksVideoList,
 		worksLike
 	} from '@/api/liveApp.js';
 	export default {
+		components: {
+			'share-box': shareBox
+		},
 		data() {
 			return {
 				emulator_Height: 0,
@@ -175,20 +180,22 @@
 			},
 			// 视频点赞
 			like(index) {
-				console.log('like');
 				// 获取视频id
 				var id = this.vlist[index].id;
 				var isLike = this.vlist[index].isLike;
 				var operation = isLike ? 0 : 1;
 				var data = {
-					id: id,
+					works_id: id,
 					operation: operation
 				};
 				var that = this;
 				worksLike(data).then(res => {
-					console.log(res)
 					that.vlist[index].isLike = !isLike;
 				});
+			},
+			// 分享
+			showShare(bool) {
+				this.$refs.shareBox.showShare(bool);
 			}
 		}
 	}

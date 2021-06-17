@@ -16,12 +16,14 @@
 			</view>
 		</view>
 		<scroll-view class="msgs" id="msgs" :scroll-y="true" :show-scrollbar="false">
-			<view class="msg" v-for="(item, index) in msgAll">
-				<text class="uname">测试：</text>
-				<text class="umsg">{{item}}</text>
-			</view>
 			<view class="msg">
 				<text class="umsg" @click="st()">开始直播</text>
+			</view>
+			<view class="msg" v-for="(item, index) in msgAll">
+				<text class="uname" v-if="item.type == 'msg'">{{item.nickname}}：</text>
+				<text class="umsg" v-if="item.type == 'msg'">{{item.msg}}</text>
+				<text class="enter-msg" v-if="item.type == 'enter'">{{item.msg}}</text>
+				<text class="logout-msg" v-if="item.type == 'logout'">{{item.msg}}</text>
 			</view>
 		</scroll-view>
 	</view>
@@ -62,19 +64,19 @@
 			});
 			uni.onSocketMessage(function (res) {
 				var datas = JSON.parse(res.data);
+				var msgData = JSON.parse(datas.data);
 				switch(datas.type) {
 					// 有人加入直播间
 					case 'enter':
-						_this.msgAll.push('欢迎：'+datas.data);
+						_this.msgAll.push(msgData);
 					break;
 					// 有人退出直播间
 					case 'logout':
-						_this.msgAll.push(datas.data);
+						_this.msgAll.push(msgData);
 					break;
 					// 直播间消息
 					case 'msg':
-						console.log(datas.data);
-						_this.msgAll.push(datas.data);
+						_this.msgAll.push(msgData);
 					break;
 					// 直播间礼物
 					case 'gift':
@@ -84,7 +86,7 @@
 					break;
 					// 主播心跳检测
 					case 'ping':
-						console.log('pong')
+						// console.log('pong')
 					break;
 					// 直播间用户数量
 					case 'userNum':
@@ -271,5 +273,14 @@
 		font-weight: bold;
 		color: #FFFFFF;
 	}
-	
+	.enter-msg {
+		font-size: 20rpx;
+		font-weight: bold;
+		color: #FE3149;
+	}
+	.logout-msg {
+		font-size: 20rpx;
+		font-weight: bold;
+		color: #FE3149;
+	}
 </style>

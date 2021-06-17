@@ -13,7 +13,7 @@
 				>
 				<view class="">
 					<view class="badge-button">
-						{{value}}
+						{{currentTime}}/{{countTime}}
 					</view>
 				</view>
 				</u-slider>
@@ -32,7 +32,7 @@
 				<image src="../../static/images/audio-download.png"></image>
 				<text>下载</text>
 			</view>
-			<view class="b">
+			<view class="b" @click="showShare(true)">
 				<image src="../../static/images/audio-fenxiang.png"></image>
 				<text>分享</text>
 			</view>
@@ -49,19 +49,25 @@
 				<text>点赞</text>
 			</view>
 		</view>
+		<share-box ref="shareBox"></share-box>
 	</view>
 </template>
 
 <script>
+	import shareBox from '@/components/shareBox/shareBox';
 	import {
 		getWorksDetail
 	} from '@/api/liveApp';
 	export default {
+		components: {
+			'share-box': shareBox
+		},
 		data() {
 			return {
 				innerAudioContext: '',
 				paused: '',
-				value: '1:58/9:58',
+				currentTime: '1:58',
+				countTime: '9:58',
 				row: []
 			}
 		},
@@ -76,13 +82,27 @@
 				that.innerAudioContext.src = that.row.file;		//播放地址
 				that.innerAudioContext.autoplay = true;			//自动播放
 				that.paused = that.innerAudioContext.paused;	//播放状态
-				that.innerAudioContext.offTimeUpdate((res) => {
-					console.log(res)
+				that.innerAudioContext.onPlay(() => {
+					that.currentTime = '0:00';
+					that.countTime = that.sToIs(that.innerAudioContext.duration);
 				})
+				that.innerAudioContext.onTimeUpdate(() => {
+					that.currentTime = that.sToIs(that.innerAudioContext.currentTime);
+				})
+				// that.innerAudioContext.offTimeUpdate((res) => {
+				// 	console.log(res)
+				// })
 			})
 		},
 		methods: {
-			
+			showShare(bool) {
+				this.$refs.shareBox.showShare(bool);
+			},
+			// 秒数转时分
+			sToIs(s) {
+				let num = (s.toFixed(0) / 60);
+				return num.toFixed(2).replace('.', ':');
+			}
 		}
 	}
 </script>
