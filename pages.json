@@ -229,6 +229,24 @@
             }
             
         }
+        ,{
+            "path" : "pages/demand/uploading",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "待上传",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/demand/download",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "待下载",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	// "tabBar": {
 	// 	"color": "#8a8a8a",

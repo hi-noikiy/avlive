@@ -14,7 +14,7 @@
 			<view class="items">
 				<image src="../../../static/images/center_a.png" @click="gosure"><!--待确认--></image>
 				<image src="../../../static/images/center_b.png" @click="upload"><!--待上传--></image>
-				<image src="../../../static/images/center_c.png"><!--待下载--></image>
+				<image src="../../../static/images/center_c.png" @click="download"><!--待下载--></image>
 				<image src="../../../static/images/center_d.png" @click="complete"><!--已完成--></image>
 				<image src="../../../static/images/center_e.png" @click="partake"><!--我参与的--></image>
 			</view>
@@ -102,11 +102,14 @@
 			},
 			// 待上传
 			upload(){
-				// uni.navigateTo({
-				// 	url:'/pages/liveApp/upload',
-				// })
 				uni.navigateTo({
-					url: '/pages/demand/demand'
+					url: '/pages/demand/uploading'
+				})
+			},
+			// 待下载
+			download(){
+				uni.navigateTo({
+					url: '/pages/demand/download'
 				})
 			},
 			// 已完成

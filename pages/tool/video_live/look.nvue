@@ -100,7 +100,8 @@
 		getDemandForm,
 		getLiveRoomDetail,
 		getGift,
-		userFollow
+		userFollow,
+		giveGift
 	} from '@/api/liveApp.js';
 	export default {
 		data() {
@@ -281,7 +282,14 @@
 					})
 					return false;
 				}
-				
+				var data = {
+					gift_id: this.gift_id,
+					anchor_id: this.row.anchor_id
+				};
+				var that = this;
+				giveGift(data).then(res => {
+					
+				})
 			},
 			// 心跳检测,两秒一次
 			heartbeat() {

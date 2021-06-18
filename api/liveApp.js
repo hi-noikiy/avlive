@@ -50,6 +50,12 @@ export function getLiveRoomDetail(data){
 export function getGift(data){
 	return request.get('v3/gift', data);
 }
+/**
+ * 直播间赠送礼物
+ */
+export function giveGift(data){
+	return request.post('v3/giveGift', data);
+}
 
 /**
  * 用户关注
@@ -100,6 +106,12 @@ export function takeOffer(data){
 export function myTakeOffer(data){
 	return request.get('demand/my_take_offer', data);
 }
+/**
+ * 下载并确认
+ */
+export function payMaker(data){
+	return request.post('demand/pay_maker', data);
+}
 
 /**
  * 音色要求
@@ -125,4 +137,15 @@ export function saveCircle(data){
  */
 export function circleLike(data){
 	return request.get('v3/circleLike', data);
+}
+
+
+/**
+ * 支付订单
+ */
+export function checkOrder(data){
+	return request.post('demand/check_order', data);
+}
+export function payOrder(data){
+	return request.post('demand/pay_order', data);
 }

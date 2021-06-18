@@ -22,7 +22,7 @@
 		</view>
 		<view class="control">
 			<image src="../../static/images/audio-front.png"></image>
-			<view class="oper">
+			<view class="oper" @click="paus">
 				<image src="../../static/images/audio-puse.png"></image>
 			</view>
 			<image src="../../static/images/audio-after.png"></image>
@@ -66,8 +66,9 @@
 			return {
 				innerAudioContext: '',
 				paused: '',
-				currentTime: '1:58',
-				countTime: '9:58',
+				isPause: true,
+				currentTime: '',
+				countTime: '',
 				row: []
 			}
 		},
@@ -89,9 +90,6 @@
 				that.innerAudioContext.onTimeUpdate(() => {
 					that.currentTime = that.sToIs(that.innerAudioContext.currentTime);
 				})
-				// that.innerAudioContext.offTimeUpdate((res) => {
-				// 	console.log(res)
-				// })
 			})
 		},
 		methods: {
@@ -100,8 +98,26 @@
 			},
 			// 秒数转时分
 			sToIs(s) {
-				let num = (s.toFixed(0) / 60);
-				return num.toFixed(2).replace('.', ':');
+				if(s < 60) {
+					s = s.toFixed(0);
+					if(s < 10) {
+						return '0:0'+s;
+					} else {
+						return '0:'+s;
+					}
+				} else {
+					let num = (s.toFixed(0) / 60);
+					return num.toFixed(2).replace('.', ':');
+				}
+			},
+			// 暂停或继续
+			paus() {
+				if(this.isPause) {
+					this.innerAudioContext.pause();
+				} else {
+					this.innerAudioContext.play();
+				}
+				this.isPause = !this.isPause;
 			}
 		}
 	}

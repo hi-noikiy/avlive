@@ -58,10 +58,8 @@
 		// 获取数据
 		onLoad(options) {
 			var that = this;
-			that.uid = options.uid;
 			that.order_id = options.order_id;
 			var data = {
-				uid: options.uid,
 				order_id: options.order_id
 			};
 			getUserOrderList(data).then(res => {

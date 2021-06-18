@@ -2,66 +2,132 @@
 	<view class="page">
 		<view class="list introduce">
 			<view class="title">需求描述</view>
-			<view class="info">需要录制一篇多人剧本，要求至少有五个角色 出演，可以临时发挥</view>
+			<view class="info">{{order_info.desc}}</view>
 			<view class="content">
 				<span>需要：</span>
-				<view>男声</view>
-				<view>女生</view>
-				<view>老年人</view>
+				<view v-for="(item, index) in order_info.timbre_type_name">{{item}}</view>
 			</view>
 		</view>
-		<view class="list item">
+		<block v-if="order_info.paid != 1">
+		<view class="list item" v-for="(item, index) in order_list">
 			<view class="c1">
 				<view class="l">
-					<image src="../users/static/4.png" class="head"></image>
-					<view class="name">安妮爱主持</view>
+					<image :src="item.user_avatar" class="head"></image>
+					<view class="name">{{item.user_nickname}}</view>
 				</view>
 				<view class="r">
 					<image src="../../static/images/pinglun_icon.png" class="contact-icon"></image>
 					<view class="contact">联系ta</view>
 				</view>
 			</view>
-			<view class="c2">报价<span>18000</span>元，周期<span>16</span>天</view>
-			<view class="c3">有声读物录制专业10年，擅长各类有声录制， 欢迎联系！</view>
+			<view class="c2">报价<span>{{item.pay_price}}</span>元，周期<span>{{item.cycle_value}}</span>{{item.cycle_type}}</view>
+			<view class="c3">{{item.remake}}</view>
 			<view class="c4">
-				<view class="time">报价时间：2021年4月16日</view>
-				<view class="btn">选他并支付</view>
+				<view class="time">报价时间：{{item.add_time}}</view>
+				<view class="btn" v-if="order_info.order_message == 1" @click="toPay(item.id)">选他并支付</view>
+				<view class="btn" v-else>修改报价</view>
 			</view>
 		</view>
-		<view class="list item">
-			<view class="c1">
-				<view class="l">
-					<image src="../users/static/4.png" class="head"></image>
-					<view class="name">安妮爱主持</view>
-				</view>
-				<view class="r">
-					<image src="../../static/images/pinglun_icon.png" class="contact-icon"></image>
-					<view class="contact">联系ta</view>
-				</view>
-			</view>
-			<view class="c2">报价<span>18000</span>元，周期<span>16</span>天</view>
-			<view class="c3">有声读物录制专业10年，擅长各类有声录制， 欢迎联系！</view>
-			<view class="c4">
-				<view class="time">报价时间：2021年4月16日</view>
-				<view class="btn">选他并支付</view>
-			</view>
+		<view class="btns" v-if="order_info.order_message == 1">
+			<view class="btn" @click="edit">修改订单</view>
+			<view class="btn" @click="cancel">取消订单</view>
 		</view>
-		<view class="btns">
-			<view class="btn">修改订单</view>
-			<view class="btn">取消订单</view>
-		</view>
+		</block>
 	</view>
 </template>
 
 <script>
+	import {
+		getUserOrderList,
+		cancelOrder,
+		payOrder,
+		checkOrder
+	} from '@/api/liveApp.js';
 	export default {
 		data() {
 			return {
-				
+				order_id: '',
+				order_info: [],
+				order_list: []
 			}
 		},
+		onLoad(options) {
+			var that = this;
+			that.order_id = options.order_id;
+			var data = {
+				order_id: options.order_id
+			};
+			getUserOrderList(data).then(res => {
+				that.order_info = res.data.order_info;
+				that.order_info.timbre_type_name = res.data.order_info.timbre_type_name.split(' ');
+				
+				that.order_list = res.data.order_list;
+			})
+		},
 		methods: {
-			
+			// 取消订单
+			cancel() {
+				var that = this;
+				uni.showModal({
+					title: '提示',
+					content: '您确定要取消订单吗？',
+					success: function (res) {
+						if (res.confirm) {
+							var data = {
+								order_id: that.order_info.order_id
+							};
+							cancelOrder(data).then(result => {
+								uni.showToast({
+									title: res.data.msg
+								})
+								if(result.data.status == 200) {
+									setTimeout(()=>{
+										// 跳转到指定组件
+										uni.switchTab({
+											url: '/pages/index/components/Hall'
+										})
+									},1000)
+								}
+							})
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			// 修改订单
+			edit() {
+				uni.navigateTo({
+					url: '/pages/liveApp/hall/index?order_id='+this.order_id
+				})
+			},
+			// 支付
+			toPay(id) {
+				checkOrder({
+					id: id,
+					order_id: this.order_id
+				}).then(res => {
+					if(res.status == 200) {
+						console.log('checkOrder 200')
+						payOrder({
+							order_id: this.order_id,
+							pay_type: 'yue'
+						}).then(res => {
+							console.log(res.msg)
+							uni.showToast({
+								title: res.msg,
+								icon: 'none'
+							})
+							if(res.status == 200) {
+								console.log('待上传')
+								// uni.navigateTo({
+									
+								// })
+							}
+						})
+					}
+				})
+			}
 		}
 	}
 </script>
