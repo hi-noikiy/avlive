@@ -24,11 +24,11 @@
 					<image src="../../../static/images/center_c.png"></image>
 					<text>待下载</text>
 				</view>
-				<view class="item" @click="complete">
+				<view class="item"><!--  click="complete" -->
 					<image src="../../../static/images/center_d.png"></image>
 					<text>已完成</text>
 				</view>
-				<view class="item" @click="partake">
+				<view class="item"><!--  click="partake" -->
 					<image src="../../../static/images/center_e.png"></image>
 					<text>我参与的</text>
 				</view>

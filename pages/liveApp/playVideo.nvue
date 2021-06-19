@@ -19,6 +19,7 @@
 						:controls="false"
 						:show-play-btn="false"
 						:enable-progress-gesture="false"
+						:show-loading="false"
 						:id="'myVideo' + index" :ref="'myVideo' + index"
 						:poster="item.image"
 						:src="item.file"
