@@ -142,7 +142,7 @@
 	}
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 	.header {
 		display: flex;
 		justify-content: space-between;
@@ -166,10 +166,12 @@
 		}
 	}
 	.list {
+		position: absolute;
+		margin-left: 30rpx;
 		width: 690rpx;
-		margin: 0 auto;
 		display: flex;
 		flex-direction: column;
+		margin-bottom: 120rpx;
 	}
 	.item {
 		width: 100%;

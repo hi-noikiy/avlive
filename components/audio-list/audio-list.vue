@@ -12,7 +12,7 @@
 				</view>
 			</view>
 			<view class="r">
-				<image class="icon" @click="play(item.file)" src="../../static/images/audio_player.png"></image>
+				<image class="icon" src="../../static/images/audio_player.png"></image>
 				<image class="icon" src="../../static/images/audio_love.png"></image>
 				<image class="icon" src="../../static/images/audio_price.png"></image>
 				<image class="icon" src="../../static/images/audio_share.png" @click="showShare(true)"></image>
@@ -52,25 +52,25 @@
 				})
 			},
 			// 播放或暂停
-			play(src) {
-				const innerAudioContext = uni.createInnerAudioContext();
-				if(!this.player && !this.pause) {
-					innerAudioContext.autoplay = true;
-					innerAudioContext.src = 'https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-hello-uniapp/2cc220e0-c27a-11ea-9dfb-6da8e309e0d8.mp3';
-					innerAudioContext.onPlay(() => {
-					  this.player = true;
-					  console.log('开始播放')
-					});
-				} else {
-					innerAudioContext.onStop(() => {
-						console.log('已暂停')
-					})
-				}
+			play(src, index) {
+				// const innerAudioContext = uni.createInnerAudioContext();
+				// if(!this.player && !this.pause) {
+				// 	innerAudioContext.autoplay = true;
+				// 	innerAudioContext.src = src;
+				// 	innerAudioContext.onPlay(() => {
+				// 	  this.player = true;
+				// 	  console.log('开始播放')
+				// 	});
+				// } else {
+				// 	innerAudioContext.onStop(() => {
+				// 		console.log('已暂停')
+				// 	})
+				// }
 				
-				innerAudioContext.onError((res) => {
-				  console.log(res.errMsg);
-				  console.log(res.errCode);
-				});
+				// innerAudioContext.onError((res) => {
+				//   console.log(res.errMsg);
+				//   console.log(res.errCode);
+				// });
 			},
 			showShare(bool) {
 				this.$refs.shareBox.showShare(bool);

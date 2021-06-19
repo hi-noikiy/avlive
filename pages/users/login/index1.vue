@@ -1,41 +1,88 @@
 <template>
-	<view class="">
-		<image src="/static/images/loginbg.png" class="bg"></image>
-		<view class="content">
-			<image src="/static/images/logo2.png" class="logo"></image>
-			<view class="phone">
-				<text class="l">+86</text>
-				<u-line color="#FFFFFF" border-style="dashed" length="50rpx" style="transform: rotate(90deg);" />
-				<input type="text" v-model="account" placeholder="输入手机号码" />
-			</view>
-			<view class="code" v-if="current==0">
-				<input type="text" v-model="captcha" placeholder="输入验证码" />
-				<view class="send-sms"  @click="code">获取验证码</view>
-			</view>
-			<view class="password" v-if="current==1">
-				<input type="password" v-model="password" placeholder="输入登录密码" />
-			</view>
-			<view class="login" @click="loginMobile" v-if="current === 0">立即登录</view>
-			<view class="login" @click="submit" v-if="current !== 0">立即登录</view>
-			<view class="xy">
-				<u-checkbox-group>
-					<u-checkbox
-						v-model="xy"
-						shape="square"
-						active-color="#000000"
-						name="《平台使用协议》"
-					>《平台使用协议》</u-checkbox>
-				</u-checkbox-group>
-			</view>
-			<view class="qt">其他登录方式</view>
-			<view class="qts">
-				<image src="/static/images/login-wx.png" style="margin-right: 45rpx;" @click="wxLogin"></image>
-				<image src="/static/images/login-phone.png" @click="typeChange"></image>
-			</view>
+	<view class="login-wrapper">
+		<view class="shading">
+			<image :src="logoUrl" v-if="logoUrl" />
+			<image src="/static/images/logo2.png" v-else />
 		</view>
+		<view class="whiteBg" v-if="formItem === 1">
+			<view class="list" v-if="current !== 1">
+				<form @submit.prevent="submit">
+					<view class="item">
+						<view class="acea-row row-middle">
+							<image src="/static/images/phone_1.png" style="width: 24rpx; height: 34rpx;"></image>
+							<input type="text" placeholder="输入手机号码" v-model="account" required />
+						</view>
+					</view>
+					<view class="item">
+						<view class="acea-row row-middle">
+							<image src="/static/images/code_1.png" style="width: 28rpx; height: 32rpx;"></image>
+							<input type="password" placeholder="填写登录密码" v-model="password" required />
+						</view>
+					</view>
+				</form>
+				<!-- <navigator class="forgetPwd" hover-class="none" url="/pages/users/retrievePassword/index">
+					<span class="iconfont icon-wenti"></span>忘记密码
+				</navigator> -->
+			</view>
+			<view class="list" v-if="current !== 0 || appLoginStatus || appleLoginStatus">
+				<view class="item">
+					<view class="acea-row row-middle">
+						<image src="/static/images/phone_1.png" style="width: 24rpx; height: 34rpx;"></image>
+						<input type="text" placeholder="输入手机号码" v-model="account" />
+					</view>
+				</view>
+				<view class="item">
+					<view class="acea-row row-middle">
+						<image src="/static/images/code_2.png" style="width: 28rpx; height: 32rpx;"></image>
+						<input type="text" placeholder="填写验证码" class="codeIput" v-model="captcha" />
+						<button class="code" :disabled="disabled" :class="disabled === true ? 'on' : ''" @click="code">
+							{{ text }}
+						</button>
+					</view>
+				</view>
+				<view class="item" v-if="isShowCode">
+					<view class="acea-row row-middle">
+						<image src="/static/images/code_2.png" style="width: 28rpx; height: 32rpx;"></image>
+						<input type="text" placeholder="填写验证码" class="codeIput" v-model="codeVal" />
+						<view class="code" @click="again"><img :src="codeUrl" /></view>
+					</view>
+				</view>
+			</view>
+			<view class="logon" @click="loginMobile" v-if="current !== 0">登录</view>
+			<view class="logon" @click="submit" v-if="current === 0">登录</view>
+			<!-- #ifndef APP-PLUS -->
+			<view class="tips">
+				<view v-if="current==0" @click="current = 1">快速登录</view>
+				<view v-if="current==1" @click="current = 0">账号登录</view>
+			</view>
+			<!-- #endif -->
+			<!-- #ifdef APP-PLUS -->
+			<view class="appLogin" v-if="!appLoginStatus && !appleLoginStatus">
+				<view class="hds">
+					<span class="line"></span>
+					<p>其他方式登录</p>
+					<span class="line"></span>
+				</view>
+				<view class="btn-wrapper">
+					<view class="btn wx" @click="wxLogin">
+						<span class="iconfont icon-s-weixindenglu1"></span>
+					</view>
+					<view class="btn mima" v-if="current == 1" @click="current =0">
+						<span class="iconfont icon-s-mimadenglu1"></span>
+					</view>
+					<view class="btn yanzheng" v-if="current == 0" @click="current =1">
+						<span class="iconfont icon-s-yanzhengmadenglu1"></span>
+					</view>
+					<view class="apple-btn" @click="appleLogin" v-if="appleShow">
+						<view class="iconfont icon-s-pingguo"></view>通过Apple登录
+					</view>
+				</view>
+			</view>
+			<!-- #endif -->
+		</view>
+		<view class="bottom"></view>
 	</view>
 </template>
-
 <script>
 	import dayjs from "@/plugin/dayjs/dayjs.min.js";
 	import {updateHXAccount} from '@/api/webIM.js'
@@ -78,7 +125,6 @@
 		mixins: [sendVerifyCode],
 		data: function() {
 			return {
-				xy: false,
 				navList: ["快速登录", "账号登录"],
 				current: 1,
 				account: "",
@@ -122,13 +168,6 @@
 			this.getLogoImage();
 		},
 		methods: {
-			typeChange() {
-				if(this.current == 0) {
-					this.current = 1;
-				} else {
-					this.current = 0;
-				}
-			},
 			// 苹果登录
 			appleLogin() {
 				let self = this
@@ -553,125 +592,173 @@
 		}
 	};
 </script>
-
-<style lang="scss">
-	.bg {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 750rpx;
-		height: 100vh;
-		z-index: 1;
+<style>
+	page {
+		background: #fff;
 	}
-	.content {
-		position: absolute;
-		z-index: 1;
-		width: 750rpx;
-		height: 100vh;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		.logo {
-			width: 162rpx;
-			height: 162rpx;
-			margin-top: 175rpx;
+</style>
+<style lang="scss">
+	.appLogin {
+		margin-top: 60rpx;
+
+		.hds {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 24rpx;
+			color: #B4B4B4;
+
+			.line {
+				width: 68rpx;
+				height: 1rpx;
+				background: #CCCCCC;
+			}
+
+			p {
+				margin: 0 20rpx;
+			}
 		}
-		.phone {
-			width: 566rpx;
-			height: 85rpx;
-			background-color: rgba($color: #626262, $alpha: 0.15);
-			margin-top: 168rpx;
-			border-radius: 85rpx;
+
+		.btn-wrapper {
 			display: flex;
 			align-items: center;
-			.l {
-				font-size: 32rpx;
-				font-family: SourceHanSansCN;
-				font-weight: 400;
-				color: #FFFFFF;
-				padding-left: 32rpx;
+			justify-content: center;
+			margin-top: 30rpx;
+
+			.btn {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 68rpx;
+				height: 68rpx;
+				border-radius: 50%;
 			}
-			input {
-				width: 400rpx;
-			}
-		}
-		.code {
-			width: 566rpx;
-			height: 85rpx;
-			background-color: rgba($color: #626262, $alpha: 0.15);
-			margin-top: 47rpx;
-			border-radius: 85rpx;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			input {
-				padding-left: 50rpx;
-			}
-			.send-sms {
-				width: 160rpx;
-				height: 76rpx;
-				background: rgba($color: #141514, $alpha: 0.5);
-				border-radius: 76rpx;
-				margin-right: 10rpx;
-				font-size: 28rpx;
-				font-family: SourceHanSansCN;
-				font-weight: 400;
-				color: #F6F6F6;
-				line-height: 76rpx;
-				text-align: center;
-			}
-		}
-		.password {
-			width: 566rpx;
-			height: 85rpx;
-			background-color: rgba($color: #626262, $alpha: 0.15);
-			margin-top: 47rpx;
-			border-radius: 85rpx;
-			display: flex;
-			align-items: center;
-			input {
-				width: 520rpx;
-				padding-left: 50rpx;
-			}
-		}
-		.login {
-			width: 566rpx;
-			height: 85rpx;
-			background: rgba($color: #141514, $alpha: 0.5);
-			border-radius: 85rpx;
-			line-height: 85rpx;
-			text-align: center;
-			margin-top: 52rpx;
-			font-size: 36rpx;
-			font-family: SourceHanSansCN;
-			color: #F6F6F6;
-		}
-		.xy {
-			margin-top: 96rpx;
-			/deep/ .u-checkbox__label {
-				color: #FFFFFF!important;
+
+			.apple-btn {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 246rpx;
+				height: 66rpx;
+				margin-left: 30rpx;
+				background: #EAEAEA;
+				border-radius: 34rpx;
 				font-size: 24rpx;
-				font-family: Adobe Heiti Std;
-				margin-left: 0rpx;
-				padding-bottom: 2rpx;
+
+				.icon-s-pingguo {
+					color: #333;
+					margin-right: 10rpx;
+					font-size: 34rpx;
+				}
 			}
-			/deep/ .u-checkbox__icon-wrap--square {
-				width: 27rpx!important;
-				height: 27rpx!important;
+
+			.iconfont {
+				font-size: 40rpx;
+				color: #fff;
 			}
+
+			.wx {
+				margin-right: 30rpx;
+				background-color: #61C64F;
+			}
+
+			.mima {
+				background-color: #28B3E9;
+			}
+
+			.yanzheng {
+				background-color: #F89C23;
+			}
+
 		}
-		.qt {
-			font-size: 28rpx;
-			font-family: Adobe Heiti Std;
-			color: #FFFFFF;
-			margin-top: 95rpx;
+	}
+
+	.code img {
+		width: 100%;
+		height: 100%;
+	}
+
+	.acea-row.row-middle {
+		input {
+			margin-left: 20rpx;
+			display: block;
 		}
-		.qts {
+	}
+
+	.login-wrapper {
+		padding: 30rpx;
+
+		.shading {
 			display: flex;
-			margin-top: 49rpx;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+
+			/* #ifdef APP-VUE */
+			margin-top: 50rpx;
+			/* #endif */
+			/* #ifndef APP-VUE */
+
+			margin-top: 200rpx;
+			/* #endif */
+
+
 			image {
-				width: 72rpx;
-				height: 72rpx;
+				width: 180rpx;
+				height: 156rpx;
+			}
+		}
+
+		.whiteBg {
+			margin-top: 100rpx;
+
+			.list {
+				border-radius: 16rpx;
+				overflow: hidden;
+
+				.item {
+					border-bottom: 1px solid #F0F0F0;
+					background: #fff;
+
+					.row-middle {
+						position: relative;
+						padding: 16rpx 45rpx;
+
+						input {
+							flex: 1;
+							font-size: 28rpx;
+							height: 80rpx;
+						}
+
+						.code {
+							position: absolute;
+							right: 30rpx;
+							top: 50%;
+							color: #E93323;
+							font-size: 26rpx;
+							transform: translateY(-50%);
+						}
+					}
+				}
+			}
+
+			.logon {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 100%;
+				height: 86rpx;
+				margin-top: 80rpx;
+				background-color: $theme-color;
+				border-radius: 120rpx;
+				color: #FFFFFF;
+				font-size: 30rpx;
+			}
+
+			.tips {
+				margin: 30rpx;
+				text-align: center;
+				color: #999;
 			}
 		}
 	}

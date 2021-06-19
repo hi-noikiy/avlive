@@ -52,8 +52,23 @@
 			},
 			// 开启直播
 			startLive() {
-				uni.navigateTo({
-					url: './video_live/live'
+				var _this = this;
+				uni.request({
+					url: 'https://qyh.ugekeji.com/api/v3/createLiveRoom',
+					method: "POST",
+					header: {
+						'content-type': 'application/x-www-form-urlencoded',
+					},
+					success(res) {
+						if(res.data.status == 200) {
+							uni.navigateTo({
+								url: './video_live/live?id='+res.data.data.id+'&push_url='+res.data.data.push_url
+							})
+						}
+					},
+					fail() {
+						console.log('fail')
+					}
 				})
 			}
 		}

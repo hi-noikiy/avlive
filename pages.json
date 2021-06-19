@@ -172,14 +172,14 @@
 		}, {
 			"path": "pages/demand/employer",
 			"style": {
-				"navigationBarTitleText": "待确定的订单（雇主方）",
+				"navigationBarTitleText": "待确定的订单",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/demand/demand",
 			"style": {
-				"navigationBarTitleText": "待确定的订单（需求方）",
+				"navigationBarTitleText": "待确定的订单",
 				"enablePullDownRefresh": false
 			}
 
@@ -516,9 +516,7 @@
 						"navigationBarTitleText": "登录",
 						"app-plus": {
 							// #ifdef APP-PLUS
-							"titleNView": {
-								"type": "default"
-							}
+							"titleNView": false
 							// #endif
 						}
 					}

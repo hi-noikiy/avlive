@@ -17,7 +17,7 @@
 		</view>
 		<scroll-view class="msgs" id="msgs" :scroll-y="true" :show-scrollbar="false">
 			<view class="msg">
-				<text class="umsg" @click="st()">开始直播</text>
+				<text class="umsg" @click="star()">点此开始直播!</text>
 			</view>
 			<view class="msg" v-for="(item, index) in msgAll">
 				<text class="uname" v-if="item.type == 'msg'">{{item.nickname}}：</text>
@@ -42,8 +42,15 @@
 				userNum: 0,
 				// 消息列表
 				msgAll: [],
-				msg: ''
+				msg: '',
+				init: false
 			}
+		},
+		onLoad(options) {
+			this.id = options.id;
+			this.push_url = options.push_url;
+
+			
 		},
 		onReady() {
 			// 保持屏幕常亮
@@ -94,15 +101,16 @@
 					break;
 				}
 			});
+			// 开启心跳
+			_this.heartbeat()
+			_this.send('startLive', '{"roomId":"1","msg":"开始直播"}')
+			
 			
 			// 注意：需要在onReady中 或 onLoad 延时
-			_this.context = uni.createLivePusherContext("livePusher", this);
-			
-			// 开始直播
-			this.start();
+			this.context = uni.createLivePusherContext("livePusher", this);
 		},
 		methods: {
-			st() {
+			star(){
 				this.context.start({
 					success: (a) => {
 						console.log("livePusher.start:" + JSON.stringify(a));
@@ -110,7 +118,7 @@
 					fail: (err) => {
 						console.log('fail')
 					}
-				});
+				})
 			},
 			statechange(e) {
 			    // console.log("statechange:" + JSON.stringify(e));
@@ -130,28 +138,6 @@
 				_this.ping = setInterval(function(){
 					_this.send('ping', '心跳检测')
 				}, 2000)
-			},
-			start: function() {
-				var _this = this;
-				uni.request({
-					url: 'https://qyh.ugekeji.com/api/v3/createLiveRoom',
-					method: "POST",
-					header: {
-						'content-type': 'application/x-www-form-urlencoded',
-					},
-					success(res) {
-						_this.send('startLive', '{"roomId":"1","msg":"开始直播"}')
-						_this.heartbeat()
-						
-						if(res.data.status == 200) {
-							_this.id = res.data.data.id;
-							_this.push_url = res.data.data.push_url;
-						}
-					},
-					fail() {
-						console.log('fail')
-					}
-				})
 			},
 			close() {
 			    this.context.close({

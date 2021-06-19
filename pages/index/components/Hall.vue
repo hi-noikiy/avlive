@@ -1,9 +1,9 @@
 <template>
 	<view>
 		<u-navbar :is-back="false" back-text="返回" title="交易大厅">
-			<view class="slot-wrap ml-20">
+			<!-- <view class="slot-wrap ml-20">
 				<image class="top-search" src="../../../static/images/home_search.png"></image>
-			</view>
+			</view> -->
 			<view class="navbar-right mr-20" slot="right" @click="goForm">
 				创建需求单
 			</view>
@@ -12,16 +12,31 @@
 		<view class="trading-center">
 			<view class="title">交易中心</view>
 			<view class="items">
-				<image src="../../../static/images/center_a.png" @click="gosure"><!--待确认--></image>
-				<image src="../../../static/images/center_b.png" @click="upload"><!--待上传--></image>
-				<image src="../../../static/images/center_c.png" @click="download"><!--待下载--></image>
-				<image src="../../../static/images/center_d.png" @click="complete"><!--已完成--></image>
-				<image src="../../../static/images/center_e.png" @click="partake"><!--我参与的--></image>
+				<view class="item" @click="gosure">
+					<image src="../../../static/images/center_a.png"></image>
+					<text>待确认</text>
+				</view>
+				<view class="item" @click="upload">
+					<image src="../../../static/images/center_b.png"></image>
+					<text>待上传</text>
+				</view>
+				<view class="item" @click="download">
+					<image src="../../../static/images/center_c.png"></image>
+					<text>待下载</text>
+				</view>
+				<view class="item" @click="complete">
+					<image src="../../../static/images/center_d.png"></image>
+					<text>已完成</text>
+				</view>
+				<view class="item" @click="partake">
+					<image src="../../../static/images/center_e.png"></image>
+					<text>我参与的</text>
+				</view>
 			</view>
 		</view>
 		<!-- 筛选 -->
 		<view class="bg-white">
-			<span>排序</span>
+			<text>排序</text>
 			<easy-select
 				class="select"
 				ref="easySelect"
@@ -280,12 +295,18 @@
 			margin-top: 19rpx;
 			display: flex;
 			justify-content: space-between;
-			image{height: 100%;}
-			image:nth-child(1) {width: 72rpx;}
-			image:nth-child(2) {width: 72rpx;}
-			image:nth-child(3) {width: 74rpx;}
-			image:nth-child(4) {width: 71rpx;}
-			image:nth-child(5) {width: 95rpx;}
+			.item {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				image {
+					width: 72rpx;
+					height: 72rpx;
+				}
+				text {
+					color: #FFFFFF;
+				}
+			}
 		}
 	}
 	.bg-white {
@@ -294,12 +315,15 @@
 		margin-top: 40rpx;
 		padding-left: 60rpx;
 		line-height: 48rpx;
-		span {
+		text {
+			position: absolute;
+			z-index: 999;
 			font-size: 30rpx;
 			color: #000000;
 			padding-right: 24rpx;
 		}
 		.select {
+			margin-left: 70rpx;
 			width: 180rpx!important;
 			height: 48rpx!important;
 			border: 2rpx solid #5E5E5E;

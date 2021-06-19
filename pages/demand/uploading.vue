@@ -1,5 +1,6 @@
 <template>
 	<view class="page">
+		<l-file ref="lFile" @up-success="onSuccess"></l-file>
 		<view class="item" v-for="(item, index) in list" v-if="!item.diff_false">
 			<view class="title">{{item.desc}}</view>
 			<view class="select">
@@ -9,21 +10,24 @@
 			</view>
 			<view class="info">
 				<view class="show" @click="showDetail(item.order_id)" v-if="item.is_ovner == 1">查看</view>
-				<view class="show" @click="uploading()" v-if="item.is_ovner == 0">上传</view>
+				<view class="show" @tap="onUpload(item.order_id)" v-if="item.is_ovner == 0">上传</view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import lFile from '@/components/l-file/l-file';
 	import {
-		getOrderList
+		getOrderList,
+		saveOrder
 	} from '@/api/liveApp.js';
 	export default {
 		data() {
 			return {
 				page: 1,
-				list: []
+				list: [],
+				order_id: '',
 			}
 		},
 		onLoad() {
@@ -48,9 +52,44 @@
 					url: 'demand?order_id='+order_id
 				})
 			},
-			// 上传文件
-			uploading(){
-				
+			/* 上传 */
+			onUpload(order_id) {
+				this.order_id = order_id;
+				/**
+				 * currentWebview: 当前webview
+				 * url：上传接口地址
+				 * name：附件key,服务端根据key值获取文件流，默认file,上传文件的key
+				 * header: 上传接口请求头
+				 */
+				this.$refs.lFile.upload({
+					// #ifdef APP-PLUS
+					// nvue页面使用时请查阅nvue获取当前webview的api，当前示例为vue窗口
+					currentWebview: this.$mp.page.$getAppWebview(),
+					// #endif
+					url: 'http://qyh.ugekeji.com/api/v3/upload', //替换为你的
+					name: 'file'
+				});
+			},
+			onSuccess(res) {
+				var url = res.data.id;
+				var that = this;
+				var data = {
+					order_id: that.order_id,
+					download_link: url
+				};
+				saveOrder(data).then(res => {
+					if(res.status == 200) {
+						uni.showToast({
+							title: '上传成功',
+							icon: 'none'
+						});
+						setTimeout(()=>{
+							uni.navigateTo({
+								url: '/pages/demand/download'
+							})
+						}, 1000)
+					}
+				})
 			}
 		}
 	}

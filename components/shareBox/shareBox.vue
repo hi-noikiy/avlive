@@ -1,13 +1,13 @@
 <template>
 	<view>
-		<u-mask :show="shareBox" @click="shareBox = false" :custom-style="{background: 'rgba(0, 0, 0, 0.5)'}">
-			<view class="share-box" v-if="shareBox" @tap.stop>
+		<!-- <u-mask :show="shareBox" @click="shareBox = false" :custom-style="{background: 'rgba(0, 0, 0, 0.5)'}"> -->
+			<!-- <view class="share-box" v-if="shareBox" @tap.stop>
 				<view class="share-item" v-for="(item, index) in list" @click="share">
 					<image class="share-item-image" :src="item.image"></image>
 					<text class="share-item-text">{{item.title}}</text>
 				</view>
-			</view>
-		</u-mask>
+			</view> -->
+		<!-- </u-mask> -->
 	</view>
 </template>
 

@@ -1,5 +1,6 @@
 <template>
 	<view>
+		<image src="/static/images/main-bg.png" class="bg"></image>
 		<view class="u-page">
 			<!-- 所有内容的容器 -->
 			<Home v-if="drawComp[0]" v-show="showComp[0]"></Home> 
@@ -144,6 +145,13 @@
 </script>
 
 <style>
+	.bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750rpx;
+		height: 100vh;
+	}
 	/deep/ .u-tabbar__content {
 		height: 120rpx!important;
 	}

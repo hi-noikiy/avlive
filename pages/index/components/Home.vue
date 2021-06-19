@@ -52,7 +52,7 @@
 			<!-- 关注 -->
 		<!-- 	<u-tabs ref="uTabs3" :list="list3" :current="current3" @change="tabsChange3" :is-scroll="false" ></u-tabs> -->
 			<view id="nav2">
-				<u-tabs-swiper ref="uTabs3" :list="list3" :is-scroll="false"   bar-width="300" active-color="#000000" :current="current3" @change="tabsChange3"></u-tabs-swiper>
+				<u-tabs-swiper ref="uTabs3" :list="list3" :is-scroll="false"   bar-width="300" active-color="#000000" :current="current3" @change="tabsChange3" bg-color="rgba(0,0,0,0)"></u-tabs-swiper>
 				<u-gap height="20" ></u-gap>
 			</view>
 			

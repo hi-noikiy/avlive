@@ -4,7 +4,7 @@
 		<video
 			:style="'height: '+(emulator_Height)+'rpx;  width:750rpx;'"
 			object-fit="fill"
-			src="rtmp://pull.qilinjit.com/live/1?auth_key=1623152930-0-0-ecd93fb6c4dd846f447330b572782bca"
+			:src="row.pull_url"
 			:autoplay="true"
 			:loop="true"
 			:controls="false"
@@ -203,7 +203,7 @@
 				switch(datas.type) {
 					case 'endLive':
 						uni.showToast({
-							title: datas.data,
+							title: msgData.msg,
 							icon: 'none'
 						})
 						// uni.switchTab({
@@ -221,7 +221,8 @@
 					break;
 					case 'gift':
 						uni.showToast({
-							title: datas.data
+							title: msgData.msg,
+							icon: 'none'
 						})
 					break;
 					case 'ping':
@@ -282,13 +283,18 @@
 					})
 					return false;
 				}
+				uni.showToast({
+					title: '货币不足，请充值',
+					icon: 'none'
+				})
+				return;
 				var data = {
 					gift_id: this.gift_id,
 					anchor_id: this.row.anchor_id
 				};
 				var that = this;
 				giveGift(data).then(res => {
-					
+					console.log(res)
 				})
 			},
 			// 心跳检测,两秒一次

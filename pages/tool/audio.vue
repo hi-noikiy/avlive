@@ -23,7 +23,8 @@
 		<view class="control">
 			<image src="../../static/images/audio-front.png"></image>
 			<view class="oper" @click="paus">
-				<image src="../../static/images/audio-puse.png"></image>
+				<image src="/static/images/audio-puse.png" v-if="isPause"></image>
+				<image src="/static/images/audio-player.png" v-if="!isPause"></image>
 			</view>
 			<image src="../../static/images/audio-after.png"></image>
 		</view>
@@ -91,6 +92,10 @@
 					that.currentTime = that.sToIs(that.innerAudioContext.currentTime);
 				})
 			})
+		},
+		onUnload() {
+			this.innerAudioContext.pause();
+			this.isPause = false;
 		},
 		methods: {
 			showShare(bool) {

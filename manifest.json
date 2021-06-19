@@ -1,7 +1,7 @@
 {
-    "name" : "音视频直播",
+    "name" : "音服务",
     "appid" : "__UNI__9E71C0C",
-    "description" : "音视频直播",
+    "description" : "音服务",
     "versionName" : "1.0",
     "versionCode" : 100,
     "transformPx" : false,
