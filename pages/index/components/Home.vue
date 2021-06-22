@@ -165,6 +165,7 @@
 			});
 		},
 		methods: {
+
 			playVideo(){
 				uni.navigateTo({
 					url:'/pages/liveApp/playVideo'

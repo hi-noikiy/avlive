@@ -6,7 +6,7 @@
 				<view class="line1">
 					<image :src="userInfo.avatar" class="head"></image>
 					<view class="info">
-						<view class="t">
+						<view class="t" >
 							<view>昵称：{{userInfo.nickname}}</view>
 							<view>ID {{userInfo.uid}}</view>
 						</view>
@@ -130,7 +130,8 @@
 						width: '88',
 						height: '115',
 						mright: '49',
-						url: '/pages/users/order_list/index?status=3'
+						// url: '/pages/users/order_list/index?status=3'
+						url:'/pages/evaluation/testtable'
 					},{
 						title: '名片',
 						src: '/static/images/me_mp.png',
@@ -273,6 +274,11 @@
 			};
 		}, 
 		methods: {
+			ceshi(){
+				uni.navigateTo({
+					url:'/pages/evaluation/testtable'
+				})
+			},
 			urlTo(url) {
 				uni.navigateTo({
 					url: url

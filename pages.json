@@ -3,6 +3,7 @@
 		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -207,47 +208,56 @@
 				}
 			}
 
-		}
-        ,{
-            "path" : "pages/tool/video_live/look",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "直播间-观看端",
-                "enablePullDownRefresh": false,
+		}, {
+			"path": "pages/tool/video_live/look",
+			"style": {
+				"navigationBarTitleText": "直播间-观看端",
+				"enablePullDownRefresh": false,
 				"app-plus": {
 					"titleNView": false
 				}
-            }
-            
-        }
-        ,{
-            "path" : "pages/tool/audio",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "音频详情",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/demand/uploading",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "待上传",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/demand/download",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "待下载",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+			}
+
+		}, {
+			"path": "pages/tool/audio",
+			"style": {
+				"navigationBarTitleText": "音频详情",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/demand/uploading",
+			"style": {
+				"navigationBarTitleText": "待上传",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/demand/download",
+			"style": {
+				"navigationBarTitleText": "待下载",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/evaluation/testtable",
+			"style": {
+				"navigationBarTitleText": "测试表",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#E7EAED",
+				"app-plus": {
+					// #ifdef APP-PLUS
+					"titleNView": {
+						"type": "default"
+					}
+					// #endif
+				}
+
+			}
+
+		}
+	],
 	// "tabBar": {
 	// 	"color": "#8a8a8a",
 	// 	"selectedColor": "#00ff7f",
@@ -413,17 +423,16 @@
 					}
 
 				}
-                
-                ,{
-                    "path" : "offer",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "报价",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-            ]
+
+				, {
+					"path": "offer",
+					"style": {
+						"navigationBarTitleText": "报价",
+						"enablePullDownRefresh": false
+					}
+
+				}
+			]
 		},
 		{
 			"root": "pages/users",
