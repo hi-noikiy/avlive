@@ -1,53 +1,56 @@
 <template>
-	<view class="main">
-		<view class="i i1" v-show="false">
-			<view class="title">指定制作方</view>
-			<input type="text" value="" placeholder="选填" />
-			<view class="info">安妮爱主持</view>
-		</view>
-		<view class="i i1" v-show="false">
-			<view class="title">指定雇主</view>
-			<input type="text" value="" placeholder="选填" />
-			<view class="info">安妮爱主持</view>
-		</view>
-		<view class="i i2">
-			<view class="title">预算（非必填）</view>
-			<input type="text" v-model="pay_price" placeholder="请输入" />
-		</view>
-		<view class="i i3">
-			<view class="title">期望制作周期（非必填）</view>
-			<input type="text" v-model="cycle_data" placeholder="请输入" />
-			<view class="info">
-				<picker :range="unitArr" @change="unitChange" :value="unitIndex">
-					<view>{{unit}}</view>
-				</picker>
-				<image src="../../../static/images/bs_icon.png"></image>
+	<view class="">
+		<image src="/static/images/main-bg.png" class="bg"></image>
+		<view class="main">
+			<view class="i i1" v-show="false">
+				<view class="title">指定制作方</view>
+				<input type="text" value="" placeholder="选填" />
+				<view class="info">安妮爱主持</view>
 			</view>
-		</view>
-		<view class="demand">
-			<view class="title">音色要求（非必填可多选）</view>
-			<view class="inputs">
-				<u-checkbox-group>
-					<u-checkbox
-						v-for="(item, index) in checkboxList"
-						v-model="item.checked"
-						shape="square"
-						active-color="#000000"
-						:name="item.timbre_type_name"
-					>{{item.timbre_type_name}}</u-checkbox>
-				</u-checkbox-group>
+			<view class="i i1" v-show="false">
+				<view class="title">指定雇主</view>
+				<input type="text" value="" placeholder="选填" />
+				<view class="info">安妮爱主持</view>
 			</view>
+			<view class="i i2">
+				<view class="title">预算（非必填）</view>
+				<input type="text" v-model="pay_price" placeholder="请输入" />
+			</view>
+			<view class="i i3">
+				<view class="title">期望制作周期（非必填）</view>
+				<input type="text" v-model="cycle_data" placeholder="请输入" />
+				<view class="info">
+					<picker :range="unitArr" @change="unitChange" :value="unitIndex">
+						<view>{{unit}}</view>
+					</picker>
+					<image src="../../../static/images/bs_icon.png"></image>
+				</view>
+			</view>
+			<view class="demand">
+				<view class="title">音色要求（非必填可多选）</view>
+				<view class="inputs">
+					<u-checkbox-group>
+						<u-checkbox
+							v-for="(item, index) in checkboxList"
+							v-model="item.checked"
+							shape="square"
+							active-color="#000000"
+							:name="item.timbre_type_name"
+						>{{item.timbre_type_name}}</u-checkbox>
+					</u-checkbox-group>
+				</view>
+			</view>
+			<view class="m m1">
+				<view>请一句话描述您的需求</view>
+				<input type="text" v-model="desc" placeholder="请输入您的需求简介" />
+			</view>
+			<view class="m m2">
+				<view>详细描述您的需求</view>
+				<textarea v-model="remake" placeholder="请输入详情" />
+			</view>
+			<u-upload :action="action" ref="uUpload"></u-upload>
+			<view class="sub" @click="submit">提交</view>
 		</view>
-		<view class="m m1">
-			<view>请一句话描述您的需求</view>
-			<input type="text" v-model="desc" placeholder="请输入您的需求简介" />
-		</view>
-		<view class="m m2">
-			<view>详细描述您的需求</view>
-			<textarea v-model="remake" placeholder="请输入详情" />
-		</view>
-		<u-upload :action="action" ref="uUpload"></u-upload>
-		<view class="sub" @click="submit">提交</view>
 	</view>
 </template>
 
@@ -213,10 +216,20 @@
 </script>
 
 <style scoped lang="scss">
+	.bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750rpx;
+		height: 100vh;
+		z-index: 1;
+	}
 	.main {
+		position: absolute;
+		z-index: 2;
 		width: 690rpx;
-		margin: 0 auto;
 		margin-top: 20rpx;
+		margin-left: 30rpx;
 	}
 	.i {
 		width: 100%;

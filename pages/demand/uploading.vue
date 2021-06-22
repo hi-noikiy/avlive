@@ -1,16 +1,19 @@
 <template>
-	<view class="page">
-		<l-file ref="lFile" @up-success="onSuccess"></l-file>
-		<view class="item" v-for="(item, index) in list" v-if="!item.diff_false">
-			<view class="title">{{item.desc}}</view>
-			<view class="select">
-				<image src="../../static/images/time_icon.png" class="l"></image>
-				<span>待上传作品</span>
-				<image src="../../static/images/rj_icon.png" class="r"></image>
-			</view>
-			<view class="info">
-				<view class="show" @click="showDetail(item.order_id)" v-if="item.is_ovner == 1">查看</view>
-				<view class="show" @tap="onUpload(item.order_id)" v-if="item.is_ovner == 0">上传</view>
+	<view class="">
+		<image src="/static/images/main-bg.png" class="bg"></image>
+		<view class="page">
+			<l-file ref="lFile" @up-success="onSuccess"></l-file>
+			<view class="item" v-for="(item, index) in list" v-if="!item.diff_false">
+				<view class="title">{{item.desc}}</view>
+				<view class="select">
+					<image src="../../static/images/time_icon.png" class="l"></image>
+					<span>待上传作品</span>
+					<image src="../../static/images/rj_icon.png" class="r"></image>
+				</view>
+				<view class="info">
+					<view class="show" @click="showDetail(item.order_id)" v-if="item.is_ovner == 1">查看</view>
+					<view class="show" @tap="onUpload(item.order_id)" v-if="item.is_ovner == 0">上传</view>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -96,9 +99,15 @@
 </script>
 
 <style scoped lang="scss">
+	.bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750rpx;
+		height: 100vh;
+	}
 	.page {
 		width: 690rpx;
-		min-height: 100vh;
 		margin: 0 auto;
 	}
 	.item {
@@ -111,7 +120,7 @@
 		padding: 30rpx;
 		display: flex;
 		flex-direction: column;
-		margin-bottom: 29rpx;
+		margin-top: 29rpx;
 		span {
 			color: #E05252;
 		}

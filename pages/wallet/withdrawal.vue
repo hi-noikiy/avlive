@@ -1,58 +1,61 @@
 <template>
-	<view class="page">
-		<view class="module module1">
-			<view class="title">我的余额</view>
-			<view class="prices">
-				<view class="item">
-					<image src="../users/static/1.png"></image>
-					<view class="price">音贝：{{userInfo.now_yinbei}}</view>
+	<view class="">
+		<image src="/static/images/main-bg.png" class="bg"></image>
+		<view class="page">
+			<view class="module module1">
+				<view class="title">我的余额</view>
+				<view class="prices">
+					<view class="item">
+						<image src="../users/static/1.png"></image>
+						<view class="price">音贝：{{userInfo.now_yinbei}}</view>
+					</view>
+					<view class="item">
+						<image src="../users/static/1.png"></image>
+						<view class="price">音宝：{{userInfo.now_yinbao}}</view>
+						<view class="b">价值{{userInfo.now_yinbao}}元</view>
+					</view>
+					<view class="item">
+						<image src="../users/static/1.png"></image>
+						<view class="price">音珠：{{userInfo.now_yinzhu}}</view>
+						<view class="b">价值{{userInfo.now_yinzhu / 10}}元</view>
+					</view>
 				</view>
-				<view class="item">
-					<image src="../users/static/1.png"></image>
-					<view class="price">音宝：{{userInfo.now_yinbao}}</view>
-					<view class="b">价值{{userInfo.now_yinbao}}元</view>
+				<view class="info">说明：1个音宝=1元   10个音珠=1元</view>
+			</view>
+			<view class="module module2">
+				<view class="ma">
+					<view class="t">可提现金额</view>
+					<view class="b"><span style="padding-right: 12rpx;">{{userInfo.now_money}}</span>元</view>
 				</view>
-				<view class="item">
-					<image src="../users/static/1.png"></image>
-					<view class="price">音珠：{{userInfo.now_yinzhu}}</view>
-					<view class="b">价值{{userInfo.now_yinzhu / 10}}元</view>
+				<view class="mb"></view>
+				<view class="mc">
+					<view class="t">累计提现</view>
+					<view class="b"><span style="padding-right: 12rpx;">{{userInfo.extractTotalPrice}}</span>元</view>
+				</view>
+				<view class="md">
+					<view>提现记录</view>
+					<image src="../../static/images/rj_icon.png"></image>
 				</view>
 			</view>
-			<view class="info">说明：1个音宝=1元   10个音珠=1元</view>
+			<view class="module module3">
+				<view class="t">
+					<span class="type">提现类型</span>
+					<easy-select
+						class="select"
+						ref="easySelect"
+						:value="type"
+						:options="types"
+						@selectOne="selectOne"
+					></easy-select>
+					<span class="type">提现数量</span>
+					<input type="number" value="" placeholder="请输入数量" />
+				</view>
+				<view class="b">
+					预计到账：<span>500</span>元
+				</view>
+			</view>
+			<view class="sub">立即提现</view>
 		</view>
-		<view class="module module2">
-			<view class="ma">
-				<view class="t">可提现金额</view>
-				<view class="b"><span style="padding-right: 12rpx;">{{userInfo.now_money}}</span>元</view>
-			</view>
-			<view class="mb"></view>
-			<view class="mc">
-				<view class="t">累计提现</view>
-				<view class="b"><span style="padding-right: 12rpx;">{{userInfo.extractTotalPrice}}</span>元</view>
-			</view>
-			<view class="md">
-				<view>提现记录</view>
-				<image src="../../static/images/rj_icon.png"></image>
-			</view>
-		</view>
-		<view class="module module3">
-			<view class="t">
-				<span class="type">提现类型</span>
-				<easy-select
-					class="select"
-					ref="easySelect"
-					:value="type"
-					:options="types"
-					@selectOne="selectOne"
-				></easy-select>
-				<span class="type">提现数量</span>
-				<input type="number" value="" placeholder="请输入数量" />
-			</view>
-			<view class="b">
-				预计到账：<span>500</span>元
-			</view>
-		</view>
-		<view class="sub">立即提现</view>
 	</view>
 </template>
 
@@ -97,9 +100,20 @@
 </script>
 
 <style scoped lang="scss">
+	.bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750rpx;
+		height: 100vh;
+		z-index: 1;
+	}
 	.page {
+		position: absolute;
+		z-index: 2;
 		width: 690rpx;
-		margin: 0 auto;
+		margin-left: 30rpx;
+		margin-top: 30rpx;
 	}
 	.module {
 		width: 100%;

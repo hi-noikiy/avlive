@@ -12,10 +12,10 @@
 				</view>
 			</view>
 			<view class="r">
-				<image class="icon" src="../../static/images/audio_player.png"></image>
-				<image class="icon" src="../../static/images/audio_love.png"></image>
-				<image class="icon" src="../../static/images/audio_price.png"></image>
-				<image class="icon" src="../../static/images/audio_share.png" @click="showShare(true)"></image>
+				<image class="icon" :src="'/static/images/audio_'+(item.isPlay ? 'suspend' : 'player')+'.png'" @click="play(item, index)"></image>
+				<image class="icon" :src="'/static/images/audio_love'+(item.isLike ? '_curr' : '')+'.png'" @click="like(item, index)"></image>
+				<image class="icon" src="/static/images/audio_price.png"></image>
+				<image class="icon" src="/static/images/audio_share.png" @click="showShare(true)"></image>
 			</view>
 		</view>
 		<share-box ref="shareBox"></share-box>
@@ -24,6 +24,9 @@
 
 <script>
 	import shareBox from '@/components/shareBox/shareBox';
+	import {
+		worksLike
+	} from '@/api/liveApp.js';
 	export default {
 		name:"audio-list",
 		props: ['audioList'],
@@ -34,9 +37,12 @@
 			return {
 				// 播放器
 				innerAudioContext: '',
-				// 是否正在播放
+				// 正在播放的index
 				player: false
 			};
+		},
+		created() {
+			this.innerAudioContext = uni.createInnerAudioContext();
 		},
 		methods: {
 			// 发布人主页
@@ -52,25 +58,37 @@
 				})
 			},
 			// 播放或暂停
-			play(src, index) {
-				// const innerAudioContext = uni.createInnerAudioContext();
-				// if(!this.player && !this.pause) {
-				// 	innerAudioContext.autoplay = true;
-				// 	innerAudioContext.src = src;
-				// 	innerAudioContext.onPlay(() => {
-				// 	  this.player = true;
-				// 	  console.log('开始播放')
-				// 	});
-				// } else {
-				// 	innerAudioContext.onStop(() => {
-				// 		console.log('已暂停')
-				// 	})
-				// }
+			play(item, index) {
+				var that = this;
+				if(!this.player) {
+					this.innerAudioContext.src = item.file;
+					this.innerAudioContext.play();
+					that.player = true;
+				} else {
+					this.innerAudioContext.stop();
+					that.player = false;
+				}
 				
-				// innerAudioContext.onError((res) => {
-				//   console.log(res.errMsg);
-				//   console.log(res.errCode);
-				// });
+				that.audioList[index].isPlay = that.player;
+				
+				this.innerAudioContext.onError((res) => {
+				  console.log(res.errMsg);
+				  console.log(res.errCode);
+				});
+			},
+			// 作品点赞
+			like(item, index) {
+				var id = item.id;
+				var isLike = item.isLike;
+				var operation = isLike ? 0 : 1;
+				var data = {
+					works_id: id,
+					operation: operation
+				};
+				var that = this;
+				worksLike(data).then(res => {
+					that.audioList[index].isLike = !isLike;
+				});
 			},
 			showShare(bool) {
 				this.$refs.shareBox.showShare(bool);

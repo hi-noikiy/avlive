@@ -1,70 +1,73 @@
 <template>
-	<view class="page">
-		<view class="item" v-for="(item, index) in list" v-if="!item.diff_false">
-			<view class="title">{{item.desc}}</view>
-			<view class="select">
-				<image src="../../static/images/time_icon.png" class="l"></image>
-				<span v-if="item.order_type == 1 && item.order_status == 0">待选择作者</span>
-				<span v-if="item.order_type == 2 && item.order_status == 0">待作者确认</span>
-				<span v-if="item.order_type == 3 && item.order_status == 0">待雇主确认</span>
-				<image src="../../static/images/rj_icon.png" class="r"></image>
-			</view>
-			<view class="info" v-if="item.order_type == 1">
-				<view class="type">普通需求单</view>
-				<view class="nums">
-					已有<span>{{item.order_count}}</span>人报价
+	<view class="">
+		<image src="/static/images/main-bg.png" class="bg"></image>
+		<view class="page">
+			<view class="item" v-for="(item, index) in list" v-if="!item.diff_false">
+				<view class="title">{{item.desc}}</view>
+				<view class="select">
+					<image src="../../static/images/time_icon.png" class="l"></image>
+					<span v-if="item.order_type == 1 && item.order_status == 0">待选择作者</span>
+					<span v-if="item.order_type == 2 && item.order_status == 0">待作者确认</span>
+					<span v-if="item.order_type == 3 && item.order_status == 0">待雇主确认</span>
+					<image src="../../static/images/rj_icon.png" class="r"></image>
 				</view>
-				<view class="show" @click="showDetail(item.order_id)">查看</view>
-			</view>
-			<view class="info" v-if="item.order_type == 2">
-				<view class="type">指派作者单</view>
-				<view class="author">
-					<image src="../users/static/4.png"></image>
-					<view>安妮爱主持</view>
+				<view class="info" v-if="item.order_type == 1">
+					<view class="type">普通需求单</view>
+					<view class="nums">
+						已有<span>{{item.order_count}}</span>人报价
+					</view>
+					<view class="show" @click="showDetail(item.order_id)">查看</view>
 				</view>
-				<view class="show" @click="showDetail(item.order_id)">查看</view>
-			</view>
-			<view class="info" v-if="item.order_type == 3">
-				<view class="type">指定雇主单</view>
-				<view class="author">
-					<image src="../users/static/4.png"></image>
-					<view>多金的雇主</view>
+				<view class="info" v-if="item.order_type == 2">
+					<view class="type">指派作者单</view>
+					<view class="author">
+						<image src="../users/static/4.png"></image>
+						<view>安妮爱主持</view>
+					</view>
+					<view class="show" @click="showDetail(item.order_id)">查看</view>
 				</view>
-				<view class="show" @click="showDetail(item.order_id)">查看</view>
+				<view class="info" v-if="item.order_type == 3">
+					<view class="type">指定雇主单</view>
+					<view class="author">
+						<image src="../users/static/4.png"></image>
+						<view>多金的雇主</view>
+					</view>
+					<view class="show" @click="showDetail(item.order_id)">查看</view>
+				</view>
 			</view>
+			<!-- <view class="item">
+				<view class="title">录制一篇多人剧本，要求至少有五个角色出演，可 以临时发挥</view>
+				<view class="select">
+					<image src="../../static/images/time_icon.png" class="l"></image>
+					<span>待作者确认</span>
+					<image src="../../static/images/rj_icon.png" class="r"></image>
+				</view>
+				<view class="info">
+					<view class="type">指派作者单</view>
+					<view class="author">
+						<image src="../users/static/4.png"></image>
+						<view>安妮爱主持</view>
+					</view>
+					<view class="show">查看</view>
+				</view>
+			</view>
+			<view class="item">
+				<view class="title">录制一篇多人剧本，要求至少有五个角色出演，可 以临时发挥</view>
+				<view class="select">
+					<image src="../../static/images/time_icon.png" class="l"></image>
+					<span>待雇主确认</span>
+					<image src="../../static/images/rj_icon.png" class="r"></image>
+				</view>
+				<view class="info">
+					<view class="type">指定雇主单</view>
+					<view class="author">
+						<image src="../users/static/4.png"></image>
+						<view>多金的雇主</view>
+					</view>
+					<view class="show">查看</view>
+				</view>
+			</view> -->
 		</view>
-		<!-- <view class="item">
-			<view class="title">录制一篇多人剧本，要求至少有五个角色出演，可 以临时发挥</view>
-			<view class="select">
-				<image src="../../static/images/time_icon.png" class="l"></image>
-				<span>待作者确认</span>
-				<image src="../../static/images/rj_icon.png" class="r"></image>
-			</view>
-			<view class="info">
-				<view class="type">指派作者单</view>
-				<view class="author">
-					<image src="../users/static/4.png"></image>
-					<view>安妮爱主持</view>
-				</view>
-				<view class="show">查看</view>
-			</view>
-		</view>
-		<view class="item">
-			<view class="title">录制一篇多人剧本，要求至少有五个角色出演，可 以临时发挥</view>
-			<view class="select">
-				<image src="../../static/images/time_icon.png" class="l"></image>
-				<span>待雇主确认</span>
-				<image src="../../static/images/rj_icon.png" class="r"></image>
-			</view>
-			<view class="info">
-				<view class="type">指定雇主单</view>
-				<view class="author">
-					<image src="../users/static/4.png"></image>
-					<view>多金的雇主</view>
-				</view>
-				<view class="show">查看</view>
-			</view>
-		</view> -->
 	</view>
 </template>
 
@@ -105,9 +108,15 @@
 </script>
 
 <style scoped lang="scss">
+	.bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750rpx;
+		height: 100vh;
+	}
 	.page {
 		width: 690rpx;
-		min-height: 100vh;
 		margin: 0 auto;
 	}
 	.item {
@@ -120,7 +129,7 @@
 		padding: 30rpx;
 		display: flex;
 		flex-direction: column;
-		margin-bottom: 29rpx;
+		margin-top: 29rpx;
 		span {
 			color: #E05252;
 		}

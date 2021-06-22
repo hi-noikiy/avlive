@@ -1,5 +1,6 @@
 <template>
 	<view>
+		<image src="/static/images/main-bg.png" class="bg"></image>
 		<form @submit="formSubmit">
 			<view class='personal-data'> 
 				<view class='list'>
@@ -297,6 +298,20 @@
 </script>
 
 <style scoped lang="scss">
+	.bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750rpx;
+		height: 100vh;
+		z-index: 1;
+	}
+	.personal-data {
+		position: absolute;
+		z-index: 2;
+		margin-left: 30rpx;
+	}
+	
 	.personal-data .wrapper {
 		margin: 10rpx 0;
 		background-color: #fff;
@@ -393,7 +408,7 @@
 
 	.personal-data .list {
 		margin-top: 15rpx;
-		background-color: #fff;
+		// background-color: #fff;
 	}
 
 	.personal-data .list .item {

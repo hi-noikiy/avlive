@@ -172,6 +172,7 @@
 		display: flex;
 		flex-direction: column;
 		margin-bottom: 120rpx;
+		margin-top: 30rpx;
 	}
 	.item {
 		width: 100%;

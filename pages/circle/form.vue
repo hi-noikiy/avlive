@@ -1,16 +1,19 @@
 <template>
-	<view class="main">
-		<input class="title" type="text" v-model="title" placeholder="请输入标题" />
-		<textarea class="content" v-model="content" placeholder="请输入内容..." />
-		<u-upload :action="action" ref="uUpload"></u-upload>
-		<view class="info">
-			<view class="l">
-				<label class="radio" @click="radioChange(1)"><radio name="rname" value="1" :checked="show_auth === 1"/>所有人</label>
-				<label class="radio" @click="radioChange(2)"><radio name="rname" value="2" :checked="show_auth === 2"/>仅限好友</label>
+	<view class="">
+		<image src="/static/images/main-bg.png" class="bg"></image>
+		<view class="main">
+			<input class="title" type="text" v-model="title" placeholder="请输入标题" />
+			<textarea class="content" v-model="content" placeholder="请输入内容..." />
+			<u-upload :action="action" ref="uUpload"></u-upload>
+			<view class="info">
+				<view class="l">
+					<label class="radio" @click="radioChange(1)"><radio name="rname" value="1" :checked="show_auth === 1"/>所有人</label>
+					<label class="radio" @click="radioChange(2)"><radio name="rname" value="2" :checked="show_auth === 2"/>仅限好友</label>
+				</view>
+				<view class="r">只支持图片格式</view>
 			</view>
-			<view class="r">只支持图片格式</view>
+			<view class="btn" @click="submit">发布</view>
 		</view>
-		<view class="btn" @click="submit">发布</view>
 	</view>
 </template>
 
@@ -76,9 +79,20 @@
 </script>
 
 <style lang="scss">
+	.bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750rpx;
+		height: 100vh;
+		z-index: 1;
+	}
 	.main {
+		position: absolute;
+		z-index: 2;
 		width: 690rpx;
-		margin: 0 auto;
+		margin-top: 20rpx;
+		margin-left: 30rpx;
 	}
 	.title {
 		width: 100%;

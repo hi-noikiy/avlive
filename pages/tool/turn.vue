@@ -1,62 +1,65 @@
 <template>
-	<view class="main">
-		<view class="module1">
-			<textarea value="" placeholder="请输入需要转语音的文字" />
-			<view class="empty">
-				<image src="../../static/images/del.png"></image>
-				<span>清空</span>
+	<view>
+		<image src="/static/images/main-bg.png" class="bg"></image>
+		<view class="main">
+			<view class="module1">
+				<textarea value="" placeholder="请输入需要转语音的文字" />
+				<view class="empty">
+					<image src="../../static/images/del.png"></image>
+					<text>清空</text>
+				</view>
 			</view>
+			<view class="module2">
+				<view class="item" v-for="i in 5">
+					<view class="t">
+						<image src="../../static/images/yinfu.png"></image>
+					</view>
+					<view class="b">达叔</view>
+				</view>
+				<view class="item add">
+					<view class="t">
+						<image src="../../static/images/hadd.png"></image>
+					</view>
+				</view>
+			</view>
+			<view class="module3">
+				<view class="item">
+					<view class="icon">
+						<image src="../../static/images/yuyin.png"></image>
+					</view>
+					<span>语调调整</span>
+					<view class="slider">
+						<u-slider
+							inactive-color="#BBBBBC"
+							active-color="#232323"
+							height="6"
+							block-width="34"
+							:block-style="{border: '1px solid #000000'}"
+						></u-slider>
+					</view>
+				</view>
+				<view class="item">
+					<view class="icon">
+						<image src="../../static/images/bofang.png"></image>
+					</view>
+					<span>语速调整</span>
+					<view class="slider">
+						<u-slider
+							inactive-color="#BBBBBC"
+							active-color="#232323"
+							height="6"
+							block-width="34"
+							:block-style="{border: '1px solid #000000'}"
+						></u-slider>
+					</view>
+				</view>
+			</view>
+			<view class="module4">
+				<view class="btn">背景音乐</view>
+				<view class="btn">试听</view>
+			</view>
+			<button type="default" class="sub">立即合成</button>
 		</view>
-		<view class="module2">
-			<view class="item" v-for="i in 5">
-				<view class="t">
-					<image src="../../static/images/yinfu.png"></image>
-				</view>
-				<view class="b">达叔</view>
-			</view>
-			<view class="item add">
-				<view class="t">
-					<image src="../../static/images/hadd.png"></image>
-				</view>
-			</view>
-		</view>
-		<view class="module3">
-			<view class="item">
-				<view class="icon">
-					<image src="../../static/images/yuyin.png"></image>
-				</view>
-				<span>语调调整</span>
-				<view class="slider">
-					<u-slider
-						inactive-color="#BBBBBC"
-						active-color="#232323"
-						height="6"
-						block-width="34"
-						:block-style="{border: '1px solid #000000'}"
-					></u-slider>
-				</view>
-			</view>
-			<view class="item">
-				<view class="icon">
-					<image src="../../static/images/bofang.png"></image>
-				</view>
-				<span>语速调整</span>
-				<view class="slider">
-					<u-slider
-						inactive-color="#BBBBBC"
-						active-color="#232323"
-						height="6"
-						block-width="34"
-						:block-style="{border: '1px solid #000000'}"
-					></u-slider>
-				</view>
-			</view>
-		</view>
-		<view class="module4">
-			<view class="btn">背景音乐</view>
-			<view class="btn">试听</view>
-		</view>
-		<button type="default" class="sub">立即合成</button>
 	</view>
 </template>
 
@@ -74,16 +77,27 @@
 </script>
 
 <style scoped lang="scss">
+	.bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750rpx;
+		height: 100vh;
+		z-index: 1;
+	}
 	.main {
+		position: absolute;
+		z-index: 2;
 		width: 690rpx;
-		margin: 0 auto;
+		margin-left: 30rpx;
 		overflow: hidden;
+		margin-top: 30rpx;
 	}
 	.module1 {
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		height: 415rpx;
+		height: 380rpx;
 		background: #FFFFFF;
 		border-radius: 15rpx;
 		padding: 30rpx 30rpx 24rpx 30rpx;
@@ -99,7 +113,7 @@
 				width: 28rpx;
 				height: 28rpx;
 			}
-			span {
+			text {
 				font-size: 24rpx;
 				font-weight: bold;
 				color: #000000;

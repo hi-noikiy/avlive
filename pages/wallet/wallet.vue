@@ -1,22 +1,25 @@
 <template>
-	<view class="main">
-		<view class="content">
-			<view class="module1">
-				<view v-for="(item, index) in types" :class="(item.id === type) ? 'curr' : ''" @click="changeType(item.id)">
-					<image :src="item.image"></image>
-					<span>{{item.name}}</span>
+	<view>
+		<image src="/static/images/main-bg.png" class="bg"></image>
+		<view class="main">
+			<view class="content">
+				<view class="module1">
+					<view v-for="(item, index) in types" :class="(item.id === type) ? 'curr' : ''" @click="changeType(item.id)">
+						<image :src="item.image"></image>
+						<span>{{item.name}}</span>
+					</view>
 				</view>
-			</view>
-			<view class="module2">
-				<view v-for="(item, index) in prices" :class="(item == price && price_curr === true) ? 'curr' : ''" @click="changePrice(item)">{{item}}元</view>
-				<view>
-					<input type="number" placeholder="自定义金额" @focus="changePrice()" @input="customPirce" />
+				<view class="module2">
+					<view v-for="(item, index) in prices" :class="(item == price && price_curr === true) ? 'curr' : ''" @click="changePrice(item)">{{item}}元</view>
+					<view>
+						<input type="number" placeholder="自定义金额" @focus="changePrice()" @input="customPirce" />
+					</view>
 				</view>
+				<view class="module3">共计获得{{type == 1 ? price : price * 10}}{{type == 1 ? '音宝' : '音珠'}}</view>
 			</view>
-			<view class="module3">共计获得{{type == 1 ? price : price * 10}}{{type == 1 ? '音宝' : '音珠'}}</view>
+			<button type="default" class="recharge">充值</button>
+			<view class="info">说明1个音宝=1元 10个音铢=1元</view>
 		</view>
-		<button type="default" class="recharge">充值</button>
-		<view class="info">说明1个音宝=1元 10个音铢=1元</view>
 	</view>
 </template>
 
@@ -64,9 +67,20 @@
 </script>
 
 <style scoped lang="scss">
+	.bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750rpx;
+		height: 100vh;
+		z-index: 1;
+	}
 	.main {
+		position: absolute;
+		z-index: 2;
 		width: 690rpx;
-		margin: 0 auto;
+		margin-left: 30rpx;
+		margin-top: 30rpx;
 	}
 	.content {
 		width: 100%;

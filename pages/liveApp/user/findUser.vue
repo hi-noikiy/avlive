@@ -1,88 +1,91 @@
 <template>
-	<view class="main">
-		<view class="author">
-			<view class="t">
-				<view class="info">
-					<image class="head" src="../../users/static/1.png"></image>
-					<view class="detail">
-						<span class="name">安妮爱主持</span>
-						<span class="b">10粉丝 | 20关注 | ID 24584</span>
+	<view>
+		<image src="/static/images/main-bg.png" class="bg"></image>
+		<view class="main">
+			<view class="author">
+				<view class="t">
+					<view class="info">
+						<image class="head" :src="userInfo.avatar"></image>
+						<view class="detail">
+							<text class="name">{{userInfo.nickname}}</text>
+							<text class="b">10粉丝 | 20关注 | ID {{userInfo.uid}}</text>
+						</view>
+						<image class="msg" src="/static/images/pinglunh_icon.png"></image>
 					</view>
-					<image class="msg" src="../../../static/images/pinglunh_icon.png"></image>
+					<view class="tags">
+						<u-tag
+							v-for="(item, index) in userInfo.class_name"
+							:text="item"
+							mode="dark"
+							shape="circle"
+							bg-color="#E3E3E3"
+							color="#545454"
+						/>
+					</view>
+					<view class="grade">
+						<span>荣誉值：230</span>
+						<span>等级：5级</span>
+					</view>
+					<view class="sign">个性签名：这个家伙很懒，什么都没留下</view>
 				</view>
-				<view class="tags">
-					<u-tag
-						v-for="i in 4"
-						text="主持人"
-						mode="dark"
-						shape="circle"
-						bg-color="#E3E3E3"
-						color="#545454"
-					/>
-				</view>
-				<view class="grade">
-					<span>荣誉值：230</span>
-					<span>等级：5级</span>
-				</view>
-				<view class="sign">个性签名：这个家伙很懒，什么都没留下</view>
-			</view>
-			<view class="c">
-				<view class="btn">关注</view>
-				<view class="btn">雇佣他</view>
-			</view>
-		</view>
-		<view class="tabs">
-			<u-tabs
-				name="cate_name"
-				:list="list"
-				:is-scroll="false"
-				:current="current"
-				@change="change"
-				active-color="#000000"
-				inactive-color="#5B5B5B"
-				:bg-color="false"
-			></u-tabs>
-		</view>
-		<category-menu :menuList="list2"></category-menu>
-		<view class="list">
-			<live-list v-if="current == 0"></live-list>
-			<audio-list v-if="current == 1" :audioList="audioList"></audio-list>
-		</view>
-		<view class="item">
-			<view class="t">
-				<view class="title">收费标准</view>
-				<view class="more">
-					<span>全部</span>
-					<image src="../../../static/images/right.png"></image>
+				<view class="c">
+					<view class="btn">关注</view>
+					<view class="btn">雇佣他</view>
 				</view>
 			</view>
-			<view class="b">
-				<view class="info">
-					<view class="l">1-100字</view>
-					<view class="r">60元</view>
+			<view class="tabs">
+				<u-tabs
+					name="cate_name"
+					:list="list"
+					:is-scroll="false"
+					:current="current"
+					@change="change"
+					active-color="#000000"
+					inactive-color="#5B5B5B"
+					bg-color=""
+				></u-tabs>
+			</view>
+			<category-menu :menuList="demand_form" @menuId="setMenuId"></category-menu>
+			<view class="list">
+				<live-list v-if="current == 0"></live-list>
+				<audio-list v-if="current == 1" :audioList="audioList"></audio-list>
+			</view>
+			<view class="item">
+				<view class="t">
+					<view class="title">收费标准</view>
+					<view class="more">
+						<span>全部</span>
+						<image src="../../../static/images/right.png"></image>
+					</view>
 				</view>
-				<view class="info">
-					<view class="l">100-200字</view>
-					<view class="r">120元</view>
-				</view>
-				<view class="info">
-					<view class="l">200-300字</view>
-					<view class="r">180元</view>
+				<view class="b">
+					<view class="info">
+						<view class="l">1-100字</view>
+						<view class="r">60元</view>
+					</view>
+					<view class="info">
+						<view class="l">100-200字</view>
+						<view class="r">120元</view>
+					</view>
+					<view class="info">
+						<view class="l">200-300字</view>
+						<view class="r">180元</view>
+					</view>
 				</view>
 			</view>
-		</view>
-		<view class="item">
-			<view class="t">
-				<view class="title">近期成交情况</view>
-			</view>
-			<view class="b">
-				<view class="info">
-					<view class="l">最近一个月成交</view>
-					<view class="r">15单</view>
+			<view class="item">
+				<view class="t">
+					<view class="title">近期成交情况</view>
 				</view>
-				<view class="info">
-					<view class="l">最近一个月好评率</view>
-					<view class="r">100%</view>
+				<view class="b">
+					<view class="info">
+						<view class="l">最近一个月成交</view>
+						<view class="r">15单</view>
+					</view>
+					<view class="info">
+						<view class="l">最近一个月好评率</view>
+						<view class="r">100%</view>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -93,6 +96,10 @@
 	import categoryMenu from '@/components/category-menu/category-menu.vue';
 	import liveList from '@/components/live-list/live-list.vue';
 	import audioList from '@/components/audio-list/audio-list.vue';
+	import {
+		getDemandForm,
+		userInfo
+	} from '@/api/liveApp.js';
 	export default {
 		components: {
 			'category-menu': categoryMenu,
@@ -107,22 +114,35 @@
 					cate_name: '音频'
 				}],
 				current: 0,
-				list2: [{
-					name: '主持人'
-				}, {
-					name: '模仿配音'
-				}, {
-					name: '游戏'
-				},{
-					name: '广告'
-				},{
-					name: '诗歌朗诵'
-				},{
-					name: '更多'
-				}],
+				menu_id: '',
+				demand_form: [],
+				userInfo: []
 			}
 		},
 		methods: {
+			onLoad() {
+				this.getDemandForm()
+				this.getUserInfo()
+			},
+			// 设置menu_id
+			setMenuId(menu_id) {
+				this.menu_id = menu_id;
+			},
+			// 获取作品分类列表
+			getDemandForm() {
+				var that = this;
+				getDemandForm().then(res => {
+					that.demand_form = res.data.demand_form;
+					that.menu_id = res.data.demand_form[0].id;
+				})
+			},
+			// 获取用户信息
+			getUserInfo() {
+				var that = this;
+				userInfo().then(res => {
+					that.userInfo = res.data;
+				})
+			},
 			change(index) {
 				this.current = index;
 			}
@@ -131,9 +151,20 @@
 </script>
 
 <style scoped lang="scss">
+	.bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750rpx;
+		height: 100vh;
+		z-index: 1;
+	}
 	.main {
+		position: absolute;
+		z-index: 2;
 		width: 690rpx;
-		margin: 0 auto;
+		margin-left: 30rpx;
+		margin-top: 30rpx;
 	}
 	.author {
 		.t {

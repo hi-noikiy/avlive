@@ -41,8 +41,14 @@ export function getLiveRoomList(data){
 /**
  * 获取直播间详情
  */
-export function getLiveRoomDetail(data){
-	return request.get('v3/liveRoomDetail', data);
+export function getLiveRoomDetail(){
+	return request.get('v3/liveRoomDetail');
+}
+/**
+ * 开始直播
+ */
+export function createLiveRoom(data){
+	return request.post('v3/createLiveRoom', data);
 }
 /**
  * 礼物列表
@@ -148,4 +154,11 @@ export function checkOrder(data){
 }
 export function payOrder(data){
 	return request.post('demand/pay_order', data);
+}
+
+/**
+ * 个人中心
+ */
+export function userInfo(){
+	return request.get('user');
 }

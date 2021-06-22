@@ -1,17 +1,20 @@
 <template>
-	<view class="page">
-		<view class="item" v-for="(item, index) in list" v-if="!item.diff_false">
-			<view class="title">{{item.desc}}</view>
-			<view class="select">
-				<image src="../../static/images/time_icon.png" class="l"></image>
-				<span>上传完作品三天后自动确认收货</span>
-				<!-- <image src="../../static/images/rj_icon.png" class="r"></image> -->
-			</view>
-			<view class="info">
-				<view class="show">已上传</view>
-				<view class="show" @click="stop(index)" v-if="item.play">停止播放</view>
-				<view class="show" @click="audition(item.download_link, index)" v-if="!item.play">试听</view>
-				<view class="show" @click="download(item)">下载并确认</view>
+	<view class="">
+		<image src="/static/images/main-bg.png" class="bg"></image>
+		<view class="page">
+			<view class="item" v-for="(item, index) in list" v-if="!item.diff_false">
+				<view class="title">{{item.desc}}</view>
+				<view class="select">
+					<image src="../../static/images/time_icon.png" class="l"></image>
+					<span>上传完作品三天后自动确认收货</span>
+					<!-- <image src="../../static/images/rj_icon.png" class="r"></image> -->
+				</view>
+				<view class="info">
+					<view class="show">已上传</view>
+					<view class="show" @click="stop(index)" v-if="item.play">停止播放</view>
+					<view class="show" @click="audition(item.download_link, index)" v-if="!item.play">试听</view>
+					<view class="show" @click="download(item)">下载并确认</view>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -100,9 +103,15 @@
 </script>
 
 <style scoped lang="scss">
+	.bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750rpx;
+		height: 100vh;
+	}
 	.page {
 		width: 690rpx;
-		min-height: 100vh;
 		margin: 0 auto;
 	}
 	.item {
@@ -115,7 +124,7 @@
 		padding: 30rpx;
 		display: flex;
 		flex-direction: column;
-		margin-bottom: 29rpx;
+		margin-top: 29rpx;
 		span {
 			color: #E05252;
 		}

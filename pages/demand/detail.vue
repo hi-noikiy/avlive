@@ -1,35 +1,38 @@
 <template>
-	<view class="page">
-		<view class="module module1">
-			<view>项目名称：{{order_info.desc}}</view>
-			<view>项目类型：音频</view>
-			<view>预算：<span>{{order_info.pay_num == 0 ? order_info.pay_price : order_info.pay_num}}</span>元</view>
-			<view>期望周期：{{order_info.cycle}}</view>
-			<view>音色要求：{{order_info.timbre_type_name}}</view>
-		</view>
-		<view class="module module2">
-			<view class="title">需求详情</view>
-			<rich-text :nodes="htmlNodes"></rich-text>
-		</view>
-		<view class="download">
-			<image src="../../static/images/link_icon.png" class="icon"></image>
-			<view class="name">附件文件</view>
-			<view class="progress">
-				<view :style="'width: '+download_progress+'%'"></view>
+	<view class="">
+		<image src="/static/images/main-bg.png" class="bg"></image>
+		<view class="page">
+			<view class="module module1">
+				<view>项目名称：{{order_info.desc}}</view>
+				<view>项目类型：音频</view>
+				<view>预算：<span>{{order_info.pay_num == 0 ? order_info.pay_price : order_info.pay_num}}</span>元</view>
+				<view>期望周期：{{order_info.cycle}}</view>
+				<view>音色要求：{{order_info.timbre_type_name}}</view>
 			</view>
-			<view class="btn" @click="download">{{download_status}}</view>
-		</view>
-		<view class="module module3">
-			<view class="title">指派人：</view>
-			<image src="../users/static/4.png"></image>
-			<view class="name">安妮爱主持</view>
-			<view class="status">等待作者确认订单...</view>
-		</view>
-		<view class="operation">
-			<view @click="cancel" v-if="order_info.order_message == 1">取消订单</view>
-			<view @click="edit" v-if="order_info.order_message == 1">修改订单</view>
-			<view v-if="order_info.order_message == 0">联系雇主</view>
-			<view @click="offer" v-if="order_info.order_message == 0">报价</view>
+			<view class="module module2">
+				<view class="title">需求详情</view>
+				<rich-text :nodes="htmlNodes"></rich-text>
+			</view>
+			<view class="download">
+				<image src="../../static/images/link_icon.png" class="icon"></image>
+				<view class="name">附件文件</view>
+				<view class="progress">
+					<view :style="'width: '+download_progress+'%'"></view>
+				</view>
+				<view class="btn" @click="download">{{download_status}}</view>
+			</view>
+			<view class="module module3">
+				<view class="title">指派人：</view>
+				<image src="../users/static/4.png"></image>
+				<view class="name">安妮爱主持</view>
+				<view class="status">等待作者确认订单...</view>
+			</view>
+			<view class="operation">
+				<view @click="cancel" v-if="order_info.order_message == 1">取消订单</view>
+				<view @click="edit" v-if="order_info.order_message == 1">修改订单</view>
+				<view v-if="order_info.order_message == 0">联系雇主</view>
+				<view @click="offer" v-if="order_info.order_message == 0">报价</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -161,6 +164,13 @@
 </script>
 
 <style scoped lang="scss">
+	.bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750rpx;
+		height: 100vh;
+	}
 	.page {
 		width: 690rpx;
 		min-height: 100vh;

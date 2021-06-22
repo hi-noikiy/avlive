@@ -37,6 +37,9 @@
 </template>
 
 <script>
+	import {
+		createLiveRoom
+	} from '@/api/liveApp.js';
 	export default {
 		data() {
 			return {
@@ -47,27 +50,17 @@
 			// 退出此页
 			closePage() {
 				uni.switchTab({
-					url: '../index/components/Me'
+					url: '/pages/index/index'
 				})
 			},
 			// 开启直播
 			startLive() {
 				var _this = this;
-				uni.request({
-					url: 'https://qyh.ugekeji.com/api/v3/createLiveRoom',
-					method: "POST",
-					header: {
-						'content-type': 'application/x-www-form-urlencoded',
-					},
-					success(res) {
-						if(res.data.status == 200) {
-							uni.navigateTo({
-								url: './video_live/live?id='+res.data.data.id+'&push_url='+res.data.data.push_url
-							})
-						}
-					},
-					fail() {
-						console.log('fail')
+				createLiveRoom().then(res => {
+					if(res.data.status == 200) {
+						uni.navigateTo({
+							url: './video_live/live?id='+res.data.data.id+'&push_url='+res.data.data.push_url
+						})
 					}
 				})
 			}
