@@ -3,62 +3,79 @@
 		<!-- <image src="/static/images/main-bg.png" class="bg"></image> -->
 		<view class="bg"></view>
 		<view class="main">
-			<!-- 单选题 -->
-			<view class="box" v-for="(item,index) in list" :key="index" v-if="tabindex == index">
+			<!-- 第一题 -->
+			<view class="box" v-if="tabindex == 0">
 				<view class="titleimg">
-					{{item.type}}
+					{{list.type}}
 				</view>
 				<view class="topicstyle">
 					<view class="titlename">
-						1, {{item.name}} 共{{item.fraction}}分
+						1, {{list.name}} 共{{list.fraction}}分
 					</view>
-					<view class="answer" v-for="(items,indexs) in item.arr" :key="indexs">
+					<view class="answer" v-for="(item,index) in list.arr" :key="index">
 						<view style="width: 49rpx;">
-							<view class="option" :class="item.currentIndex == indexs?'active':''"
-								@click="getchoice(index,indexs)">
-								{{items.letter}}
+							<view class="option" :class="list.currentIndex == index ?'active':''"
+								@click="getchoice(index)">
 							</view>
 						</view>
 						<view class="">
-							{{items.name}} {{items.fraction}}分
+							{{item.name}}
+						</view>
+						<view style="width: 10%;">
+							{{item.fraction}}分
+						</view>
+						<view class="btn" :class="list.currentIndex!=null ?'btnactive':''"
+							@click="getnextstep(tabindex)">
+							下一题
 						</view>
 					</view>
-					<view class="addanswer">
-						<view style="width: 49rpx;text-align: center;">
-							<image src="../../static/images/addanswer.png" mode="" @click="addanswer(index,indexs)">
-							</image>
-						</view>
-						<input type="text" v-show="item.Inputtype" v-model="item.answertext" />
-					</view>
-				</view>
-
-				<view class="btn" :class="item.currentIndex!=null || item.answertext!= ''?'btnactive':''"
-					@click="getnextstep(index)" v-if="tabindex == 0">
-					下一题
 				</view>
 			</view>
-			<!-- 填空题 -->
-			<view class="box" v-for="(item,index) in list2" :key="index" v-if="tabindex == 1">
+			<!-- 第二题 -->
+			<view class="box" v-if="tabindex == 1">
 				<view class="titleimg">
-					{{item.type}}
+					{{list2.type}}
 				</view>
 				<view class="topicstyle">
 					<view class="titlename">
-						1, 从业时间9毕业后算起) 共三分 0.25分/年累计工作 <input type="text" v-model="item.answertexts" /> 年
+						1, {{list2.name}} 共{{list2.fraction}}分
+					</view>
+					<view class="answer" v-for="(item,index) in list2.arr" :key="index">
+						<view style="width: 49rpx;">
+							<view class="option" :class="list2.currentIndex == index?'active':''"
+								@click="getchoice(index)">
+							</view>
+						</view>
+						<view class="">
+							{{item.name}}
+						</view>
+						<view style="width: 10%;">
+							{{item.fraction}}分
+						</view>
+						<view class="btn" :class="list2.currentIndex!=null ?'btnactive':''"
+							@click="getnextstep(tabindex)">
+							下一题
+						</view>
 					</view>
 				</view>
-				<view class="btnbox" v-if="tabindex  == 1 ">
-					<view class="btn1">
-						上一题
-					</view>
-					<view class="btn2" :class="item.answertexts!= ''?'btnactives':''">
-						下一题
-					</view>
-				</view>
-
 			</view>
-			<!-- 填空题加附件 -->
+			<!-- 第三题 -->
 			<view class="box" v-if="tabindex == 2">
+				<view class="titleimg">
+					填空题
+				</view>
+				<view class="topicstyle">
+					<view class="titlename">
+						1, 从业时间（工龄，毕业后算起） 共三分 0.25分/年累计工作 <input type="text" v-model="list3" /> 年
+					</view>
+				</view>
+				<view class="btn" :class="list3!=''?'btnactive':''" @click="getnextstep(tabindex)">
+					下一题
+				</view>
+			</view>
+			
+			<!-- 填空题加附件 -->
+			<view class="box" v-if="tabindex == 3">
 				<view class="titleimg">
 					填空题
 				</view>
@@ -89,18 +106,10 @@
 					</view>
 
 				</view>
-				<view class="btnbox" v-if="tabindex  == 2 ">
-					<view class="btn1">
-						上一题
-					</view>
-					<view class="btn2" :class="answertexts!= ''?'btnactives':''">
-						下一题
-					</view>
-				</view>
 
 			</view>
 			<!-- 多选题 -->
-			<view class="box" v-for="(item,index) in list3" :key="index" v-if="tabindex == 3">
+<!-- 			<view class="box" v-for="(item,index) in list3" :key="index" v-if="tabindex == 3">
 				<view class="titleimg">
 					{{item.type}}
 				</view>
@@ -132,13 +141,13 @@
 					<view class="btn1">
 						上一题
 					</view>
-					<view class="btn2 btnactives" >
+					<view class="btn2 btnactives">
 						下一题
 					</view>
 				</view>
-			</view>
+			</view> -->
 			<!-- 选择题 -->
-			<view class="box" v-for="(item,index) in list4" :key="index" v-if="tabindex == 4">
+<!-- 			<view class="box" v-for="(item,index) in list4" :key="index" v-if="tabindex == 4">
 				<view class="titleimg">
 					{{item.type}}
 				</view>
@@ -161,7 +170,7 @@
 						</view>
 					</view>
 				</view>
-			
+
 				<view class="btnbox" v-if="tabindex  == 4 ">
 					<view class="btn1">
 						上一题
@@ -170,101 +179,139 @@
 						下一题
 					</view>
 				</view>
-			</view>
-			
+			</view> -->
+
 		</view>
 	</view>
 
 </template>
 
 <script>
+	import {
+		testquestion
+	} from '@/api/liveApp.js';
 	export default {
 		data() {
 			return {
-				tabindex: "0",
+				tabindex: 0,
 				answertext: "",
 				Inputtype: false,
 				action: 'http://qyh.ugekeji.com/api/v3/upload',
-				list: [{
+				data: [],
+				list: {
 					type: "单选题",
 					name: "在线时长",
 					fraction: "5",
 					currentIndex: null,
-
 					answertext: "",
 					arr: [{
 						name: "24小时(随时可以进入工作状态)",
 						fraction: "5",
-						letter: "A"
 					}, {
 						name: "12-18小时",
 						fraction: "3",
-						letter: "B"
 					}, {
 						name: "2-11小时",
 						fraction: "2",
-						letter: "C"
 					}]
-				}],
-				list2: [{
-					type: "填空题",
-					answertexts: "",
-				}],
-				list3: [{
-					type: "多选题",
-					name: "类别(可多选并自行增加)",
+				},
+				list2: {
+					type: "单选题",
+					name: "设备质量（麦克风、电脑、相关制作设备）",
+					fraction: "5",
 					currentIndex: null,
 					answertext: "",
 					arr: [{
-						name: "专题片",
-						disable: false,
-						letter: "A"
+						name: "有独立录音棚或100000元人民币以上设备（手机不算）",
+						fraction: "3",
 					}, {
-						name: "宣传片",
-						disable: false,
-						letter: "B"
+						name: "60000-99999元人民币设备（手机不算）",
+						fraction: "2.5",
 					}, {
-						name: "AI",
-						disable: false,
-						letter: "C"
+						name: "30000-59999元人民币设备（手机不算）",
+						fraction: "2",
+					}, {
+						name: "10000-29999元人民币设备（手机不算）",
+						fraction: "1.5",
+					}, {
+						name: "9999元人民币以下设备（手机不算）",
+						fraction: "1",
+					}, {
+						name: "没有专业设备（手机）",
+						fraction: "0.3",
 					}]
-				}],
-				list4: [{
-					type: "选择题",
-					name: "相关证书 (多选,可自行增加) 共三分 0.5分/项",
-					arr: [{
-						name: "专业资格证书",
-						disable: false,
-						letter: "A"
-					}, {
-						name: "外语证书",
-						disable: false,
-						letter: "B"
-					}, {
-						name: "乐器证书",
-						disable: false,
-						letter: "C"
-					}]
-				}],
+				},
+				list3:"",
+				// list2: [{
+				// 	type: "填空题",
+				// 	answertexts: "",
+				// }],
+				// list3: [{
+				// 	type: "多选题",
+				// 	name: "类别(可多选并自行增加)",
+				// 	currentIndex: null,
+				// 	answertext: "",
+				// 	arr: [{
+				// 		name: "专题片",
+				// 		disable: false,
+				// 		letter: "A"
+				// 	}, {
+				// 		name: "宣传片",
+				// 		disable: false,
+				// 		letter: "B"
+				// 	}, {
+				// 		name: "AI",
+				// 		disable: false,
+				// 		letter: "C"
+				// 	}]
+				// }],
+				// list4: [{
+				// 	type: "选择题",
+				// 	name: "相关证书 (多选,可自行增加) 共三分 0.5分/项",
+				// 	arr: [{
+				// 		name: "专业资格证书",
+				// 		disable: false,
+				// 		letter: "A"
+				// 	}, {
+				// 		name: "外语证书",
+				// 		disable: false,
+				// 		letter: "B"
+				// 	}, {
+				// 		name: "乐器证书",
+				// 		disable: false,
+				// 		letter: "C"
+				// 	}]
+				// }],
 			}
+		},
+		mounted() {
+			// this.getData()
 		},
 		methods: {
 			/**
 			 * getchoice
 			 * 单选选择的index
 			 */
-			getchoice(index, indexs) {
-				this.list[index].currentIndex = indexs
-				this.list[index].nextsteptype = true
+			getchoice(index) {
+				console.log(this.list)
+				if (this.tabindex == 0) {
+					this.list.currentIndex = index
+					return
+				}
+				if (this.tabindex == 1) {
+					this.list2.currentIndex = index
+					return
+				}
+
 			},
 			/**
 			 * getMultiplechoice
 			 * 多选
 			 */
-			getMultiplechoice(index,indexs){
-				if(this.list3[index].arr[indexs].disable){
+			getMultiplechoice(index, indexs) {
+				if (this.list3[index].arr[indexs].disable) {
 					this.list3[index].arr[indexs].disable = false
-				}else{
+				} else {
 					this.list3[index].arr[indexs].disable = true
 				}
 			},
@@ -272,10 +319,10 @@
 			 * getchoicequestion
 			 * 选择题多选(真正数据删除用一个即可)
 			 */
-			getchoicequestion(index,indexs){
-				if(this.list4[index].arr[indexs].disable){
+			getchoicequestion(index, indexs) {
+				if (this.list4[index].arr[indexs].disable) {
 					this.list4[index].arr[indexs].disable = false
-				}else{
+				} else {
 					this.list4[index].arr[indexs].disable = true
 				}
 			},
@@ -292,17 +339,35 @@
 				}
 			},
 			/**
-			 * getnextstep
+			 * Lastquestion
+			 * 上一题
 			 */
-			getnextstep(index) {
-				// if (this.list[index].currentIndex != null || this.list[index].answertext != '') {
-				// 	uni.showToast({
-				// 		icon: "none",
-				// 		title: "下一题"
-				// 	})
-
-				// }
-				this.tabindex = index + 1
+			// Lastquestion(index) {
+			// 	this.tabindex = index - 1
+			// },
+			/**
+			 * getnextstep
+			 * 下一题
+			 */
+			getnextstep(tabindex) {
+				console.log(tabindex)
+				if(this.tabindex == 0){
+					if(this.list.currentIndex != null){
+						this.tabindex = tabindex + 1
+					}
+				}
+				if(this.tabindex == 1){
+					if(this.list2.currentIndex != null){
+						this.tabindex = tabindex + 1
+						
+					}
+				}
+				if(this.tabindex == 2){
+					if(this.list3 != ''){
+						this.tabindex = tabindex + 1
+					}
+				}
+				console.log("77777777",this.tabindex)
 			}
 		}
 	}
@@ -348,18 +413,7 @@
 				width: 94%;
 				margin-left: 3%;
 
-				.titlename {
-					margin-top: 70rpx;
-					font-size: 30rpx;
-					color: #000000;
-					font-weight: bolder;
 
-					input {
-						width: 50rpx;
-						float: left;
-						border-bottom: 1rpx solid #000000;
-					}
-				}
 
 				.answer {
 					font-size: 24rpx;
@@ -431,7 +485,7 @@
 			width: 83%;
 			height: 93rpx;
 			text-align: center;
-			margin-left: 4%;
+			margin-left: 2%;
 			line-height: 93rpx;
 			background: #706E6E;
 			border: 1px solid #706E6E;
@@ -486,6 +540,27 @@
 			.btnactives {
 				background-color: #000000;
 			}
+		}
+
+		.titlename {
+			margin-top: 70rpx;
+			font-size: 30rpx;
+			color: #000000;
+			font-weight: bolder;
+
+			input {
+				width: 50rpx;
+				float: left;
+				border-bottom: 1rpx solid #000000;
+			}
+		}
+
+		.tiankong {
+			// display: flex;
+			// display: -webkit-flex;
+			// align-items: center;
+			// flex-direction: row;
+			// flex-wrap: wrap;
 		}
 	}
 </style>
