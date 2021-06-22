@@ -1,6 +1,5 @@
 <template>
 	<view>
-		<!-- src="http://mp4.vjshi.com/2021-05-19/e141f65baf6e46b4dd384fafbb5a6274.mp4" -->
 		<video
 			:style="'height: '+(emulator_Height)+'rpx;  width:750rpx;'"
 			object-fit="fill"
@@ -32,9 +31,17 @@
 		</view>
 		<scroll-view class="msgs" id="msgs" :scroll-y="true" :show-scrollbar="false">
 			<view class="msg" v-for="(item, index) in msgAll">
-				<text class="uname" v-if="item.type == 'msg'">{{item.nickname}}：</text>
+				<!-- <text class="uname" v-if="item.type == 'msg'">{{item.nickname}}：</text>
 				<text class="umsg" v-if="item.type == 'msg'">{{item.msg}}</text>
 				<text class="enter-msg" v-if="item.type == 'enter'">{{item.msg}}</text>
+				<text class="logout-msg" v-if="item.type == 'logout'">{{item.msg}}</text> -->
+				
+				<!-- 用户发送消息 -->
+				<text class="uname" v-if="item.type == 'msg'">{{item.nickname}}：</text>
+				<text class="umsg" v-if="item.type == 'msg'">{{item.msg}}</text>
+				<!-- 用户加入直播间 -->
+				<text class="enter-msg" v-if="item.type == 'enter'">{{item.msg}}</text>
+				<!-- 用户退出直播间 -->
 				<text class="logout-msg" v-if="item.type == 'logout'">{{item.msg}}</text>
 			</view>
 		</scroll-view>
@@ -116,7 +123,7 @@
 				anchorInfo: '',
 				// 当前观看人信息
 				userInfo: '',
-				// 是否关注该主播,
+				// 是否关注该主播
 				isFollow: 0,
 				// 直播间人数
 				userNum: 0,
@@ -134,46 +141,45 @@
 		},
 		onLoad(options) {
 			var _this = this;
-			// 获取主播信息、拉流地址
+			// 获取屏幕高度
+			uni.getSystemInfo({
+				success: function(res) {
+					_this.emulator_Height = (res.screenHeight * (750 / res.windowWidth)) //将px 转换rpx
+				}
+			});
+			// 获取礼物
+			getGift({}).then(res => {
+				_this.gifts = res.data.list;
+			})
+			// 获取直播间详情信息
 			var data = {
 				id: options.id
 			}
+			// 直播间详情
+			console.log('onLoad-------------------------------------------------------------------------------')
 			getLiveRoomDetail(data).then(res=> {
+				console.log(res);
 				_this.row = res.data.row;
 				_this.src = res.data.row.pull_url;
 				_this.anchorInfo = res.data.anchorInfo;
 				_this.userInfo = res.data.userInfo;
 			})
-			// 获取礼物
-			getGift({}).then(res => {
-				_this.gifts = res.data.list;
-			})
-			
-			// 获取屏幕高度
-			let self = this;
-			uni.getSystemInfo({
-				success: function(res) {
-					self.emulator_Height = (res.screenHeight * (750 / res.windowWidth)) //将px 转换rpx
-				}
-			});
-			
-			
+		},
+		onReady() {
+			console.log('onReady-------------------------------------------------------------------------------')
+			var _this = this;
 			// 保持屏幕常亮
 			uni.setKeepScreenOn({
 			    keepScreenOn: true
 			});
-			var _this = this;
-			
+			// 连接websocket
 			uni.connectSocket({
-			    url: 'ws://39.106.196.170:20196',
-				success(res) {
-					console.log(res)
-				}
+			    url: 'ws://39.106.196.170:20196'
 			});
 			uni.onSocketOpen(function (res) {
 				console.log('WebSocket连接已打开！');
 				// 发送进入聊天室提醒
-				_this.send('enter', '{"roomId":"1","nickname":"'+_this.userInfo.nickname+'"}')
+				_this.send('enter', '{"roomId":"'+_this.row.id+'","nickname":"'+_this.userInfo.nickname+'", "uid":'+_this.userInfo.uid+'}')
 				// 开启心跳监听
 				_this.heartbeat()
 			});
@@ -214,7 +220,7 @@
 						_this.msgAll.push(msgData);
 				    break;
 				    case 'logout':
-				        _this.msgAll.push(msgData);
+				        _this.msgAll.push(datas.data);
 				    break;
 					case 'msg':
 					    _this.msgAll.push(msgData);
@@ -232,7 +238,7 @@
 						_this.userNum = datas.data;
 					break;
 				}
-			});
+			})
 		},
 		// 退出直播间
 		// onUnload() {
@@ -301,7 +307,7 @@
 			heartbeat() {
 				var _this = this;
 				_this.ping = setInterval(function(){
-					_this.send('ping', '{"roomId":"1", "msg":"心跳检测"}')
+					_this.send('ping', '{"roomId":"'+_this.row.id+'", "msg":"心跳检测", "uid":'+_this.userInfo.uid+'}')
 				}, 2000)
 			},
 			// 提交聊天内容
@@ -314,7 +320,7 @@
 					return false;
 				}
 				// 提交聊天内容并清空输入内容
-				this.send('msg', '{"roomId":"1", "msg":"'+this.msg+'", "nickname":"'+this.userInfo.nickname+'"}');
+				this.send('msg', '{"roomId":"'+this.row.id+'", "msg":"'+this.msg+'", "nickname":"'+this.userInfo.nickname+'", "uid":'+this.userInfo.uid+'}');
 			},
 			send(type, data) {
 				var _this = this;

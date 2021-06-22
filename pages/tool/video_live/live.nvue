@@ -20,9 +20,12 @@
 				<text class="umsg" @click="star()">点此开始直播!</text>
 			</view>
 			<view class="msg" v-for="(item, index) in msgAll">
+				<!-- 用户发送消息 -->
 				<text class="uname" v-if="item.type == 'msg'">{{item.nickname}}：</text>
 				<text class="umsg" v-if="item.type == 'msg'">{{item.msg}}</text>
+				<!-- 用户加入直播间 -->
 				<text class="enter-msg" v-if="item.type == 'enter'">{{item.msg}}</text>
+				<!-- 用户退出直播间 -->
 				<text class="logout-msg" v-if="item.type == 'logout'">{{item.msg}}</text>
 			</view>
 		</scroll-view>
@@ -35,22 +38,25 @@
 		data() {
 			return {
 				context: '',
+				// 直播间id
 				id: '',
+				// 当前用户id
+				uid: '',
+				// 推流地址
 				push_url: '',
+				// 心跳监听
 				ping: '',
 				// 直播间人数
 				userNum: 0,
 				// 消息列表
 				msgAll: [],
-				msg: '',
-				init: false
+				msg: ''
 			}
 		},
 		onLoad(options) {
 			this.id = options.id;
 			this.push_url = options.push_url;
-
-			
+			this.uid = options.uid;
 		},
 		onReady() {
 			// 保持屏幕常亮
@@ -79,7 +85,7 @@
 					break;
 					// 有人退出直播间
 					case 'logout':
-						_this.msgAll.push(msgData);
+						_this.msgAll.push(datas.data);
 					break;
 					// 直播间消息
 					case 'msg':
@@ -101,16 +107,15 @@
 					break;
 				}
 			});
-			// 开启心跳
-			_this.heartbeat()
-			_this.send('startLive', '{"roomId":"1","msg":"开始直播"}')
 			
 			
 			// 注意：需要在onReady中 或 onLoad 延时
 			this.context = uni.createLivePusherContext("livePusher", this);
 		},
 		methods: {
+			// 开始直播
 			star(){
+				// 开始推流
 				this.context.start({
 					success: (a) => {
 						console.log("livePusher.start:" + JSON.stringify(a));
@@ -119,6 +124,11 @@
 						console.log('fail')
 					}
 				})
+				// 开启心跳
+				this.heartbeat()
+				// 开启直播
+				console.log('开始直播');
+				this.send('startLive', '{"roomId":"'+this.id+'","msg":"开始直播","uid":'+this.uid+'}')
 			},
 			statechange(e) {
 			    // console.log("statechange:" + JSON.stringify(e));
@@ -136,7 +146,7 @@
 			heartbeat() {
 				var _this = this;
 				_this.ping = setInterval(function(){
-					_this.send('ping', '心跳检测')
+					_this.send('ping', '{"roomId":"'+_this.id+'","msg":"心跳检测","uid":'+_this.uid+'}')
 				}, 2000)
 			},
 			close() {
@@ -158,7 +168,7 @@
 						id: _this.id
 					},
 					success(res) {
-						_this.send('endLive', '{"roomId":"1","msg":"下播"}')
+						_this.send('endLive', '{"roomId":"'+_this.id+'","msg":"下播","uid":'+_this.uid+'}')
 						// uni.closeSocket();
 						uni.onSocketClose(function () {
 							console.log('直播已关闭');
@@ -174,7 +184,7 @@
 			        }
 			    });
 				uni.switchTab({
-					url: '../../index/components/Me'
+					url: '/pages/index/components/Me'
 				})
 			},
 			send(type, data) {

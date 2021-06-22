@@ -41,8 +41,8 @@ export function getLiveRoomList(data){
 /**
  * 获取直播间详情
  */
-export function getLiveRoomDetail(){
-	return request.get('v3/liveRoomDetail');
+export function getLiveRoomDetail(data){
+	return request.get('v3/liveRoomDetail', data);
 }
 /**
  * 开始直播

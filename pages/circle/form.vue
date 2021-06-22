@@ -3,6 +3,12 @@
 		<image src="/static/images/main-bg.png" class="bg"></image>
 		<view class="main">
 			<input class="title" type="text" v-model="title" placeholder="请输入标题" />
+			
+			<view class="container">
+			        <editor id="editor" class="ql-container" :placeholder="placeholder" @ready="onEditorReady"></editor>
+			        <button type="warn" @tap="undo">撤销</button>
+			    </view>
+			
 			<textarea class="content" v-model="content" placeholder="请输入内容..." />
 			<u-upload :action="action" ref="uUpload"></u-upload>
 			<view class="info">
@@ -29,15 +35,28 @@
 				title: '',
 				content: '',
 				show_auth: 1,
-				images: ''
+				images: '',
+				
+				placeholder: '开始输入...'
 			}
 		},
 		methods: {
-			 onEditorReady() {
+			
+			onEditorReady() {
+				// #ifdef MP-BAIDU
+				this.editorCtx = requireDynamicLib('editorLib').createEditorContext('editorId');
+				// #endif
+
+				// #ifdef APP-PLUS || H5 ||MP-WEIXIN
 				uni.createSelectorQuery().select('#editor').context((res) => {
 				  this.editorCtx = res.context
 				}).exec()
+				// #endif
 			},
+			undo() {
+				this.editorCtx.undo()
+			},
+			
 			radioChange(item) {
 				this.show_auth = item;
 			},
@@ -165,4 +184,21 @@
 	/deep/ .u-add-wrap {
 		background-color: #FFFFFF;
 	}
+	
+	
+	
+	
+	.container {
+	        padding: 10px;
+	    }
+	
+	    #editor {
+	        width: 100%;
+	        height: 300px;
+	        background-color: #CCCCCC;
+	    }
+	
+	    button {
+	        margin-top: 10px;
+	    }
 </style>

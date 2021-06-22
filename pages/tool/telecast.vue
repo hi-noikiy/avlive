@@ -57,9 +57,9 @@
 			startLive() {
 				var _this = this;
 				createLiveRoom().then(res => {
-					if(res.data.status == 200) {
+					if(res.status == 200) {
 						uni.navigateTo({
-							url: './video_live/live?id='+res.data.data.id+'&push_url='+res.data.data.push_url
+							url: '/pages/tool/video_live/live?id='+res.data.id+'&push_url='+res.data.push_url+'&uid='+res.data.uid
 						})
 					}
 				})
