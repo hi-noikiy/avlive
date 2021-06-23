@@ -19,6 +19,9 @@
 			</view>
 		</view>
 		<share-box ref="shareBox"></share-box>
+<view class="">
+	ss
+</view>
 	</view>
 </template>
 

@@ -162,3 +162,9 @@ export function payOrder(data){
 export function userInfo(){
 	return request.get('user');
 }
+/**
+ * 测评题库
+ */
+export function testquestion(){
+	return request.get('question/get_question_bank');
+}
