@@ -27,6 +27,9 @@
 				<text class="enter-msg" v-if="item.type == 'enter'">{{item.msg}}</text>
 				<!-- 用户退出直播间 -->
 				<text class="logout-msg" v-if="item.type == 'logout'">{{item.msg}}</text>
+				<!-- 用户赠送礼物 -->
+				<text class="uname" v-if="item.type == 'gift'">{{item.nickname}}：赠送了 </text>
+				<text class="gift-msg" v-if="item.type == 'gift'">{{item.msg}}</text>
 			</view>
 		</scroll-view>
 	</view>
@@ -48,6 +51,8 @@
 				ping: '',
 				// 直播间人数
 				userNum: 0,
+				// 榜单列表
+				firstList: [],
 				// 消息列表
 				msgAll: [],
 				msg: ''
@@ -93,17 +98,22 @@
 					break;
 					// 直播间礼物
 					case 'gift':
-						uni.showToast({
-							title: datas.data
-						})
+						console.log(datas);
+						console.log(msgData);
+						_this.msgAll.push(msgData)
 					break;
 					// 主播心跳检测
 					case 'ping':
 						// console.log('pong')
 					break;
-					// 直播间用户数量
+					// 直播间观看数量
 					case 'userNum':
 						_this.userNum = datas.data;
+					break;
+					// 榜单信息
+					case 'firstList':
+						console.log(datas);
+						console.log(msgData);
 					break;
 				}
 			});
@@ -116,14 +126,14 @@
 			// 开始直播
 			star(){
 				// 开始推流
-				this.context.start({
-					success: (a) => {
-						console.log("livePusher.start:" + JSON.stringify(a));
-					},
-					fail: (err) => {
-						console.log('fail')
-					}
-				})
+				// this.context.start({
+				// 	success: (a) => {
+				// 		console.log("livePusher.start:" + JSON.stringify(a));
+				// 	},
+				// 	fail: (err) => {
+				// 		console.log('fail')
+				// 	}
+				// })
 				// 开启心跳
 				this.heartbeat()
 				// 开启直播
@@ -245,7 +255,7 @@
 	.msgs {
 		position: fixed;
 		width: 400rpx;
-		height: 320rpx;
+		height: 550rpx;
 		bottom: 148rpx;
 		left: 30rpx;
 		flex-direction: column;
@@ -278,5 +288,10 @@
 		font-size: 20rpx;
 		font-weight: bold;
 		color: #FE3149;
+	}
+	.gift-msg {
+		font-size: 20rpx;
+		font-weight: bold;
+		color: #FFF33D;
 	}
 </style>

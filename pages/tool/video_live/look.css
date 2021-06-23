@@ -299,3 +299,8 @@
 	width: 750rpx;
 	height: 1000rpx;
 }
+.gift-msg {
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FFF33D;
+}

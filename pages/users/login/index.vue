@@ -364,6 +364,10 @@
 						})
 						.then(res => {
 							let data = res.data;
+							
+							// 保存用户uid
+							uni.setStorageSync('uid', data.uid);
+							
 							that.$store.commit("LOGIN", {
 								'token': data.token,
 								'time': data.expires_time - this.$Cache.time()
@@ -481,7 +485,10 @@
 					.then(({
 						data
 					}) => { 
-						console.log(this.$Cache.time()); 
+						console.log(this.$Cache.time());
+						// 保存用户uid
+						uni.setStorageSync('uid', data.uid);
+						
 						that.$store.commit("LOGIN", {
 							'token': data.token,
 							'time': data.expires_time - this.$Cache.time()

@@ -31,11 +31,6 @@
 		</view>
 		<scroll-view class="msgs" id="msgs" :scroll-y="true" :show-scrollbar="false">
 			<view class="msg" v-for="(item, index) in msgAll">
-				<!-- <text class="uname" v-if="item.type == 'msg'">{{item.nickname}}：</text>
-				<text class="umsg" v-if="item.type == 'msg'">{{item.msg}}</text>
-				<text class="enter-msg" v-if="item.type == 'enter'">{{item.msg}}</text>
-				<text class="logout-msg" v-if="item.type == 'logout'">{{item.msg}}</text> -->
-				
 				<!-- 用户发送消息 -->
 				<text class="uname" v-if="item.type == 'msg'">{{item.nickname}}：</text>
 				<text class="umsg" v-if="item.type == 'msg'">{{item.msg}}</text>
@@ -43,6 +38,9 @@
 				<text class="enter-msg" v-if="item.type == 'enter'">{{item.msg}}</text>
 				<!-- 用户退出直播间 -->
 				<text class="logout-msg" v-if="item.type == 'logout'">{{item.msg}}</text>
+				<!-- 用户赠送礼物 -->
+				<text class="uname" v-if="item.type == 'gift'">{{item.nickname}}：赠送 </text>
+				<text class="gift-msg" v-if="item.type == 'gift'">{{item.msg}}</text>
 			</view>
 		</scroll-view>
 		<view class="bottom">
@@ -127,6 +125,8 @@
 				isFollow: 0,
 				// 直播间人数
 				userNum: 0,
+				// 榜单列表
+				firstList: [],
 				// 心跳
 				ping: '',
 				// 礼物列表
@@ -153,10 +153,10 @@
 			})
 			// 获取直播间详情信息
 			var data = {
-				id: options.id
+				id: options.id,
+				uid: uni.getStorageSync('uid')
 			}
 			// 直播间详情
-			console.log('onLoad-------------------------------------------------------------------------------')
 			getLiveRoomDetail(data).then(res=> {
 				console.log(res);
 				_this.row = res.data.row;
@@ -166,7 +166,6 @@
 			})
 		},
 		onReady() {
-			console.log('onReady-------------------------------------------------------------------------------')
 			var _this = this;
 			// 保持屏幕常亮
 			uni.setKeepScreenOn({
@@ -204,9 +203,10 @@
 			uni.onSocketMessage(function (res) {
 				var datas = JSON.parse(res.data);
 				var msgData = JSON.parse(datas.data);
-				console.log(datas);
-				console.log(msgData);
+				// console.log(datas);
+				// console.log(msgData);
 				switch(datas.type) {
+					// 主播关闭直播
 					case 'endLive':
 						uni.showToast({
 							title: msgData.msg,
@@ -216,26 +216,36 @@
 						// 	url: '../../index/components/Home'
 						// })
 					break;
+					// 加入直播间
 				    case 'enter':
 						_this.msgAll.push(msgData);
 				    break;
+					// 退出直播间
 				    case 'logout':
 				        _this.msgAll.push(datas.data);
 				    break;
+					// 聊天室消息
 					case 'msg':
 					    _this.msgAll.push(msgData);
 					break;
+					// 刷礼物
 					case 'gift':
-						uni.showToast({
-							title: msgData.msg,
-							icon: 'none'
-						})
+						console.log(datas);
+						console.log(msgData);
+						_this.msgAll.push(msgData)
 					break;
+					// 心跳检测
 					case 'ping':
 						// console.log('pong')
 					break;
+					// 观看人数
 					case 'userNum':
 						_this.userNum = datas.data;
+					break;
+					// 榜单信息
+					case 'firstList':
+						console.log(datas);
+						console.log(msgData);
 					break;
 				}
 			})
@@ -289,18 +299,25 @@
 					})
 					return false;
 				}
-				uni.showToast({
-					title: '货币不足，请充值',
-					icon: 'none'
-				})
-				return;
 				var data = {
+					uid: this.userInfo.uid,
+					avatar: this.userInfo.avatar,
 					gift_id: this.gift_id,
-					anchor_id: this.row.anchor_id
+					anchor_id: this.row.anchor_id,
+					room_id: this.row.id
 				};
-				var that = this;
+				var _this = this;
 				giveGift(data).then(res => {
-					console.log(res)
+					uni.showToast({
+						title: res.msg,
+						icon: 'none'
+					})
+					if(res.status == 200) {
+						// 关闭礼物框
+						_this.box = false;
+						// 发送礼物赠送提醒
+						_this.send('gift', '{"roomId":"'+_this.row.id+'","msg": "'+res.data.gift_name+'","gift_id":'+_this.gift_id+',"nickname":"'+_this.userInfo.nickname+'", "uid":'+_this.userInfo.uid+'}')
+					}
 				})
 			},
 			// 心跳检测,两秒一次
