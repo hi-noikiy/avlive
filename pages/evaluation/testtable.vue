@@ -193,13 +193,13 @@
 									style="width: 150rpx;text-decoration: underline;">{{date8}}</text>
 							</view>
 						</picker>
-						<view class="addanswer" style="margin-top: 0;">
+						<!-- 						<view class="addanswer" style="margin-top: 0;">
 							<view style="width: 49rpx;text-align: center;">
 								<image src="../../static/images/addanswer.png" mode="" @click="addanswer()">
 								</image>
 							</view>
-							<!-- <input type="text" v-show="Inputtype" v-model="answertext" /> -->
-						</view>
+
+						</view> -->
 					</view>
 					<view class="answer">
 						<view style="width: 300rpx;">
@@ -497,7 +497,7 @@
 
 <script>
 	import {
-		testquestion
+		Usertesting
 	} from '@/api/liveApp.js';
 	export default {
 		data() {
@@ -1388,9 +1388,9 @@
 				}
 				if (this.tabindex == 13) {
 					if (this.list14data.length != 0) {
-						if(this.list14data.length >=4){
+						if (this.list14data.length >= 4) {
 							var num = 16
-						}else{
+						} else {
 							var num = this.list14data.length * 5
 						}
 						let data = {
@@ -1415,29 +1415,45 @@
 				}
 				if (this.tabindex == 15) {
 					if (this.list16data.length != 0) {
-						if(this.list14data.length >=4){
+						if (this.list14data.length >= 4) {
 							var num = 10
-						}else{
+						} else {
 							var num = this.list16data.length * 3
 						}
-						let data = {
+						let datas = {
 							name: this.list16data,
 							fraction: num
 						}
-						this.arrdata.push(data)
+						this.arrdata.push(datas)
 						console.log("全部答题", this.arrdata)
 						var allnum = this.arrdata.reduce((p, e) => p + e.fraction, 0);
 						console.log(allnum)
-						uni.showToast({
-							icon: "none",
-							title: '获得'+allnum+'分'
+						var data = {
+							goods: JSON.stringify(this.arrdata),
+							num: allnum,
+							evaluation: this.images
+						}
+
+						Usertesting(data).then(res => {
+							console.log("用户测试结果", res)
+							if (res.status == 200) {
+								setTimeout(() => {
+									uni.showToast({
+										icon: "none",
+										title: "提交成功",
+									});
+									setTimeout(() => {
+										uni.hideToast();
+										//关闭提示后跳转
+										uni.navigateBack({
+											delta: 1
+										});
+									}, 1500)
+								}, 0);
+							}
 						})
-						// uni.navigateBack({
-						// 	delta:1
-						// })
 					}
 				}
-
 				console.log("77777777", this.tabindex)
 			}
 		}
@@ -1445,18 +1461,27 @@
 </script>
 
 <style scoped lang="scss">
-	.bg {
-		width: 750rpx;
-		height: 100vh;
+	page {
 		background-image: url(/static/images/main-bg.png);
-		background-size: 100%;
+		height: 100%;
+		width: 100%;
+		background-size: cover;
 		background-position: 100%;
+		
 	}
 
+	// .bg {
+	// 	width: 750rpx;
+	// 	height: 100vh;
+	// 	background-image: url(/static/images/main-bg.png);
+	// 	background-size: 100%;
+	// 	background-position: 100%;
+	// }
+
 	.main {
-		position: absolute;
+		// position: absolute;
 		top: 0;
-		left: 30rpx;
+		margin-left: 30rpx;
 		width: 690rpx;
 		height: calc(100vh - 76rpx);
 		overflow: auto;

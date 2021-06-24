@@ -82,7 +82,7 @@
 				list: []
 			}
 		},
-		onLoad() {
+		onShow() {
 			this.getData();
 		},
 		methods: {
