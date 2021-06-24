@@ -3,7 +3,7 @@
 		<live-pusher id='livePusher' ref="livePusher" class="livePusher"
 		:url="push_url"
 		:style="{height: 780+'px'}"
-		mode="FHD" :muted="true" :enable-camera="true" :auto-focus="true" :beauty="9" whiteness="9"
+		mode="FHD" :muted="true" :enable-camera="true" :auto-focus="true" :beauty="beauty_rating" :whiteness="beauty_rating"
 		aspect="9:16" @statechange="statechange" @netstatus="netstatus" @error = "error"
 		></live-pusher>
 		<view class="top">
@@ -41,6 +41,8 @@
 		data() {
 			return {
 				context: '',
+				// 美颜等级
+				beauty_rating: 0,
 				// 直播间id
 				id: '',
 				// 当前用户id
@@ -62,6 +64,7 @@
 			this.id = options.id;
 			this.push_url = options.push_url;
 			this.uid = options.uid;
+			this.beauty_rating = options.beauty_rating;
 		},
 		onReady() {
 			// 保持屏幕常亮

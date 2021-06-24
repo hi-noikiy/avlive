@@ -2,7 +2,7 @@
 	<view>
 		<u-navbar :is-back="false" title="">
 			<view class="header">
-				<view class="l">
+				<view class="l" @click="urlTo('/pages/circle/my')">
 					<image src="../../users/static/1.png"></image>
 					<view>我发表的</view>
 				</view>

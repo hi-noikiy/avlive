@@ -257,7 +257,16 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/circle/my",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我发布的",
+                "enablePullDownRefresh": true
+            }
+            
+        }
+    ],
 	// "tabBar": {
 	// 	"color": "#8a8a8a",
 	// 	"selectedColor": "#00ff7f",

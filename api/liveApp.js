@@ -139,6 +139,12 @@ export function saveCircle(data){
 	return request.post('v3/saveCircle', data);
 }
 /**
+ * 删除圈子
+ */
+export function deleteCircle(data){
+	return request.get('v3/deleteCircle', data);
+}
+/**
  * 圈子点赞
  */
 export function circleLike(data){
