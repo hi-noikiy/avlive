@@ -33,6 +33,8 @@ function baseRequest(url, method, data, {noAuth = false, noVerify = false})
           reslove(res.data, res);
         }else if (res.data.status == 200){
           reslove(res.data, res);
+        }else if (res.data.status == 400){
+          reslove(res.data, res);
         }else if ([410000, 410001, 410002].indexOf(res.data.status) !== -1) {
 		  toLogin();
           reject(res.data);

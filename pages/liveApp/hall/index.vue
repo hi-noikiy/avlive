@@ -2,19 +2,21 @@
 	<view class="">
 		<image src="/static/images/main-bg.png" class="bg"></image>
 		<view class="main">
-			<view class="i i1" v-show="false">
+			<view class="i i1">
 				<view class="title">指定制作方</view>
-				<input type="text" value="" placeholder="选填" />
+				<input type="number" value="" :disabled="disabledzz" placeholder="选填" v-model="Producer"
+					@input="changeInputzz()" />
 				<view class="info">安妮爱主持</view>
 			</view>
-			<view class="i i1" v-show="false">
+			<view class="i i1">
 				<view class="title">指定雇主</view>
-				<input type="text" value="" placeholder="选填" />
+				<input type="number" value="" :disabled="disabledgz" v-model="employer" placeholder="选填"
+					@input="changeInputgz()" />
 				<view class="info">安妮爱主持</view>
 			</view>
 			<view class="i i2">
 				<view class="title">预算（非必填）</view>
-				<input type="text" v-model="pay_price" placeholder="请输入" />
+				<input type="number" v-model="pay_price" placeholder="请输入" />
 			</view>
 			<view class="i i3">
 				<view class="title">期望制作周期（非必填）</view>
@@ -30,13 +32,8 @@
 				<view class="title">音色要求（非必填可多选）</view>
 				<view class="inputs">
 					<u-checkbox-group>
-						<u-checkbox
-							v-for="(item, index) in checkboxList"
-							v-model="item.checked"
-							shape="square"
-							active-color="#000000"
-							:name="item.timbre_type_name"
-						>{{item.timbre_type_name}}</u-checkbox>
+						<u-checkbox v-for="(item, index) in checkboxList" v-model="item.checked" shape="square"
+							active-color="#000000" :name="item.timbre_type_name">{{item.timbre_type_name}}</u-checkbox>
 					</u-checkbox-group>
 				</view>
 			</view>
@@ -49,13 +46,18 @@
 				<textarea v-model="remake" placeholder="请输入详情" />
 			</view>
 			<u-upload :action="action" ref="uUpload"></u-upload>
-			<view class="sub" @click="submit">提交</view>
+
+			<view class="sub" @click="submit" v-if="Producer!=''">确认并付款</view>
+
+			<view class="sub" @click="submit" v-else>提交</view>
 		</view>
 	</view>
 </template>
 
 <script>
 	import {
+		payOrder,
+		getUserInfo,
 		getDemandTimbreList,
 		createOrder,
 		getUserOrderList,
@@ -64,11 +66,17 @@
 	export default {
 		data() {
 			return {
+				disabledzz: false,
+				disabledgz: false,
 				action: 'http://qyh.ugekeji.com/api/v3/upload',
-				unitArr: ['小时','天','周','月'],
+				unitArr: ['小时', '天', '周', '月'],
 				unit: '小时',
 				unitIndex: 0,
 				checkboxList: [],
+				//制作方
+				Producer: '',
+				//雇主
+				employer: '',
 				// 预算
 				pay_price: '',
 				// 制作周期
@@ -90,13 +98,13 @@
 			var that = this;
 			getDemandTimbreList().then(res => {
 				var checkboxList = res.data;
-				for(let i = 0; i < checkboxList.length; i++) {
+				for (let i = 0; i < checkboxList.length; i++) {
 					checkboxList[i].checked = false;
-					checkboxList[i].disabled= false;
+					checkboxList[i].disabled = false;
 				}
 				that.checkboxList = checkboxList;
 			});
-			if(JSON.stringify(options) != "{}") {
+			if (JSON.stringify(options) != "{}") {
 				that.edit = true;
 				that.order_id = options.order_id;
 				// 修改
@@ -108,23 +116,24 @@
 					that.order_info = res.data.order_info;
 					// 需求详情
 					// that.htmlNodes = HTMLParser(that.order_info.remake);
-					
+
 					that.order_list = res.data.order_list;
-					
+
 					// 表单赋值
-					that.pay_price = (that.order_info.pay_num == 0) ? that.order_info.pay_price : that.order_info.pay_num;
+					that.pay_price = (that.order_info.pay_num == 0) ? that.order_info.pay_price : that.order_info
+						.pay_num;
 					that.cycle_data = that.order_info.cycle_value;
 					that.unit = that.order_info.cycle_type;
-					for(let i = 0; i < that.unitArr.length; i++) {
-						if(that.unitArr[i] == that.unit) {
+					for (let i = 0; i < that.unitArr.length; i++) {
+						if (that.unitArr[i] == that.unit) {
 							that.unitIndex = i;
 							break;
 						}
 					}
-					var timbreTypeIdArr = that.order_info.timbre_type_name.split(/[ ]+/);// 以空格分开
-					for(var i = 0; i < that.checkboxList.length; i++) {
-						for(var j = 0; j < timbreTypeIdArr.length; j++) {
-							if(that.checkboxList[i].timbre_type_name == timbreTypeIdArr[j]) {
+					var timbreTypeIdArr = that.order_info.timbre_type_name.split(/[ ]+/); // 以空格分开
+					for (var i = 0; i < that.checkboxList.length; i++) {
+						for (var j = 0; j < timbreTypeIdArr.length; j++) {
+							if (that.checkboxList[i].timbre_type_name == timbreTypeIdArr[j]) {
 								that.checkboxList[i].checked = true;
 							}
 						}
@@ -132,51 +141,42 @@
 					that.desc = that.order_info.desc;
 					that.remake = that.order_info.remake;
 					that.enclosure = that.order_info.enclosure;
+					console.log("订单类型",that.order_info.order_type)
+					console.log("制作方id",that.order_info.look_id)
+					if(that.order_info.order_type == 2){
+						that.Producer = that.order_info.look_id
+						that.disabledzz = true
+						that.disabledgz = true
+					}
 				})
 			}
 		},
+
 		methods: {
+			//填写制作方发生变化时
+			changeInputzz() {
+				if (this.Producer == '') {
+					this.disabledgz = false
+				} else {
+					this.disabledgz = true
+				}
+			},
+			//填写雇主发生变化时
+			changeInputgz() {
+				if (this.employer == '') {
+					this.disabledzz = false
+				} else {
+					this.disabledzz = true
+				}
+			},
 			// 周期选中
 			unitChange(e) {
 				this.unitIndex = e.detail.value;
 				this.unit = this.unitArr[e.detail.value];
 			},
-			// 提交
-			submit() {
-				var that = this;
-				// 音色要求
-				var timbre_type_id = '';
-				var timbre_type_name = '';
-				if(that.checkboxList.length > 0) {
-					for(let i = 0; i < that.checkboxList.length; i++) {
-						if(that.checkboxList[i].checked === true) {
-							timbre_type_id += that.checkboxList[i].id + ',';
-							timbre_type_name += that.checkboxList[i].timbre_type_name + ',';
-						}
-					}
-					timbre_type_id = timbre_type_id.substr(0, timbre_type_id.length - 1);  
-					timbre_type_name = timbre_type_name.substr(0, timbre_type_name.length - 1);
-				}
-				// 图片
-				let files = [];
-				files = that.$refs.uUpload.lists.filter(val => {
-					return val.progress == 100;
-				})
-				if(files.length > 0) {
-					that.enclosure = files[0].response;
-				}
-				// 数据整合
-				var data = {
-					desc: that.desc,
-					remake: that.remake,
-					enclosure: that.enclosure,
-					timbre_type_id: timbre_type_id,
-					timbre_type_name: timbre_type_name,
-					cycle_type: that.unit,
-					cycle_value: that.cycle_data
-				}
-				// 请求接口
-				if(that.edit) {
+			chuangjianorder(data) {
+				var that = this
+				if (that.edit) {
 					// 修改
 					data.order_id = that.order_id;
 					data.pay_num = that.pay_price;
@@ -185,8 +185,9 @@
 							title: res.msg,
 							icon: 'none'
 						})
-						if(res.status == 200) {
-							setTimeout(function(){
+						if (res.status == 200) {
+							uni.hideLoading()
+							setTimeout(function() {
 								uni.switchTab({
 									url: '/pages/index/components/Hall'
 								})
@@ -197,21 +198,151 @@
 					// 新增
 					data.pay_price = that.pay_price;
 					createOrder(data).then(res => {
-						uni.showToast({
-							title: res.msg,
-							icon: 'none'
-						})
-						if(res.status == 200) {
-							setTimeout(function(){
-								uni.switchTab({
-									url: '/pages/index/components/Hall'
+						console.log("订单id", res.data.result.order_id)
+						if (that.Producer != '') {
+							var orderdata = {
+								order_id: res.data.result.order_id,
+								pay_type: 'yue'
+							}
+							payOrder(orderdata).then(res => {
+								console.log("支付结果", res)
+								if (res.status == 200) {
+									uni.hideLoading()
+									uni.showToast({
+										title: '支付成功等待作者确认',
+										icon: 'none'
+									})
+									setTimeout(function() {
+										uni.navigateBack({
+											delta: 1
+										})
+									}, 1500);
+								}
+							})
+							return
+						}
+						if (res.status == 200) {
+							uni.hideLoading()
+							uni.showToast({
+								title: res.msg,
+								icon: 'none'
+							})
+							setTimeout(function() {
+								uni.navigateBack({
+									delta: 1
 								})
 							}, 1000);
 						}
 					})
 				}
+			},
+			// 提交
+			submit() {
+				var that = this;
+				uni.showLoading()
+				// 音色要求
+				var timbre_type_id = '';
+				var timbre_type_name = '';
+				if (that.checkboxList.length > 0) {
+					for (let i = 0; i < that.checkboxList.length; i++) {
+						if (that.checkboxList[i].checked === true) {
+							timbre_type_id += that.checkboxList[i].id + ',';
+							timbre_type_name += that.checkboxList[i].timbre_type_name + ',';
+						}
+					}
+					timbre_type_id = timbre_type_id.substr(0, timbre_type_id.length - 1);
+					timbre_type_name = timbre_type_name.substr(0, timbre_type_name.length - 1);
+				}
+				// 图片
+				let files = [];
+				files = that.$refs.uUpload.lists.filter(val => {
+					return val.progress == 100;
+				})
+				if (files.length > 0) {
+					that.enclosure = files[0].response;
+				}
+				if (that.Producer != '') {
+					console.log("制作方")
+					var datas = {
+						look_id: that.Producer
+					}
+					getUserInfo(datas).then(res => {
+						console.log("制作方信息", res)
+						if (res.data.length == 0) {
+							console.log("暂无该用户")
+							uni.showToast({
+								icon: 'none',
+								title: '暂无该用户'
+							})
+							return
+						}
+						var data = {
+							order_type: 2,
+							look_id: that.Producer,
+							make_uid: res.data.uid,
+							make_name: res.data.nickname,
+							make_phone: res.data.phone,
+							desc: that.desc,
+							remake: that.remake,
+							enclosure: that.enclosure,
+							timbre_type_id: timbre_type_id,
+							timbre_type_name: timbre_type_name,
+							cycle_type: that.unit,
+							cycle_value: that.cycle_data
+						}
+						if (that.pay_price <= 0) {
+							uni.showToast({
+								icon: 'none',
+								title: '请输入预算金额'
+							})
+							return
+						}
+						that.chuangjianorder(data)
+					})
+				} else if (that.employer != '') {
+					console.log("雇主")
+					getUserInfo(datas).then(res => {
+						console.log("雇主信息", res)
+					})
+					var data = {
+						order_type: 3,
+						desc: that.desc,
+						remake: that.remake,
+						enclosure: that.enclosure,
+						timbre_type_id: timbre_type_id,
+						timbre_type_name: timbre_type_name,
+						cycle_type: that.unit,
+						cycle_value: that.cycle_data
+					}
+					that.chuangjianorder(data)
+				} else {
+					console.log("普通订单")
+					var data = {
+						order_type: 1,
+						desc: that.desc,
+						remake: that.remake,
+						enclosure: that.enclosure,
+						timbre_type_id: timbre_type_id,
+						timbre_type_name: timbre_type_name,
+						cycle_type: that.unit,
+						cycle_value: that.cycle_data
+					}
+					that.chuangjianorder(data)
+				}
+
 			}
-		}
+		},
+		// computed: {
+		// 	employer() {
+		// 		if (this.employer == '') {
+		// 			console.log("11111")
+		// 			return this.disabledgz = false
+		// 		} else {
+		// 			console.log("22222")
+		// 			return this.disabledgz = true
+		// 		}
+		// 	}
+		// }
 	}
 </script>
 
@@ -224,6 +355,7 @@
 		height: 100vh;
 		z-index: 1;
 	}
+
 	.main {
 		position: absolute;
 		z-index: 2;
@@ -231,6 +363,7 @@
 		margin-top: 20rpx;
 		margin-left: 30rpx;
 	}
+
 	.i {
 		width: 100%;
 		height: 88rpx;
@@ -239,45 +372,67 @@
 		margin-bottom: 20rpx;
 		display: flex;
 		align-items: center;
+
 		.title {
 			font-size: 28rpx;
 			font-weight: bold;
 			padding-left: 24rpx;
 		}
+
 		.info {
 			font-size: 24rpx;
 		}
+
 		input {
 			color: #999999;
 			font-size: 24rpx;
 		}
 	}
+
 	.i1 {
-		.title { width: 33%; }
-		input { width: 34%; }
+		.title {
+			width: 33%;
+		}
+
+		input {
+			width: 34%;
+		}
+
 		.info {
 			width: 33%;
 			font-size: 24rpx;
-			text-align:right;
+			text-align: right;
 			margin-right: 25rpx;
 		}
 	}
+
 	.i2 {
-		.title { width: 35%; }
+		.title {
+			width: 35%;
+		}
+
 		input {
 			width: 65%;
 			text-align: right;
 			margin-right: 24rpx;
 		}
 	}
+
 	.i3 {
-		.title {width: 50%;}
-		input {width: 30%;}
+		.title {
+			width: 50%;
+		}
+
+		input {
+			width: 30%;
+		}
+
 		.info {
 			display: flex;
 			align-items: center;
 			justify-content: flex-end;
 			width: 20%;
+
 			image {
 				margin-right: 24rpx;
 				margin-left: 14rpx;
@@ -286,35 +441,44 @@
 			}
 		}
 	}
+
 	.demand {
 		margin-top: 50rpx;
 		font-size: 28rpx;
 		font-weight: bold;
+
 		.title {
 			margin-bottom: 43rpx;
 		}
 	}
+
 	.m {
 		width: 100%;
 		background-color: rgba($color: #FFFFFF, $alpha: 0.5);
 		border-radius: 15rpx;
 		padding: 25rpx;
 		margin-top: 20rpx;
+
 		view {
 			font-size: 28rpx;
 			font-weight: bold;
 			margin-bottom: 32rpx;
 		}
 	}
+
 	.m1 {
-		input {font-size: 24rpx;}
+		input {
+			font-size: 24rpx;
+		}
 	}
+
 	.m2 {
 		textarea {
 			height: 86rpx;
 			font-size: 24rpx;
 		}
 	}
+
 	.sub {
 		width: 100%;
 		height: 98rpx;
@@ -329,6 +493,7 @@
 		font-size: 30rpx;
 		color: #D7DCE2;
 	}
+
 	/deep/ .u-add-wrap {
 		background-color: #FFFFFF;
 	}
