@@ -117,7 +117,7 @@
 	}
 </script>
 
-<style scoped lang="scss">
+<style  lang="scss">
 	.main {
 		width: 690rpx;
 		margin: 0 auto;

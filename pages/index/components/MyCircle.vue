@@ -138,6 +138,7 @@
 				})
 			},
 			showShare(bool) {
+				console.log("+++++++++",bool)
 				this.$refs.shareBox.showShare(bool);
 			}
 		}
