@@ -29,7 +29,7 @@
 					<view class="btn" v-else>修改报价</view>
 				</view>
 			</view>
-			<view class="btns">
+			<view class="btns" v-if="order_info.order_type == 1">
 				<view class="btn" @click="edit">修改订单</view>
 				<view class="btn" @click="cancel">取消订单</view>
 			</view>
@@ -45,6 +45,7 @@
 			</view> -->
 
 		</block>
+		
 		<view class="" v-if="order_info.order_type == 2">
 			<view class="btns" v-if="order_info.order_message ==1">
 				<view class="btn" @click="edit">修改订单</view>
@@ -56,6 +57,15 @@
 			</view>
 		</view>
 		
+		<view class="" v-if="order_info.order_type == 3">
+			<view class="btns" v-if="order_info.order_message == 1">
+				<view class="btn" @click="edit">修改订单</view>
+				<view class="btn" @click="cancel">取消订单</view>
+			</view>
+			<view class="btns"  v-else>
+				<view class="btn" @click="Confirmorderpay">确认并付款</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -76,18 +86,21 @@
 			}
 		},
 		onLoad(options) {
-			var that = this;
-			that.order_id = options.order_id;
-			var data = {
-				order_id: options.order_id
-			};
-			getUserOrderList(data).then(res => {
-				that.order_info = res.data.order_info;
-				that.order_info.timbre_type_name = res.data.order_info.timbre_type_name.split(' ');
-				that.order_list = res.data.order_list;
-			})
+			this.getdata(options)
 		},
 		methods: {
+			getdata(options){
+				var that = this;
+				that.order_id = options.order_id;
+				var data = {
+					order_id: options.order_id
+				};
+				getUserOrderList(data).then(res => {
+					that.order_info = res.data.order_info;
+					that.order_info.timbre_type_name = res.data.order_info.timbre_type_name.split(' ');
+					that.order_list = res.data.order_list;
+				})
+			},
 			// 取消订单
 			cancel() {
 				var that = this;
@@ -137,7 +150,6 @@
 								type:1
 							};
 							saveOrder(data).then(result => {
-
 								if (result.status == 200) {
 									uni.showToast({
 										title: '订单确认成功',
@@ -149,6 +161,47 @@
 											delta:1
 										})
 									}, 1000)
+								}
+							})
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			//确认并付款
+			Confirmorderpay(){
+				var that = this;
+				uni.showModal({
+					title: '提示',
+					content: '您确定要确认订单吗？',
+					success: function(res) {
+						if (res.confirm) {
+							var data = {
+								order_id: that.order_info.order_id,
+								type:1
+							};
+							saveOrder(data).then(result => {
+								if (result.status == 200) {
+									var orderdata = {
+										order_id: that.order_info.order_id,
+										pay_type: 'yue'
+									}
+									payOrder(orderdata).then(res => {
+										console.log("支付结果", res)
+										if (res.status == 200) {
+											uni.hideLoading()
+											uni.showToast({
+												title: '确认成功',
+												icon: 'none'
+											})
+											setTimeout(function() {
+												uni.navigateBack({
+													delta: 1
+												})
+											}, 1500);
+										}
+									})
 								}
 							})
 						} else if (res.cancel) {
@@ -176,6 +229,7 @@
 							})
 							if (res.status == 200) {
 								console.log('待上传')
+								// this.getdata()
 								// uni.navigateTo({
 
 								// })

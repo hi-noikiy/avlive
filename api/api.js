@@ -370,3 +370,9 @@ export function siteConfig (data) {
 export function wechatAppAuth(data) {
   return request.post("wechat/app_auth", data, { noAuth: true });
 }
+/**
+ * 实名认证
+ */
+export function idCard(data) {
+  return request.post("demand/id_card", data);
+}

@@ -20,7 +20,7 @@
 						<view class="b">价值{{userInfo.now_yinzhu / 10}}元</view>
 					</view>
 				</view>
-				<view class="info">说明：1个音宝=1元   10个音珠=1元</view>
+				<view class="info">说明：1个音宝=1元 10个音珠=1元</view>
 			</view>
 			<view class="module module2">
 				<view class="ma">
@@ -40,45 +40,40 @@
 			<view class="module module3">
 				<view class="t">
 					<span class="type">提现类型</span>
-					<easy-select
-						class="select"
-						ref="easySelect"
-						:value="type"
-						:options="types"
-						@selectOne="selectOne"
-					></easy-select>
+					<easy-select class="select" ref="easySelect" :value="type" :options="types" @selectOne="selectOne">
+					</easy-select>
 					<span class="type">提现数量</span>
-					<input type="number" value="" placeholder="请输入数量" />
+					<input type="number" value="" v-model="num" placeholder="请输入数量" />
 				</view>
 				<view class="b">
 					预计到账：<span>500</span>元
 				</view>
 			</view>
-			<view class="sub">立即提现</view>
+			<view class="sub" @click="getWithdrawal">立即提现</view>
 		</view>
 	</view>
 </template>
 
 <script>
 	import {
-		getUserInfo
+		getUserInfo,
+		payShell
 	} from '@/api/user.js';
 	export default {
 		data() {
 			return {
 				type: '音宝',
 				types: [{
-						value: '1',
-						label: '音宝'
-					}, {
-						value: '2',
-						label: '音珠'
-					}, {
-						value: '3',
-						label: '余额'
-					}],
-				typeVal: '1',
-				userInfo: []
+					value: '3',
+					label: '音宝'
+				}, {
+					value: '4',
+					label: '音珠'
+				}],
+				typeVal: '3',
+				userInfo: [],
+				disabled: false,
+				num: ""
 			}
 		},
 		methods: {
@@ -94,6 +89,46 @@
 				getUserInfo().then(res => {
 					that.userInfo = res.data;
 				})
+			},
+			//点击提现
+			getWithdrawal() {
+				var that = this
+				uni.showLoading({
+					title: '加载中...'
+				})
+				
+				if (that.disabled) {
+					return
+				}
+				var data = {
+					type: that.typeVal,
+					num: that.num,
+				}
+				payShell(data).then(res => {
+					if (res.status == 200) {
+						uni.showToast({
+							icon: 'none',
+							title: '提现成功'
+						})
+						setTimeout(() => {
+							that.disabled = false
+							uni.hideToast();
+							uni.hideLoading()
+							//关闭提示后跳转
+							uni.navigateBack({
+								delta: 1
+							});
+
+						}, 1500)
+					}else{
+						that.disabled = false
+						uni.showToast({
+							icon: 'none',
+							title: res.msg
+						})
+					}
+					console.log("提现结果", res)
+				})
 			}
 		}
 	}
@@ -108,6 +143,7 @@
 		height: 100vh;
 		z-index: 1;
 	}
+
 	.page {
 		position: absolute;
 		z-index: 2;
@@ -115,6 +151,7 @@
 		margin-left: 30rpx;
 		margin-top: 30rpx;
 	}
+
 	.module {
 		width: 100%;
 		background: #2C2C2C;
@@ -126,29 +163,35 @@
 		font-family: PingFang;
 		font-weight: 500;
 	}
+
 	.module1 {
 		.title {
 			color: #E7E8ED;
 			font-size: 34rpx;
 		}
+
 		.prices {
 			margin-top: 26rpx;
 			display: flex;
 			justify-content: space-between;
+
 			.item {
 				display: flex;
 				flex-direction: column;
 				text-align: center;
 				align-items: center;
+
 				.price {
 					color: #E7E8ED;
 					font-size: 30rpx;
 				}
+
 				image {
 					width: 90rpx;
 					height: 90rpx;
 					margin-bottom: 6rpx;
 				}
+
 				.b {
 					color: #FF7171;
 					font-size: 26rpx;
@@ -156,34 +199,41 @@
 				}
 			}
 		}
+
 		.info {
 			color: #F0F0F0;
 			font-size: 26rpx;
 			padding-top: 20rpx;
 		}
 	}
+
 	.module2 {
 		width: 100%;
 		display: flex;
 		align-items: center;
 		color: #E7E8ED;
+
 		.ma {
 			display: flex;
 			flex-direction: column;
 			align-items: center;
+
 			.t {
 				font-size: 36rpx;
 				opacity: 0.96;
 			}
+
 			.b {
 				margin-top: 10rpx;
 				font-size: 33rpx;
+
 				span {
 					color: #FE6969;
 					font-size: 46rpx;
 				}
 			}
 		}
+
 		.mb {
 			width: 3rpx;
 			height: 82rpx;
@@ -192,31 +242,38 @@
 			margin-left: 46rpx;
 			margin-right: 46rpx;
 		}
+
 		.mc {
 			display: flex;
 			flex-direction: column;
 			min-width: 128rpx;
+
 			.t {
 				font-size: 36rpx;
 			}
+
 			.b {
 				margin-top: 10rpx;
 				font-size: 33rpx;
+
 				span {
 					font-size: 46rpx;
 				}
 			}
 		}
+
 		.md {
 			display: flex;
 			align-items: center;
 			margin-left: 59rpx;
+
 			view {
 				width: 60rpx;
 				height: 74rpx;
 				line-height: 44rpx;
 				font-size: 30rpx;
 			}
+
 			image {
 				margin-left: 26rpx;
 				width: 22rpx;
@@ -224,23 +281,30 @@
 			}
 		}
 	}
+
 	.module3 {
 		display: flex;
 		flex-direction: column;
 		color: #E7E8ED;
+
 		.t {
 			display: flex;
 			font-size: 30rpx;
 			height: 48rpx;
 			line-height: 48rpx;
-			.type {margin-right: 20rpx;}
+
+			.type {
+				margin-right: 20rpx;
+			}
+
 			.select {
-				width: 144rpx!important;
-				height: 48rpx!important;
+				width: 144rpx !important;
+				height: 48rpx !important;
 				font-size: 24rpx;
 				color: #E7E8ED;
 				margin-right: 30rpx;
 			}
+
 			input {
 				width: 170rpx;
 				height: 48rpx;
@@ -250,16 +314,19 @@
 				text-align: center;
 			}
 		}
+
 		.b {
 			font-size: 36rpx;
 			color: #E7E8ED;
 			margin-top: 49rpx;
 			text-align: center;
+
 			span {
 				color: #E05252;
 			}
 		}
 	}
+
 	.sub {
 		position: absolute;
 		z-index: -1;

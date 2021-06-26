@@ -8,12 +8,12 @@
 					</view>
 					<view class="item acea-row row-between-wrapper">
 						<input type='number' placeholder='填写验证码' placeholder-class='placeholder' class="codeIput" v-model="captcha"></input>
-						<button class="code font-color" :class="disabled === true ? 'on' : ''" :disabled='disabled' @click="code">
+						<button class="code" :class="disabled === true ? 'on' : ''" :disabled='disabled' @click="code">
 							{{ text }}
 						</button>
 					</view>
 				</view>
-				<button form-type="submit" class="confirmBnt bg-color">确认绑定</button>
+				<button form-type="submit" class="confirmBnt">确认绑定</button>
 			</view>
 		</form>
 		<!-- #ifdef MP -->
@@ -188,10 +188,15 @@
 </script>
 
 <style lang="scss">
-	page {
-		background-color: #fff !important;
-	}
 
+	page{
+		width: 100%;
+		height: 100%;
+		background-image: url(/static/images/main-bg.png);
+		background-attachment: fixed;
+		background-repeat: no-repeat;
+		background-size:100% 100vh;
+	}
 	.ChangePassword .phone {
 		font-size: 32rpx;
 		font-weight: bold;
@@ -207,7 +212,7 @@
 	.ChangePassword .list .item {
 		width: 100%;
 		height: 110rpx;
-		border-bottom: 2rpx solid #f0f0f0;
+		border-bottom: 2rpx solid #CCCCCC;
 	}
 
 	.ChangePassword .list .item input {
@@ -226,7 +231,8 @@
 
 	.ChangePassword .list .item .code {
 		font-size: 32rpx;
-		background-color: #fff;
+		background-color: transparent;
+		
 	}
 
 	.ChangePassword .list .item .code.on {
@@ -234,6 +240,7 @@
 	}
 
 	.ChangePassword .confirmBnt {
+		background-color: #000000;
 		font-size: 32rpx;
 		width: 580rpx;
 		height: 90rpx;

@@ -526,3 +526,15 @@ export function serviceRecord(data) {
 export function appleLogin (data) {
 	return request.post('apple_login', data,{ noAuth : true});
 }
+/**
+ * 提现
+ */
+export function payShell(data) {
+    return request.post('user/pay_shell', data);
+}
+/**
+ * 提现
+ */
+export function userBill(data) {
+    return request.post('user/user_bill', data);
+}

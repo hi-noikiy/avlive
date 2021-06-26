@@ -139,12 +139,6 @@ export function saveCircle(data) {
 	return request.post('v3/saveCircle', data);
 }
 /**
- * 删除圈子
- */
-export function deleteCircle(data){
-	return request.get('v3/deleteCircle', data);
-}
-/**
  * 圈子点赞
  */
 export function circleLike(data) {
@@ -186,3 +180,23 @@ export function Usertesting(data) {
 export function getUserInfo(data) {
 	return request.post('demand/get_user_info', data);
 }
+/**
+ * 退款
+ */
+export function refundMoney(data) {
+	return request.post('demand/refund_money', data);
+}
+/**
+ * 我参与的报价
+ */
+export function joinTakeOffer(data) {
+	return request.post('demand/join_take_offer', data);
+}
+/**
+ * 文字转语音
+ */
+export function textToSpeech(data) {
+	return request.post('user/ceshi', data);
+}
+
+

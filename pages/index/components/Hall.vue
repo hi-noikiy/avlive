@@ -24,11 +24,11 @@
 					<image src="../../../static/images/center_c.png"></image>
 					<text>待下载</text>
 				</view>
-				<view class="item"><!--  click="complete" -->
+				<view class="item" @click="complete"> <!--  click="complete" -->
 					<image src="../../../static/images/center_d.png"></image>
 					<text>已完成</text>
 				</view>
-				<view class="item"><!--  click="partake" -->
+				<view class="item" @click="partake"><!--  click="partake" -->
 					<image src="../../../static/images/center_e.png"></image>
 					<text>我参与的</text>
 				</view>
@@ -130,13 +130,13 @@
 			// 已完成
 			complete(){
 				uni.navigateTo({
-					url:'/pages/liveApp/complete',
+					url:'/pages/demand/completed',
 				})
 			},
 			// 我参与的
 			partake(){
 				uni.navigateTo({
-					url:'/pages/liveApp/partake',
+					url:'/pages/demand/involved',
 				})
 			},
 			// 需求详情
@@ -251,6 +251,10 @@
 			margin-top: 76rpx;
 			left: 34rpx;
 			font-size: 28rpx;
+			width: 70%;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 		.price {
 			position: absolute;

@@ -47,7 +47,7 @@
 			</view>
 			<u-upload :action="action" ref="uUpload"></u-upload>
 
-			<view class="sub" @click="submit" v-if="Producer!=''">确认并付款</view>
+			<view class="sub" @click="submit" v-if="Producer!=''">修改</view>
 
 			<view class="sub" @click="submit" v-else>提交</view>
 		</view>
@@ -57,6 +57,7 @@
 <script>
 	import {
 		payOrder,
+		refundMoney,
 		getUserInfo,
 		getDemandTimbreList,
 		createOrder,
@@ -141,9 +142,10 @@
 					that.desc = that.order_info.desc;
 					that.remake = that.order_info.remake;
 					that.enclosure = that.order_info.enclosure;
-					console.log("订单类型",that.order_info.order_type)
-					console.log("制作方id",that.order_info.look_id)
-					if(that.order_info.order_type == 2){
+					console.log("订单类型", that.order_info.order_type)
+					console.log("制作方id", that.order_info.look_id)
+					if (that.order_info.order_type == 2) {
+
 						that.Producer = that.order_info.look_id
 						that.disabledzz = true
 						that.disabledgz = true
@@ -181,17 +183,61 @@
 					data.order_id = that.order_id;
 					data.pay_num = that.pay_price;
 					saveOrder(data).then(res => {
-						uni.showToast({
-							title: res.msg,
-							icon: 'none'
-						})
 						if (res.status == 200) {
-							uni.hideLoading()
-							setTimeout(function() {
-								uni.switchTab({
-									url: '/pages/index/components/Hall'
+							if (res.data.need_pay_noney == 0 && res.data.need_refund_noney == 0) {
+								uni.showToast({
+									title: '修改成功',
+									icon: 'none'
 								})
-							}, 1000);
+								uni.hideLoading()
+								setTimeout(function() {
+									uni.switchTab({
+										url: '/pages/index/components/Hall'
+									})
+								}, 1000);
+							}
+							if (res.data.need_pay_noney > 0) {
+								var orderdata = {
+									order_id: res.data.order_id,
+									pay_type: 'again_yue'
+								}
+								payOrder(orderdata).then(res => {
+									console.log("支付结果", res)
+									if (res.status == 200) {
+										uni.hideLoading()
+										uni.showToast({
+											title: '修改成功',
+											icon: 'none'
+										})
+										setTimeout(function() {
+											uni.navigateBack({
+												delta: 1
+											})
+										}, 1500);
+									}
+								})
+							}
+							if (res.data.need_refund_noney > 0) {
+								var data = {
+									order_id: res.data.order_id,
+								}
+								refundMoney(data).then(res => {
+									console.log("退款结果", res)
+									if (res.status == 200) {
+										uni.hideLoading()
+										uni.showToast({
+											title: '修改成功',
+											icon: 'none'
+										})
+										setTimeout(function() {
+											uni.navigateBack({
+												delta: 1
+											})
+										}, 1500);
+									}
+								})
+							}
+
 						}
 					})
 				} else {
@@ -303,18 +349,36 @@
 					console.log("雇主")
 					getUserInfo(datas).then(res => {
 						console.log("雇主信息", res)
+						if (res.data.length == 0) {
+							console.log("暂无该用户")
+							uni.showToast({
+								icon: 'none',
+								title: '暂无该用户'
+							})
+							return
+						}
+						var data = {
+							order_type: 3,
+							make_uid: res.data.uid,
+							make_name: res.data.nickname,
+							make_phone: res.data.phone,
+							desc: that.desc,
+							remake: that.remake,
+							enclosure: that.enclosure,
+							timbre_type_id: timbre_type_id,
+							timbre_type_name: timbre_type_name,
+							cycle_type: that.unit,
+							cycle_value: that.cycle_data
+						}
+						if (that.pay_price <= 0) {
+							uni.showToast({
+								icon: 'none',
+								title: '请输入预算金额'
+							})
+							return
+						}
+						that.chuangjianorder(data)
 					})
-					var data = {
-						order_type: 3,
-						desc: that.desc,
-						remake: that.remake,
-						enclosure: that.enclosure,
-						timbre_type_id: timbre_type_id,
-						timbre_type_name: timbre_type_name,
-						cycle_type: that.unit,
-						cycle_value: that.cycle_data
-					}
-					that.chuangjianorder(data)
 				} else {
 					console.log("普通订单")
 					var data = {

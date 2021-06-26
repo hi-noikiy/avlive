@@ -10,9 +10,13 @@
 					<span>待上传作品</span>
 					<image src="../../static/images/rj_icon.png" class="r"></image>
 				</view>
-				<view class="info">
+				<view class="info" v-if="item.order_type != 3">
 					<view class="show" @click="showDetail(item.order_id)" v-if="item.is_ovner == 1">查看</view>
 					<view class="show" @tap="onUpload(item.order_id)" v-if="item.is_ovner == 0">上传</view>
+				</view>
+				<view class="info" v-if="item.order_type == 3">
+					<view class="show" @click="showDetail(item.order_id)" v-if="item.is_ovner == 0">查看</view>
+					<view class="show" @tap="onUpload(item.order_id)" v-if="item.is_ovner == 1">上传</view>
 				</view>
 			</view>
 		</view>

@@ -239,6 +239,20 @@
 				"enablePullDownRefresh": false
 			}
 
+		},{
+			"path": "pages/demand/completed",
+			"style": {
+				"navigationBarTitleText": "已完成",
+				"enablePullDownRefresh": false
+			}
+
+		},{
+			"path": "pages/demand/involved",
+			"style": {
+				"navigationBarTitleText": "我参与的",
+				"enablePullDownRefresh": false
+			}
+
 		},
 		{
 			"path": "pages/evaluation/testtable",
@@ -493,6 +507,26 @@
 					"style": {
 						"navigationBarTitleText": "绑定手机"
 
+							// #ifdef MP
+							,
+						"navigationBarTextStyle": "#fff",
+						"navigationBarBackgroundColor": "#e93323"
+							// #endif
+							,
+						"app-plus": {
+							// #ifdef APP-PLUS
+							"titleNView": {
+								"type": "default"
+							}
+							// #endif
+						}
+					}
+				},
+				{
+					"path": "realName/index",
+					"style": {
+						"navigationBarTitleText": "实名认证"
+				
 							// #ifdef MP
 							,
 						"navigationBarTextStyle": "#fff",

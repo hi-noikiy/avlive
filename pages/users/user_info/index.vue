@@ -2,7 +2,7 @@
 	<view>
 		<image src="/static/images/main-bg.png" class="bg"></image>
 		<form @submit="formSubmit">
-			<view class='personal-data'> 
+			<view class='personal-data'>
 				<view class='list'>
 					<view class='item acea-row row-between-wrapper'>
 						<view>头像</view>
@@ -12,11 +12,13 @@
 					</view>
 					<view class='item acea-row row-between-wrapper'>
 						<view>昵称</view>
-						<view class='input'><input type='text' name='nickname' :value='userInfo.nickname'></input></view>
+						<view class='input'><input type='text' name='nickname' :value='userInfo.nickname'></input>
+						</view>
 					</view>
 					<view class='item acea-row row-between-wrapper'>
 						<view>手机号码</view>
-						<navigator url="/pages/users/user_phone/index" hover-class="none" class="input" v-if="!userInfo.phone">
+						<navigator url="/pages/users/user_phone/index" hover-class="none" class="input"
+							v-if="!userInfo.phone">
 							点击绑定手机号<text class="iconfont icon-xiangyou"></text>
 						</navigator>
 						<view class='input acea-row row-between-wrapper' v-else>
@@ -26,7 +28,11 @@
 					</view>
 					<view class='item acea-row row-between-wrapper'>
 						<view>实名认证</view>
-						<navigator url="/pages/users/user_phone/index" hover-class="none" class="input" >
+						<navigator v-if="userInfo.is_authentication == 1" url=""
+							hover-class="none" class="input" v-else>
+							已认证<text class="iconfont icon-xiangyou"></text>
+						</navigator>
+						<navigator url="/pages/users/realName/index" hover-class="none" class="input" v-else>
 							实名认证<text class="iconfont icon-xiangyou"></text>
 						</navigator>
 					</view>
@@ -60,20 +66,50 @@
 							点击更换手机号码<text class="iconfont icon-xiangyou"></text>
 						</navigator>
 					</view>
+					<view class='item acea-row row-between-wrapper'>
+						<view>微博号</view>
+						<view class='input'><input type='text' name='micro_blog' placeholder="填写微博号"  :value='userInfo.micro_blog'></input>
+						</view>
+					</view>
+					<view class='item acea-row row-between-wrapper'>
+						<view>微信号</view>
+						<view class='input'><input type='text' name='wechat' placeholder="填写微信号" :value='userInfo.wechat'></input>
+						</view>
+					</view>
+					<view class='item acea-row row-between-wrapper'>
+						<view>邮箱</view>
+						<view class='input'><input type='text' name='email' placeholder="填写邮箱号" :value='userInfo.email'></input>
+						</view>
+					</view>
+					
+					<view class='item acea-row row-between-wrapper'>
+						<view>绑定微信</view>
+						<navigator  url=""
+							hover-class="none" class="input">
+							未绑定<text class="iconfont icon-xiangyou"></text>
+						</navigator>
+						
+<!-- 						<navigator url="/pages/users/realName/index" hover-class="none" class="input" v-else>
+							实名认证<text class="iconfont icon-xiangyou"></text>
+						</navigator> -->
+					</view>
+					
 				</view>
-				<button class='modifyBnt bg-color' formType="submit">保存修改</button>
+				<button class='modifyBnt' formType="submit">保存修改</button>
 				<!-- #ifdef H5 -->
-				<view class="logOut cart-color acea-row row-center-wrapper" @click="outLogin" v-if="!this.$wechat.isWeixin()">退出登录</view>
+				<view class="logOut  acea-row row-center-wrapper" @click="outLogin"
+					v-if="!this.$wechat.isWeixin()">退出登录</view>
 				<!-- #endif -->
 				<!-- #ifdef APP-PLUS -->
-				<view class="logOut cart-color acea-row row-center-wrapper" @click="outLogin">退出登录</view>
+				<view class="logOut  acea-row row-center-wrapper" @click="outLogin">退出登录</view>
 				<!-- #endif -->
 			</view>
 		</form>
 		<!-- #ifdef MP -->
 		<!-- <authorize @onLoadFun="onLoadFun" :isAuto="isAuto" :isShowAuth="isShowAuth" @authColse="authColse"></authorize> -->
 		<!-- #endif -->
-		<canvas canvas-id="canvas" v-if="canvasStatus" :style="{width: canvasWidth + 'px', height: canvasHeight + 'px',position: 'absolute',left:'-100000px',top:'-100000px'}"></canvas>
+		<canvas canvas-id="canvas" v-if="canvasStatus"
+			:style="{width: canvasWidth + 'px', height: canvasHeight + 'px',position: 'absolute',left:'-100000px',top:'-100000px'}"></canvas>
 	</view>
 </template>
 
@@ -201,7 +237,7 @@
 						success: function(res) {
 							if (res.confirm) {
 								getLogout()
-									.then(res => { 
+									.then(res => {
 										that.$store.commit("LOGOUT");
 										uni.reLaunch({
 											url: '/pages/index/index'
@@ -306,12 +342,13 @@
 		height: 100vh;
 		z-index: 1;
 	}
+
 	.personal-data {
 		position: absolute;
 		z-index: 2;
 		margin-left: 30rpx;
 	}
-	
+
 	.personal-data .wrapper {
 		margin: 10rpx 0;
 		background-color: #fff;
@@ -456,6 +493,7 @@
 	.personal-data .modifyBnt {
 		font-size: 32rpx;
 		color: #fff;
+		background-color: #000000;
 		width: 690rpx;
 		height: 90rpx;
 		border-radius: 50rpx;
@@ -465,6 +503,7 @@
 	}
 
 	.personal-data .logOut {
+		border: 2rpx solid #000000;
 		font-size: 32rpx;
 		text-align: center;
 		width: 690rpx;

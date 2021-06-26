@@ -10,10 +10,10 @@
 					<!-- <image src="../../static/images/rj_icon.png" class="r"></image> -->
 				</view>
 				<view class="info">
-					<view class="show">已上传</view>
+					<view class="show" v-if="item.is_ovner == 0">已上传</view>
 					<view class="show" @click="stop(index)" v-if="item.play">停止播放</view>
 					<view class="show" @click="audition(item.download_link, index)" v-if="!item.play">试听</view>
-					<view class="show" @click="download(item)">下载并确认</view>
+					<view class="show" @click="download(item)" v-if="item.is_ovner == 1">下载并确认</view>
 				</view>
 			</view>
 		</view>
@@ -85,6 +85,7 @@
 										tempFilePath,
 										success:(saveRes)=>{
 											 console.log('保存成功');
+											 console.log(saveRes.savedFilePath)
 											 uni.openDocument({
 												filePath:saveRes.savedFilePath,
 												success:(openRes)=>console.log('成功打开文档')
