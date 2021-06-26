@@ -1,11 +1,13 @@
 <template>
 	<view>
+		<!-- #ifdef APP-NVUE -->
 		<live-pusher id='livePusher' ref="livePusher" class="livePusher"
 		:url="push_url"
 		:style="{height: 780+'px'}"
 		mode="FHD" :muted="true" :enable-camera="true" :auto-focus="true" :beauty="beauty_rating" :whiteness="beauty_rating"
 		aspect="9:16" @statechange="statechange" @netstatus="netstatus" @error = "error"
 		></live-pusher>
+		<!-- #endif -->
 		<view class="top">
 			<view class="user">
 				<image class="user-head" src="../../users/static/1.png"></image>
@@ -124,22 +126,21 @@
 				}
 			});
 			
-			
 			// 注意：需要在onReady中 或 onLoad 延时
 			this.context = uni.createLivePusherContext("livePusher", this);
 		},
 		methods: {
 			// 开始直播
 			star(){
-				// 开始推流
-				// this.context.start({
-				// 	success: (a) => {
-				// 		console.log("livePusher.start:" + JSON.stringify(a));
-				// 	},
-				// 	fail: (err) => {
-				// 		console.log('fail')
-				// 	}
-				// })
+				开始推流
+				this.context.start({
+					success: (a) => {
+						console.log("livePusher.start:" + JSON.stringify(a));
+					},
+					fail: (err) => {
+						console.log('fail')
+					}
+				})
 				// 开启心跳
 				this.heartbeat()
 				// 开启直播

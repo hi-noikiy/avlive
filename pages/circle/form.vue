@@ -4,14 +4,8 @@
 		<view class="main">
 			<input class="title" type="text" v-model="title" placeholder="请输入标题" />
 			
-			<!-- <view class="container">
-				<editor id="editor" class="ql-container" :placeholder="placeholder" @ready="onEditorReady"></editor>
-				<button type="warn" @tap="undo">撤销</button>
-			</view> -->
-			<!-- <editor></editor> -->
-			<view class="editor-wapper" id="edit"></view>
+			<textarea class="content" v-model="content" placeholder="请输入内容..." />
 			
-			<!-- <textarea class="content" v-model="content" placeholder="请输入内容..." /> -->
 			<u-upload :action="action" ref="uUpload"></u-upload>
 			<view class="info">
 				<view class="l">
@@ -45,27 +39,9 @@
 			}
 		},
 		onReady() {
-			this.editor = new E('#edit');
-			this.editor.config.height = 180
-			this.editor.create();
+			
 		},
 		methods: {
-			
-			onEditorReady() {
-				// #ifdef MP-BAIDU
-				this.editorCtx = requireDynamicLib('editorLib').createEditorContext('editorId');
-				// #endif
-
-				// #ifdef APP-PLUS || H5 ||MP-WEIXIN
-				uni.createSelectorQuery().select('#editor').context((res) => {
-				  this.editorCtx = res.context
-				}).exec()
-				// #endif
-			},
-			undo() {
-				this.editorCtx.undo()
-			},
-			
 			radioChange(item) {
 				this.show_auth = item;
 			},

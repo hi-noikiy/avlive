@@ -206,7 +206,6 @@
 				var msgData = JSON.parse(datas.data);
 				console.log(datas);
 				console.log(msgData);
-				return;
 				switch(datas.type) {
 					// 主播关闭直播
 					case 'endLive':
