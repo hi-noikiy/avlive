@@ -11,9 +11,9 @@
 							<view>ID {{userInfo.uid}}</view>
 						</view>
 						<view class="b">
-							<view>10粉丝</view>
+							<view>{{userInfo.fensi}}粉丝</view>
 							<view class="c">|</view>
-							<view>8关注</view>
+							<view>{{userInfo.guanzhu}}关注</view>
 						</view>
 					</view>
 					<image src="/static/images/me_sz.png" class="setting"
@@ -124,7 +124,6 @@
 						width: '88',
 						height: '115',
 						mright: '49',
-						// url: '/pages/users/order_list/index?status=3'
 						url: '/pages/evaluation/testtable'
 					}, {
 						title: '名片',
@@ -166,14 +165,14 @@
 						width: '87',
 						height: '118',
 						mright: '59',
-						url: '/pages/users/order_list/index?status=0'
+						url: '/pages/tool/worklist?data_type=1'
 					}, {
 						title: '我点赞的',
 						src: '/static/images/me_wdzd.png',
 						width: '87',
 						height: '118',
 						mright: '60',
-						url: '/pages/users/order_list/index?status=1'
+						url: '/pages/tool/worklist?data_type=2'
 					}, {
 						title: '我打赏的',
 						src: '/static/images/me_wdsd.png',

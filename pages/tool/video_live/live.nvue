@@ -86,6 +86,9 @@
 			uni.onSocketMessage(function (res) {
 				var datas = JSON.parse(res.data);
 				var msgData = JSON.parse(datas.data);
+				console.log(datas);
+				console.log(msgData);
+				return;
 				switch(datas.type) {
 					// 有人加入直播间
 					case 'enter':

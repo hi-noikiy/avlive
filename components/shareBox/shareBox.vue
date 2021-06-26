@@ -2,7 +2,7 @@
 	<view>
 		<u-mask :show="shareBox" @click="shareBox = false" :custom-style="{background: 'rgba(0, 0, 0, 0.5)'}">
 			<view class="share-box" v-if="shareBox" @tap.stop>
-				<view class="share-item" v-for="(item, index) in list" @click="share">
+				<view class="share-item" v-for="(item, index) in list" @click="share(index)">
 					<image class="share-item-image" :src="item.image"></image>
 					<text class="share-item-text">{{item.title}}</text>
 				</view>
@@ -26,38 +26,38 @@
 						image: '/static/images/share_pyq.png',
 						title: '朋友圈'
 					},
-					{
-						image: '/static/images/share_qq.png',
-						title: 'QQ'
-					},
-					{
-						image: '/static/images/share_hy.png',
-						title: '好友'
-					},
-					{
-						image: '/static/images/share_xz.png',
-						title: '下载'
-					},
-					{
-						image: '/static/images/share_wb.png',
-						title: '微博'
-					},
-					{
-						image: '/static/images/share_sc.png',
-						title: '收藏'
-					},
-					{
-						image: '/static/images/share_qqkj.png',
-						title: 'QQ空间'
-					},
-					{
-						image: '/static/images/share_lj.png',
-						title: '链接'
-					},
-					{
-						image: '/static/images/share_th.png',
-						title: '举报'
-					},
+					// {
+					// 	image: '/static/images/share_qq.png',
+					// 	title: 'QQ'
+					// },
+					// {
+					// 	image: '/static/images/share_hy.png',
+					// 	title: '好友'
+					// },
+					// {
+					// 	image: '/static/images/share_xz.png',
+					// 	title: '下载'
+					// },
+					// {
+					// 	image: '/static/images/share_wb.png',
+					// 	title: '微博'
+					// },
+					// {
+					// 	image: '/static/images/share_sc.png',
+					// 	title: '收藏'
+					// },
+					// {
+					// 	image: '/static/images/share_qqkj.png',
+					// 	title: 'QQ空间'
+					// },
+					// {
+					// 	image: '/static/images/share_lj.png',
+					// 	title: '链接'
+					// },
+					// {
+					// 	image: '/static/images/share_th.png',
+					// 	title: '举报'
+					// },
 				]
 			};
 		},
@@ -65,22 +65,61 @@
 			showShare(bool) {
 				this.shareBox = bool;
 			},
-			share() {
-				uni.share({
-				    provider: "weixin",
-				    scene: "WXSceneSession",
-				    type: 0,
-				    href: "http://uniapp.dcloud.io/",
-				    title: "uni-app分享",
-				    summary: "我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！",
-				    imageUrl: "https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d8590190-4f28-11eb-b680-7980c8a877b8.png",
-				    success: function (res) {
-				        console.log("success:" + JSON.stringify(res));
-				    },
-				    fail: function (err) {
-				        console.log("fail:" + JSON.stringify(err));
-				    }
-				});
+			share(index) {
+				// #ifdef H5
+				uni.showToast({
+					title: '分享仅限App端使用',
+					icon: 'none'
+				})
+				// #endif
+				// #ifdef APP-NVUE
+				if(index == 0) {
+					// 分享到微信好友
+					uni.share({
+					    provider: "weixin",
+					    scene: "WXSceneSession",
+					    type: 1,
+					    href: "http://qyh.ugekeji.com/",
+					    title: "音服务app分享",
+					    summary: "我正在使用音服务app，赶紧跟我一起来体验！",
+					    success: function (res) {
+					        uni.showToast({
+					        	title: '分享成功'
+					        })
+					    },
+					    fail: function (err) {
+					        console.log("fail:" + JSON.stringify(err));
+							uni.showToast({
+								title: '分享失败',
+								icon: 'none'
+							})
+					    }
+					});
+				} else if(index == 1) {
+					// 分享到微信朋友圈
+					uni.share({
+					    provider: "weixin",
+					    scene: "WXSenceTimeline",
+					    type: 1,
+					    href: "http://qyh.ugekeji.com/",
+					    title: "音服务app分享",
+					    summary: "我正在使用音服务app，赶紧跟我一起来体验！",
+					    success: function (res) {
+					        console.log("success:" + JSON.stringify(res));
+							uni.showToast({
+								title: '分享成功'
+							})
+					    },
+					    fail: function (err) {
+					        console.log("fail:" + JSON.stringify(err));
+							uni.showToast({
+								title: '分享失败',
+								icon: 'none'
+							})
+					    }
+					});
+				}
+				// #endif
 			}
 		}
 	}

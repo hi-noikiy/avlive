@@ -1,16 +1,16 @@
 <template>
 	<view>
 		<image src="/static/images/main-bg.png" class="bg"></image>
-		<view class="main">
+		<view class="page">
 			<view class="author">
 				<view class="t">
 					<view class="info">
 						<image class="head" :src="userInfo.avatar"></image>
 						<view class="detail">
 							<text class="name">{{userInfo.nickname}}</text>
-							<text class="b">10粉丝 | 20关注 | ID {{userInfo.uid}}</text>
+							<text class="b">{{userInfo.fensi}}粉丝 | {{userInfo.guanzhu}}关注 | ID {{userInfo.look_id}}</text>
 						</view>
-						<image class="msg" src="/static/images/pinglunh_icon.png"></image>
+						<image class="msg" src="/static/images/pinglunh_icon.png" v-if="userInfo.uid != uid"></image>
 					</view>
 					<view class="tags">
 						<u-tag
@@ -23,12 +23,12 @@
 						/>
 					</view>
 					<view class="grade">
-						<span>荣誉值：230</span>
-						<span>等级：5级</span>
+						<span>荣誉值：{{userInfo.credit_value}}</span>
+						<span>等级：{{userInfo.level}}级</span>
 					</view>
-					<view class="sign">个性签名：这个家伙很懒，什么都没留下</view>
+					<view class="sign">个性签名：{{userInfo.signature == '' ? '这个家伙很懒，什么都没留下' : userInfo.signature}}</view>
 				</view>
-				<view class="c">
+				<view class="c" v-if="userInfo.uid != uid">
 					<view class="btn">关注</view>
 					<view class="btn">雇佣他</view>
 				</view>
@@ -39,7 +39,7 @@
 					:list="list"
 					:is-scroll="false"
 					:current="current"
-					@change="change"
+					@change="typeChange"
 					active-color="#000000"
 					inactive-color="#5B5B5B"
 					bg-color=""
@@ -47,14 +47,14 @@
 			</view>
 			<category-menu :menuList="demand_form" @menuId="setMenuId"></category-menu>
 			<view class="list">
-				<live-list v-if="current == 0"></live-list>
-				<audio-list v-if="current == 1" :audioList="audioList"></audio-list>
+				<video-list v-if="current == 0" :videoList="data_list" :noPage="true"></video-list>
+				<audio-list v-if="current == 1" :audioList="data_list" :noPage="true"></audio-list>
 			</view>
 			<view class="item">
 				<view class="t">
 					<view class="title">收费标准</view>
-					<view class="more">
-						<span>全部</span>
+					<view class="more" @click="works()">
+						<span>全部作品</span>
 						<image src="../../../static/images/right.png"></image>
 					</view>
 				</view>
@@ -94,16 +94,17 @@
 
 <script>
 	import categoryMenu from '@/components/category-menu/category-menu.vue';
-	import liveList from '@/components/live-list/live-list.vue';
+	import videoList from '@/components/video-list/video-list';
 	import audioList from '@/components/audio-list/audio-list.vue';
 	import {
 		getDemandForm,
-		userInfo
+		userInfo,
+		getHomeData
 	} from '@/api/liveApp.js';
 	export default {
 		components: {
 			'category-menu': categoryMenu,
-			'live-list': liveList,
+			'video-list': videoList,
 			'audio-list': audioList
 		},
 		data() {
@@ -113,20 +114,27 @@
 				}, {
 					cate_name: '音频'
 				}],
+				data_list: [],
 				current: 0,
 				menu_id: '',
 				demand_form: [],
-				userInfo: []
+				userInfo: [],
+				uid: '',
+				user_id: ''
 			}
 		},
 		methods: {
-			onLoad() {
+			onLoad(options) {
+				this.user_id = options.user_id;
 				this.getDemandForm()
 				this.getUserInfo()
+				this.getList()
+				this.uid = uni.getStorageSync('uid')
 			},
 			// 设置menu_id
 			setMenuId(menu_id) {
 				this.menu_id = menu_id;
+				this.getList();
 			},
 			// 获取作品分类列表
 			getDemandForm() {
@@ -139,12 +147,35 @@
 			// 获取用户信息
 			getUserInfo() {
 				var that = this;
-				userInfo().then(res => {
+				var data = {
+					uid: that.user_id
+				}
+				userInfo(data).then(res => {
 					that.userInfo = res.data;
 				})
 			},
-			change(index) {
+			typeChange(index) {
 				this.current = index;
+				this.getList();
+			},
+			getList() {
+				var that = this;
+				// 视频、音频
+				var data = {
+					'type': that.current + 1,
+					'demand_form_id':that.menu_id,
+					'page': 1,
+					'limit': 2
+				}
+				getHomeData(data).then(res => {
+					that.data_list = res.data.list;
+				})
+			},
+			// 全部作品
+			works() {
+				uni.navigateTo({
+					url: '../../tool/worklist'
+				})
 			}
 		}
 	}
@@ -159,7 +190,7 @@
 		height: 100vh;
 		z-index: 1;
 	}
-	.main {
+	.page {
 		position: absolute;
 		z-index: 2;
 		width: 690rpx;

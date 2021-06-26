@@ -159,8 +159,8 @@ export function payOrder(data) {
 /**
  * 个人中心
  */
-export function userInfo() {
-	return request.get('user');
+export function userInfo(data = {}) {
+	return request.get('user', data);
 }
 /**
  * 测评题库

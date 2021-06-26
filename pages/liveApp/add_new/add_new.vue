@@ -23,14 +23,14 @@
 		<button @tap="find_friend" :disabled="isdisable">查找好友</button>
 	</view>
 	<view class="">
-		<!-- <u-cell-group v-if="sysUser.length>0" >
+		<u-cell-group v-if="sysUser.length>0" >
 			<u-cell-item :icon="item.avatar" :label="'真实姓名:'+item.real_name" :title="item.nickname" value="点击添加" @click="addNewFriend" v-for="(item,index) in sysUser" :key="index" :index="index"></u-cell-item>  
-		</u-cell-group> -->
-		<view v-if="sysUser.length>0">
+		</u-cell-group>
+		<!-- <view v-if="sysUser.length>0">
 			<view class="" v-for="(item,index) in sysUser" :key="index" :index="index" @click="addNewFriend">
 				真实姓名：{{item.real_name}}
 			</view>
-		</view>
+		</view> -->
 	</view> 
 	<view class="add_nobody" v-if="!show_clear">{{tips}}</view>
 	<view class="add_nobody" v-else-if="isShowResult">{{tips2}}</view>

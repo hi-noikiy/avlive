@@ -3,7 +3,7 @@
 		<u-navbar :is-back="false" title="">
 			<view class="header">
 				<view class="l" @click="urlTo('/pages/circle/my')">
-					<image src="../../users/static/1.png"></image>
+					<image :src="uavatar"></image>
 					<view>我发表的</view>
 				</view>
 				<view class="r" @click="urlTo('/pages/circle/form')">发布</view>
@@ -64,10 +64,12 @@
 			return {
 				uid: '',
 				list: [],
-				page: 1
+				page: 1,
+				uavatar: ''
 			}
 		},
 		mounted() {
+			this.uavatar = uni.getStorageSync('uavatar');
 			this.getData()
 		},
 		methods: {
@@ -154,6 +156,7 @@
 				width: 60rpx;
 				height: 60rpx;
 				margin-right: 14rpx;
+				border-radius: 50%;
 			}
 		}
 		.r {

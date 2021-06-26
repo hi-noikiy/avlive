@@ -97,19 +97,21 @@
 			startLive() {
 				let demand_form_id = this.demandFormArr[this.demandFormIndex].id;
 				let type = this.type;
-				let files = [];
-				files = this.$refs.uUpload.lists.filter(val => {
-					return val.progress == 100;
-				})
-				if(files.length == 0) {
-					uni.showToast({
-						title: '请上传封面图',
-						icon: 'none'
-					})
-					return;
-				}
-				let image = files[0].response;
+				// let files = [];
+				// files = this.$refs.uUpload.lists.filter(val => {
+				// 	return val.progress == 100;
+				// })
+				// if(files.length == 0) {
+				// 	uni.showToast({
+				// 		title: '请上传封面图',
+				// 		icon: 'none'
+				// 	})
+				// 	return;
+				// }
+				// let image = files[0].response;
+				var image = '';
 				var data = {
+					uid: uni.getStorageSync('uid'),
 					demand_form_id: demand_form_id,
 					type: type,
 					image: image
