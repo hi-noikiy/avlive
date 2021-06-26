@@ -5,7 +5,7 @@
 				<image class="img" :src="item.image" @click="detail(item.id)"></image>
 				<view class="info">
 					<view class="t" @click="detail(item.id)">{{item.name}}</view>
-					<view class="b" @click="showAuthor()">
+					<view class="b" @click="showAuthor(item.user_id)">
 						<image :src="item.user_avatar"></image>
 						<view>{{item.user_nickname}}</view>
 					</view>
@@ -19,9 +19,9 @@
 			</view>
 		</view>
 		<share-box ref="shareBox"></share-box>
-<view class="">
-	ss
-</view>
+		<!-- <view class="" v-if="!noPage">
+			分页
+		</view> -->
 	</view>
 </template>
 
@@ -32,7 +32,10 @@
 	} from '@/api/liveApp.js';
 	export default {
 		name:"audio-list",
-		props: ['audioList'],
+		props: [
+			'audioList',
+			'noPage'
+		],
 		components: {
 			'share-box': shareBox
 		},
@@ -49,9 +52,9 @@
 		},
 		methods: {
 			// 发布人主页
-			showAuthor() {
+			showAuthor(user_id) {
 				uni.navigateTo({
-					url: '/pages/liveApp/user/findUser'
+					url: '/pages/liveApp/user/findUser?user_id='+user_id
 				})
 			},
 			// 音频详情

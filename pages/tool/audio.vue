@@ -4,12 +4,15 @@
 		<image class="img" :src="row.image"></image>
 		<view class="author">作者：{{row.user_nickname}}</view>
 		<view class="progress-bar">
-			<image src="../../static/images/audio-kuaitui.png"></image>
+			<image src="../../static/images/audio-kuaitui.png" @click="retreat()"></image>
 			<view class="slider">
 				<u-slider
+					v-model="progress"
 					min="0" max="100"
 					activeColor="#323232"
 					:use-slot="true"
+					@moving="getProgress()"
+					@end="sliderChange()"
 				>
 				<view class="">
 					<view class="badge-button">
@@ -18,15 +21,15 @@
 				</view>
 				</u-slider>
 			</view>
-			<image src="../../static/images/audio-kuaijin.png"></image>
+			<image src="../../static/images/audio-kuaijin.png" @click="enter()"></image>
 		</view>
 		<view class="control">
-			<image src="../../static/images/audio-front.png"></image>
+			<image src="../../static/images/audio-front.png" @click="front()"></image>
 			<view class="oper" @click="paus">
 				<image src="/static/images/audio-puse.png" v-if="isPause"></image>
 				<image src="/static/images/audio-player.png" v-if="!isPause"></image>
 			</view>
-			<image src="../../static/images/audio-after.png"></image>
+			<image src="../../static/images/audio-after.png" @click="after()"></image>
 		</view>
 		<view class="operation">
 			<view class="a">
@@ -70,7 +73,8 @@
 				isPause: true,
 				currentTime: '',
 				countTime: '',
-				row: []
+				row: [],
+				progress: 0
 			}
 		},
 		onLoad(option) {
@@ -80,17 +84,7 @@
 			};
 			getWorksDetail(data).then(res => {
 				that.row = res.data.row;
-				that.innerAudioContext = uni.createInnerAudioContext();
-				that.innerAudioContext.src = that.row.file;		//播放地址
-				that.innerAudioContext.autoplay = true;			//自动播放
-				that.paused = that.innerAudioContext.paused;	//播放状态
-				that.innerAudioContext.onPlay(() => {
-					that.currentTime = '0:00';
-					that.countTime = that.sToIs(that.innerAudioContext.duration);
-				})
-				that.innerAudioContext.onTimeUpdate(() => {
-					that.currentTime = that.sToIs(that.innerAudioContext.currentTime);
-				})
+				that.createAudio();
 			})
 		},
 		onUnload() {
@@ -123,12 +117,81 @@
 					this.innerAudioContext.play();
 				}
 				this.isPause = !this.isPause;
+			},
+			createAudio(seek = false) {
+				var that = this;
+				that.innerAudioContext = uni.createInnerAudioContext();
+				that.innerAudioContext.src = that.row.file;		//播放地址
+				that.innerAudioContext.autoplay = true;			//自动播放
+				that.isPause = true;
+				if(seek) {
+					that.innerAudioContext.seek(seek);
+				}
+				that.paused = that.innerAudioContext.paused;	//播放状态
+				that.innerAudioContext.onPlay(() => {
+					that.currentTime = '0:00';
+					that.countTime = that.sToIs(that.innerAudioContext.duration);
+				})
+				that.innerAudioContext.onTimeUpdate(() => {
+					that.currentTime = that.sToIs(that.innerAudioContext.currentTime);
+					// 移动进度条
+					this.progress = Math.round(that.innerAudioContext.currentTime / that.innerAudioContext.duration * 10000) / 100.00;
+					// 验证是否播放完成
+					if(that.innerAudioContext.currentTime >= that.innerAudioContext.duration) {
+						that.innerAudioContext.stop();
+						that.innerAudioContext.seek(that.innerAudioContext.duration);
+						that.isPause = false;
+					}
+				})
+			},
+			// 更改进度条
+			sliderChange() {
+				this.innerAudioContext.stop();
+				let seek = this.innerAudioContext.duration * 0.01 * this.progress;
+				this.createAudio(seek);
+			},
+			// 滑动更改进度条
+			getProgress() {
+				let seek = this.innerAudioContext.duration * 0.01 * this.progress;
+				this.currentTime = this.sToIs(seek);
+			},
+			// 快进
+			enter() {
+				let seek = this.innerAudioContext.currentTime + 5;
+				this.createAudio(seek);
+			},
+			// 快退
+			retreat() {
+				let seek = this.innerAudioContext.currentTime - 5;
+				this.createAudio(seek);
+			},
+			// 上一首
+			front() {
+				uni.showToast({
+					title: '已经是第一首了',
+					icon: 'none'
+				})
+			},
+			// 下一首
+			after() {
+				uni.showToast({
+					title: '已经是最后一首了',
+					icon: 'none'
+				})
 			}
 		}
 	}
 </script>
 
 <style lang="scss">
+	page{
+		width: 100%;
+		height: 100%;
+		background-image: url(/static/images/main-bg.png);
+		background-attachment: fixed;
+		background-repeat: no-repeat;
+		background-size:100% 100vh;
+	}
 	.main {
 		display: flex;
 		flex-direction: column;

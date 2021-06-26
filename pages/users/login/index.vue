@@ -367,6 +367,7 @@
 							
 							// 保存用户uid
 							uni.setStorageSync('uid', data.uid);
+							uni.setStorageSync('uavatar', data.uavatar);
 							
 							that.$store.commit("LOGIN", {
 								'token': data.token,
@@ -488,6 +489,7 @@
 						console.log(this.$Cache.time());
 						// 保存用户uid
 						uni.setStorageSync('uid', data.uid);
+						uni.setStorageSync('uavatar', data.uavatar);
 						
 						that.$store.commit("LOGIN", {
 							'token': data.token,

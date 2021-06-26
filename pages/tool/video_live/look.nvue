@@ -158,7 +158,8 @@
 			}
 			// 直播间详情
 			getLiveRoomDetail(data).then(res=> {
-				console.log(res);
+				console.log('---------------------------look------------------------------')
+				console.log(res.data);
 				_this.row = res.data.row;
 				_this.src = res.data.row.pull_url;
 				_this.anchorInfo = res.data.anchorInfo;
@@ -203,8 +204,9 @@
 			uni.onSocketMessage(function (res) {
 				var datas = JSON.parse(res.data);
 				var msgData = JSON.parse(datas.data);
-				// console.log(datas);
-				// console.log(msgData);
+				console.log(datas);
+				console.log(msgData);
+				return;
 				switch(datas.type) {
 					// 主播关闭直播
 					case 'endLive':
@@ -212,9 +214,9 @@
 							title: msgData.msg,
 							icon: 'none'
 						})
-						// uni.switchTab({
-						// 	url: '../../index/components/Home'
-						// })
+						uni.switchTab({
+							url: '/pages/index/components/Home'
+						})
 					break;
 					// 加入直播间
 				    case 'enter':

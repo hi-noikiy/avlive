@@ -4,7 +4,7 @@
 		<view class="main">
 			<view class="item" v-for="(item, index) in list">
 				<view class="t">
-					<image src="../users/static/value.jpg" class="head"></image>
+					<image :src="item.images[0]" class="head" v-if="item.images != ''"></image>
 					<view class="title">{{item.title}}</view>
 					<image src="/static/images/close.png" class="close" @click="del(item.id)"></image>
 				</view>

@@ -266,6 +266,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/tool/worklist",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	// "tabBar": {
 	// 	"color": "#8a8a8a",

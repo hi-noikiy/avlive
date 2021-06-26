@@ -4,19 +4,21 @@
 		<view class="main">
 			<input class="title" type="text" v-model="title" placeholder="请输入标题" />
 			
-			<view class="container">
-			        <editor id="editor" class="ql-container" :placeholder="placeholder" @ready="onEditorReady"></editor>
-			        <button type="warn" @tap="undo">撤销</button>
-			    </view>
+			<!-- <view class="container">
+				<editor id="editor" class="ql-container" :placeholder="placeholder" @ready="onEditorReady"></editor>
+				<button type="warn" @tap="undo">撤销</button>
+			</view> -->
+			<!-- <editor></editor> -->
+			<view class="editor-wapper" id="edit"></view>
 			
-			<textarea class="content" v-model="content" placeholder="请输入内容..." />
+			<!-- <textarea class="content" v-model="content" placeholder="请输入内容..." /> -->
 			<u-upload :action="action" ref="uUpload"></u-upload>
 			<view class="info">
 				<view class="l">
 					<label class="radio" @click="radioChange(1)"><radio name="rname" value="1" :checked="show_auth === 1"/>所有人</label>
 					<label class="radio" @click="radioChange(2)"><radio name="rname" value="2" :checked="show_auth === 2"/>仅限好友</label>
 				</view>
-				<view class="r">只支持图片格式</view>
+				<view class="r">请上传封面图片</view>
 			</view>
 			<view class="btn" @click="submit">发布</view>
 		</view>
@@ -24,6 +26,7 @@
 </template>
 
 <script>
+	import E from 'wangeditor';
 	import {
 		saveCircle
 	} from '@/api/liveApp.js';
@@ -37,8 +40,14 @@
 				show_auth: 1,
 				images: '',
 				
-				placeholder: '开始输入...'
+				placeholder: '开始输入...',
+				editor: null
 			}
+		},
+		onReady() {
+			this.editor = new E('#edit');
+			this.editor.config.height = 180
+			this.editor.create();
 		},
 		methods: {
 			
@@ -81,10 +90,10 @@
 				};
 				saveCircle(data).then(res => {
 					uni.showToast({
-						title: res.data.msg,
+						title: res.msg,
 						icon: 'none'
 					})
-					if(res.data.status == 200) {
+					if(res.status == 200) {
 						setTimeout(function(){
 							uni.switchTab({
 								url: '/pages/index/components/MyCircle'
@@ -186,7 +195,9 @@
 	}
 	
 	
-	
+	#edit {
+		margin-top: 30rpx;
+	}
 	
 	.container {
 	        padding: 10px;

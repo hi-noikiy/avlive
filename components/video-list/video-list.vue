@@ -13,6 +13,9 @@
 				</view>
 			</view>
 		</view>
+		<!-- <view class="" v-if="!noPage">
+			分页
+		</view> -->
 	</view>
 	
 </template>
@@ -20,7 +23,10 @@
 <script>
 	export default {
 		name:"video-list",
-		props: ['videoList'],
+		props: [
+			'videoList',
+			'noPage'
+		],
 		data() {
 			return {
 				
