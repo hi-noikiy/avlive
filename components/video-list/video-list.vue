@@ -17,31 +17,32 @@
 			分页
 		</view> -->
 	</view>
-	
+
 </template>
 
 <script>
 	export default {
-		name:"video-list",
+		name: "video-list",
 		props: [
 			'videoList',
 			'noPage'
 		],
 		data() {
 			return {
-				
+
 			};
 		},
 		methods: {
 			playVideo(id, demand_form_id) {
 				for (let i = 0; i < this.videoList.length; i++) {
-					if(this.videoList[i].id == id) {
+					if (this.videoList[i].id == id) {
 						var index = i;
 						break;
 					}
 				}
 				uni.navigateTo({
-					url: '/pages/liveApp/playVideo?id='+id+'&demand_form_id='+demand_form_id+'&index='+index
+					url: '/pages/liveApp/playVideo?id=' + id + '&demand_form_id=' + demand_form_id + '&index=' +
+						index
 				})
 			}
 		}
@@ -56,6 +57,7 @@
 		flex-wrap: wrap;
 		justify-content: space-between;
 	}
+
 	.item {
 		width: 330rpx;
 		height: 400rpx;
@@ -63,6 +65,7 @@
 		margin-bottom: 29rpx;
 		overflow: hidden;
 		position: relative;
+
 		.bg {
 			position: absolute;
 			left: 0;
@@ -71,15 +74,17 @@
 			height: 100%;
 			z-index: 1;
 		}
+
 		.info {
 			position: absolute;
 			bottom: 0;
 			z-index: 2;
 			width: 100%;
 			height: 141rpx;
-			background: linear-gradient(0deg, #282828, rgba(0,0,0,0));
+			background: linear-gradient(0deg, #282828, rgba(0, 0, 0, 0));
 			border-radius: 15rpx;
 			display: flex;
+
 			.head {
 				width: 80rpx;
 				height: 80rpx;
@@ -87,23 +92,28 @@
 				margin-top: 36rpx;
 				margin-left: 24rpx;
 			}
+
 			.author {
 				display: flex;
 				flex-direction: column;
 				margin-top: 52rpx;
+
 				.t {
 					font-size: 22rpx;
 					font-weight: 500;
 					color: #F8F8F8;
 					margin-left: 16rpx;
 				}
+
 				.b {
 					margin-left: 14rpx;
+
 					image {
 						width: 24rpx;
 						height: 21rpx;
 						margin-right: 7rpx;
 					}
+
 					span {
 						font-size: 24rpx;
 						font-weight: bold;

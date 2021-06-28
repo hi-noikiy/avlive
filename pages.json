@@ -18,6 +18,7 @@
 				//头部导航不显示
 				"navigationBarBackgroundColor": "transparent",
 				"navigationBarTextStyle": "white",
+				// "enablePullDownRefresh": true,
 				"app-plus": {
 					"titleNView": false
 				}
@@ -75,6 +76,7 @@
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "首页",
+				// "enablePullDownRefresh": true,
 				"app-plus": {
 					// #ifdef APP-PLUS
 					"titleNView": false
