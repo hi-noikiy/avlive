@@ -1,0 +1,84 @@
+.top {
+	position: fixed;
+	width: 750rpx;
+	height: 64rpx;
+	top: 80rpx;
+	right: 30rpx;
+	flex-direction: row;
+	justify-content: flex-end;
+}
+
+.user {
+	flex-direction: row;
+}
+
+.user-head {
+	width: 50rpx;
+	height: 50rpx;
+	border-radius: 25rpx;
+	margin-top: 5rpx;
+	margin-right: 10rpx;
+}
+
+.user-num {
+	margin-top: 5rpx;
+	width: 70rpx;
+	height: 50rpx;
+	line-height: 50rpx;
+	text-align: center;
+	background: rgba(0,0,0,0.2);
+	border-radius: 25rpx;
+	color: #FFFFFF;
+	font-size: 20rpx;
+	font-weight: bold;
+}
+
+.user-close {
+	width: 21rpx;
+	height: 21rpx;
+	margin-top: 16rpx;
+	margin-left: 27rpx;
+}
+
+.msgs {
+	position: fixed;
+	width: 400rpx;
+	height: 550rpx;
+	bottom: 148rpx;
+	left: 30rpx;
+	flex-direction: column;
+}
+.msg {
+	flex-direction: row;
+	padding: 15rpx 20rpx;
+	width: 222rpx;
+	height: 50rpx;
+	background-color: rgba(0,0,0,0.2);
+	border-radius: 25rpx;
+	margin-bottom: 5rpx;
+}
+.uname {
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FE3149;
+}
+.umsg {
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+.enter-msg {
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FE3149;
+}
+.logout-msg {
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FE3149;
+}
+.gift-msg {
+	font-size: 20rpx;
+	font-weight: bold;
+	color: #FFF33D;
+}

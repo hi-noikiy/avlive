@@ -1,8 +1,9 @@
 <template>
 	<view class="main">
+		<l-file ref="lFile" @up-success="onSuccess"></l-file>
 		<view class="i">
 			<view>作品名称</view>
-			<input type="text" placeholder="请输入作品名称">
+			<input type="text" v-model="name" placeholder="请输入作品名称">
 		</view>
 		<view class="i">
 			<view>作品类型</view>
@@ -28,7 +29,7 @@
 					><span>下载收费</span></u-checkbox>
 				</u-checkbox-group>
 				<view class="r">
-					<input type="text" value="" placeholder="请输入" />
+					<input type="text" v-model="download_price" placeholder="请输入" />
 					<span>音宝</span>
 				</view>
 			</view>
@@ -36,6 +37,7 @@
 		</view>
 		<view class="uploads">
 			<u-upload :custom-btn="true"
+				:action="action"
 				ref="uUpload"
 				width="140"
 				height="140"
@@ -48,32 +50,29 @@
 					<span>请上传封面</span>
 				</view>
 			</u-upload>
-			<u-upload :custom-btn="true"
-				ref="uUpload"
-				width="140"
-				height="140"
-				del-bg-color="#A9A9A9"
-				@on-choose-complete="rShowChange(false)"
-				@on-remove="rShowChange(true)"
-			>
-				<view class="r" slot="addBtn" v-show="rshow">
-					<image src="../../static/images/hadd.png"></image>
-					<span class="t">音频视频支持</span>
-					<span class="b">PM3 PM4格式</span>
-				</view>
-			</u-upload>
+			<view class="r" v-show="rshow" @tap="onUpload()">
+				<image v-if="file == ''" src="../../static/images/hadd.png"></image>
+				<span class="t">{{file == '' ? '音频视频支持' : '已选择文件'}}</span>
+				<span class="b">{{file == '' ? 'PM3 PM4格式' : '点击替换'}}</span>
+			</view>
 		</view>
-		<view class="submit">上传</view>
+		<view class="submit" @click="sub()">上传</view>
 	</view>
 </template>
 
 <script>
+	import lFile from '@/components/l-file/l-file';
 	import {
-		getDemandForm
+		getDemandForm,
+		saveWorks
 	} from '@/api/liveApp.js';
 	export default {
 		data() {
 			return {
+				// 上传地址
+				action: 'http://qyh.ugekeji.com/api/v3/upload',
+				// 作品名称
+				name: '',
 				// 作品类型
 				types: [{
 					id: 1,
@@ -84,20 +83,25 @@
 				}],
 				typeIndex: 0,
 				// 作品分类
-				cates: [],
+				cates: [{
+					id: 0,
+					form_type_name: '加载中'
+				}],
 				cateIndex: 0,
 				// 下载收费
 				priceChecked: false,
+				download_price: '',
 				// 上传是否展示
 				lshow: true,
-				rshow: true
+				rshow: true,
+				// 已选择文件
+				file: ''
 			}
 		},
 		methods: {
 			onLoad() {
 				var that = this;
 				getDemandForm().then(res => {
-					console.log(res.data.demand_form)
 					that.cates = res.data.demand_form;
 				})
 			},
@@ -112,12 +116,72 @@
 			},
 			rShowChange(bool) {
 				this.rshow = bool;
+			},
+			/* 上传附件 */
+			onUpload() {
+				/**
+				 * currentWebview: 当前webview
+				 * url：上传接口地址
+				 * name：附件key,服务端根据key值获取文件流，默认file,上传文件的key
+				 * header: 上传接口请求头
+				 */
+				this.$refs.lFile.upload({
+					// #ifdef APP-PLUS
+					// nvue页面使用时请查阅nvue获取当前webview的api，当前示例为vue窗口
+					currentWebview: this.$mp.page.$getAppWebview(),
+					// #endif
+					url: 'http://qyh.ugekeji.com/api/v3/upload', //替换为你的
+					name: 'file'
+				});
+			},
+			onSuccess(res) {
+				this.file = res.data.id;
+			},
+			// 上传
+			sub() {
+				var that = this;
+				var data = {
+					name: that.name,
+					type: that.types[that.typeIndex].id,
+					demand_form_id: that.cates[that.cateIndex].id,
+					file: that.file
+				};
+				if(that.priceChecked) {
+					data.download_price = that.download_price;
+				}
+				// 图片
+				var files = [];
+				files = that.$refs.uUpload.lists.filter(val => {
+					return val.progress == 100;
+				})
+				if(files.length > 0) {
+					data.image = files[0].response;
+				}
+				saveWorks(data).then(res => {
+					uni.showToast({
+						title: res.msg,
+						icon: 'none'
+					})
+					if(res.status == 200) {
+						uni.switchTab({
+							url: '/pages/index/index'
+						})
+					}
+				})
 			}
 		}
 	}
 </script>
 
-<style  lang="scss">
+<style lang="scss">
+	page{
+		width: 100%;
+		height: 100%;
+		background-image: url(/static/images/main-bg.png);
+		background-attachment: fixed;
+		background-repeat: no-repeat;
+		background-size:100% 100vh;
+	}
 	.main {
 		width: 690rpx;
 		margin: 0 auto;
@@ -225,11 +289,11 @@
 		.r {
 			span {position: absolute;}
 			.t {
-				left: 16rpx;
+				left: 24rpx;
 				top: 100rpx;
 			}
 			.b {
-				left: 10rpx;
+				left: 22rpx;
 				top: 130rpx;
 			}
 		}

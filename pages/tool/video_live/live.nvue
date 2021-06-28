@@ -10,9 +10,7 @@
 		<!-- #endif -->
 		<view class="top">
 			<view class="user">
-				<image class="user-head" src="../../users/static/1.png"></image>
-				<image class="user-head" src="../../users/static/1.png"></image>
-				<image class="user-head" src="../../users/static/1.png"></image>
+				<image class="user-head" v-for="(item,index) in firstList" :src="item.avatar"></image>
 				<text class="user-num">{{userNum}}</text>
 				<image class="user-close" src="../../../static/images/live_close.png" @click="stop()"></image>
 			</view>
@@ -39,6 +37,9 @@
 
 <script>
 	import store from '../../../store';
+	import {
+		stopLiveRoom
+	} from '@/api/liveApp.js';
 	export default {
 		data() {
 			return {
@@ -87,13 +88,14 @@
 			});
 			uni.onSocketMessage(function (res) {
 				var datas = JSON.parse(res.data);
-				var msgData = JSON.parse(datas.data);
-				console.log(datas);
-				console.log(msgData);
-				return;
+				// var msgData = JSON.parse(datas.data);
+				console.log(res.data)
+				// console.log(datas);
+				// console.log(msgData);
 				switch(datas.type) {
 					// 有人加入直播间
 					case 'enter':
+						var msgData = JSON.parse(datas.data);
 						_this.msgAll.push(msgData);
 					break;
 					// 有人退出直播间
@@ -102,12 +104,12 @@
 					break;
 					// 直播间消息
 					case 'msg':
+						var msgData = JSON.parse(datas.data);
 						_this.msgAll.push(msgData);
 					break;
 					// 直播间礼物
 					case 'gift':
-						console.log(datas);
-						console.log(msgData);
+						var msgData = JSON.parse(datas.data);
 						_this.msgAll.push(msgData)
 					break;
 					// 主播心跳检测
@@ -120,8 +122,8 @@
 					break;
 					// 榜单信息
 					case 'firstList':
-						console.log(datas);
-						console.log(msgData);
+						_this.firstList = JSON.parse(datas.data);
+						console.log(_this.firstList);
 					break;
 				}
 			});
@@ -132,15 +134,15 @@
 		methods: {
 			// 开始直播
 			star(){
-				开始推流
-				this.context.start({
-					success: (a) => {
-						console.log("livePusher.start:" + JSON.stringify(a));
-					},
-					fail: (err) => {
-						console.log('fail')
-					}
-				})
+				// 开始推流
+				// this.context.start({
+				// 	success: (a) => {
+				// 		console.log("livePusher.start:" + JSON.stringify(a));
+				// 	},
+				// 	fail: (err) => {
+				// 		console.log('fail')
+				// 	}
+				// })
 				// 开启心跳
 				this.heartbeat()
 				// 开启直播
@@ -175,34 +177,26 @@
 			},
 			stop() {
 				var _this = this;
-				uni.request({
-					url: 'https://qyh.ugekeji.com/api/v3/stopLiveRoom',
-					method: "POST",
-					header: {
-						'content-type': 'application/x-www-form-urlencoded',
-					},
-					data: {
-						id: _this.id
-					},
-					success(res) {
-						_this.send('endLive', '{"roomId":"'+_this.id+'","msg":"下播","uid":'+_this.uid+'}')
-						// uni.closeSocket();
-						uni.onSocketClose(function () {
-							console.log('直播已关闭');
-						});
-					},
-					fail() {
-						console.log('fail')
-					}
-				})
-			    this.context.stop({
-			        success: (a) => {
-			            console.log(JSON.stringify(a));
-			        }
-			    });
-				uni.switchTab({
-					url: '/pages/index/components/Me'
-				})
+				stopLiveRoom({
+					id: _this.id
+				}).then(res => {
+					_this.send('endLive', '{"roomId":"'+_this.id+'","msg":"下播","uid":'+_this.uid+'}')
+					// 关闭websocket
+					uni.closeSocket();
+					uni.onSocketClose(function () {
+						console.log('直播已关闭');
+					});
+					// 停止推流
+					this.context.stop({
+					    success: (a) => {
+					        console.log(JSON.stringify(a));
+					    }
+					});
+					// 返回到个人中心页面
+					uni.switchTab({
+						url: '/pages/index/components/Me'
+					})
+				});
 			},
 			send(type, data) {
 				var data = JSON.stringify(data);
@@ -217,88 +211,5 @@
 </script>
 
 <style>
-	.top {
-		position: fixed;
-		width: 750rpx;
-		height: 64rpx;
-		top: 80rpx;
-		right: 30rpx;
-		flex-direction: row;
-		justify-content: flex-end;
-	}
-	
-	.user {
-		flex-direction: row;
-	}
-	
-	.user-head {
-		width: 50rpx;
-		height: 50rpx;
-		border-radius: 25rpx;
-		margin-top: 5rpx;
-		margin-right: 10rpx;
-	}
-	
-	.user-num {
-		margin-top: 5rpx;
-		width: 70rpx;
-		height: 50rpx;
-		line-height: 50rpx;
-		text-align: center;
-		background: rgba(0,0,0,0.2);
-		border-radius: 25rpx;
-		color: #FFFFFF;
-		font-size: 20rpx;
-		font-weight: bold;
-	}
-	
-	.user-close {
-		width: 21rpx;
-		height: 21rpx;
-		margin-top: 16rpx;
-		margin-left: 27rpx;
-	}
-	
-	.msgs {
-		position: fixed;
-		width: 400rpx;
-		height: 550rpx;
-		bottom: 148rpx;
-		left: 30rpx;
-		flex-direction: column;
-	}
-	.msg {
-		flex-direction: row;
-		padding: 15rpx 20rpx;
-		width: 222rpx;
-		height: 50rpx;
-		background-color: rgba(0,0,0,0.2);
-		border-radius: 25rpx;
-		margin-bottom: 5rpx;
-	}
-	.uname {
-		font-size: 20rpx;
-		font-weight: bold;
-		color: #FE3149;
-	}
-	.umsg {
-		font-size: 20rpx;
-		font-weight: bold;
-		color: #FFFFFF;
-	}
-	.enter-msg {
-		font-size: 20rpx;
-		font-weight: bold;
-		color: #FE3149;
-	}
-	.logout-msg {
-		font-size: 20rpx;
-		font-weight: bold;
-		color: #FE3149;
-	}
-	.gift-msg {
-		font-size: 20rpx;
-		font-weight: bold;
-		color: #FFF33D;
-	}
+	@import "./live.css";
 </style>

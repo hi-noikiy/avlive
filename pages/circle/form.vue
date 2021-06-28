@@ -20,7 +20,6 @@
 </template>
 
 <script>
-	import E from 'wangeditor';
 	import {
 		saveCircle
 	} from '@/api/liveApp.js';

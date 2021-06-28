@@ -76,7 +76,7 @@
 	.btn-bg {margin-top: 10px;background: #0066CC;color: #fff;width: 80%;height: 40px;line-height: 40px;border: 0;border-radius: 5px;}
 	.tis {top: 0;z-index: 95;display: flex;justify-content: center;align-items: center;}
 	.tis .tis-content {background: #fff;width: 60%;border-radius: 10px;padding: 20px 0;}
-	.tis .tis-content img {width: 50px;height: 50px;}
+	.tis .tis-content img {width: 50px;height: 50px;display: none;}
 	.tis-progress {margin: 10px 0;color: #999;}
 	.cancel-btn {margin-top: 30px;height: 30px;width: 60%;line-height: 30px;font-size: 14px;padding: 0 2em;background: #e3e3e3;color: #898989;border: 0!important;border-radius: 5px;}
 	.cancel-btn:after {height: 0!important;border: 0!important;}

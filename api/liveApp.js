@@ -31,6 +31,12 @@ export function getWorksDetail(data) {
 export function worksLike(data) {
 	return request.get('v3/worksLike', data);
 }
+/**
+ * 作品上传
+ */
+export function saveWorks(data) {
+	return request.post('v3/saveWorks', data);
+}
 
 /**
  * 获取直播间列表
@@ -50,6 +56,12 @@ export function getLiveRoomDetail(data) {
 export function createLiveRoom(data) {
 	return request.post('v3/createLiveRoom', data);
 }
+/**
+ * 关闭直播
+ */
+export function stopLiveRoom(data) {
+	return request.post('v3/stopLiveRoom', data);
+};
 /**
  * 礼物列表
  */

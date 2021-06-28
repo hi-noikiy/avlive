@@ -22,9 +22,7 @@
 				<text class="author-r" @click="userFollow()">{{isFollow == 0 ? '关注' : '已关注'}}</text>
 			</view>
 			<view class="user">
-				<image class="user-head" src="../../users/static/1.png"></image>
-				<image class="user-head" src="../../users/static/1.png"></image>
-				<image class="user-head" src="../../users/static/1.png"></image>
+				<image class="user-head" v-for="(item,index) in firstList" :src="item.avatar"></image>
 				<text class="user-num">{{userNum}}</text>
 				<image class="user-close" src="../../../static/images/live_close.png" @click="closePage()"></image>
 			</view>
@@ -158,12 +156,16 @@
 			}
 			// 直播间详情
 			getLiveRoomDetail(data).then(res=> {
-				console.log('---------------------------look------------------------------')
-				console.log(res.data);
 				_this.row = res.data.row;
 				_this.src = res.data.row.pull_url;
 				_this.anchorInfo = res.data.anchorInfo;
 				_this.userInfo = res.data.userInfo;
+				
+				uni.onSocketOpen(function (res) {
+					console.log('WebSocket连接已打开！');
+					// 发送进入聊天室提醒
+					_this.send('enter', '{"roomId":"'+_this.row.id+'","nickname":"'+_this.userInfo.nickname+'", "uid":'+_this.userInfo.uid+'}')
+				});
 			})
 		},
 		onReady() {
@@ -176,13 +178,13 @@
 			uni.connectSocket({
 			    url: 'ws://39.106.196.170:20196'
 			});
-			uni.onSocketOpen(function (res) {
-				console.log('WebSocket连接已打开！');
-				// 发送进入聊天室提醒
-				_this.send('enter', '{"roomId":"'+_this.row.id+'","nickname":"'+_this.userInfo.nickname+'", "uid":'+_this.userInfo.uid+'}')
-				// 开启心跳监听
-				_this.heartbeat()
-			});
+			// uni.onSocketOpen(function (res) {
+			// 	console.log('WebSocket连接已打开！');
+			// 	// 发送进入聊天室提醒
+			// 	_this.send('enter', '{"roomId":"'+_this.row.id+'","nickname":"'+_this.userInfo.nickname+'", "uid":'+_this.userInfo.uid+'}')
+			// 	// 开启心跳监听
+			// 	_this.heartbeat()
+			// });
 			uni.onSocketError(function (res) {
 				uni.showLoading({
 					title: '断线重连中...'
@@ -203,22 +205,23 @@
 			});
 			uni.onSocketMessage(function (res) {
 				var datas = JSON.parse(res.data);
-				var msgData = JSON.parse(datas.data);
+				
 				console.log(datas);
-				console.log(msgData);
 				switch(datas.type) {
 					// 主播关闭直播
 					case 'endLive':
+						var msgData = JSON.parse(datas.data);
 						uni.showToast({
 							title: msgData.msg,
 							icon: 'none'
 						})
 						uni.switchTab({
-							url: '/pages/index/components/Home'
+							url: '/pages/index/index'
 						})
 					break;
 					// 加入直播间
 				    case 'enter':
+						var msgData = JSON.parse(datas.data);
 						_this.msgAll.push(msgData);
 				    break;
 					// 退出直播间
@@ -227,12 +230,12 @@
 				    break;
 					// 聊天室消息
 					case 'msg':
+						var msgData = JSON.parse(datas.data);
 					    _this.msgAll.push(msgData);
 					break;
 					// 刷礼物
 					case 'gift':
-						console.log(datas);
-						console.log(msgData);
+						var msgData = JSON.parse(datas.data);
 						_this.msgAll.push(msgData)
 					break;
 					// 心跳检测
@@ -245,11 +248,13 @@
 					break;
 					// 榜单信息
 					case 'firstList':
-						console.log(datas);
-						console.log(msgData);
+						_this.firstList = JSON.parse(datas.data);
+						console.log(_this.firstList);
 					break;
 				}
 			})
+			// 开启心跳监听
+			_this.heartbeat()
 		},
 		// 退出直播间
 		// onUnload() {
@@ -262,6 +267,9 @@
 		methods: {
 			// 退出直播间
 			closePage() {
+				// 关闭websocket
+				uni.closeSocket();
+				// 返回上一页
 				uni.navigateBack({
 					delta: 1
 				})
