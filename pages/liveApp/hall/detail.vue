@@ -9,7 +9,6 @@
 		</view>
 		
 		<view class="bottomBox u-flex u-row-right">
-			
 			<button class="btnTheme" @click="submitInfo">联系雇主</button>
 			<button class="btnTheme" @click="submitInfo">报价</button>
 		</view>

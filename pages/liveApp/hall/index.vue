@@ -1,6 +1,5 @@
 <template>
 	<view class="">
-		<image src="/static/images/main-bg.png" class="bg"></image>
 		<view class="main">
 			<view class="i i1">
 				<view class="title">指定制作方</view>
@@ -49,8 +48,19 @@
 
 			<view class="sub" @click="submit" v-if="Producer!=''">修改</view>
 
-			<view class="sub" @click="submit" v-else>提交</view>
+			<view class="sub" @click="submit(true)" v-else>提交</view>
 		</view>
+
+
+		<view class="bgbox" v-if="shareBox" @click="shareBox = false">
+			<view class="share-box" v-if="shareBox" @tap.stop>
+				<view class="share-item" v-for="(item, index) in list" :key="index" @click="getpay(index)">
+					<!-- <image class="share-item-image" :src="item.image"></image> -->
+					<text class="share-item-text">{{item.title}}</text>
+				</view>
+			</view>
+		</view>
+
 	</view>
 </template>
 
@@ -64,11 +74,21 @@
 		getUserOrderList,
 		saveOrder
 	} from '@/api/liveApp';
+
 	export default {
+
 		data() {
 			return {
 				disabledzz: false,
 				disabledgz: false,
+				shareBox: false,
+				list: [{
+					title: '微信'
+				}, {
+					title: '支付宝'
+				}, {
+					title: '音宝'
+				}],
 				action: 'http://qyh.ugekeji.com/api/v3/upload',
 				unitArr: ['小时', '天', '周', '月'],
 				unit: '小时',
@@ -155,6 +175,7 @@
 		},
 
 		methods: {
+
 			//填写制作方发生变化时
 			changeInputzz() {
 				if (this.Producer == '') {
@@ -221,6 +242,7 @@
 								var data = {
 									order_id: res.data.order_id,
 								}
+
 								refundMoney(data).then(res => {
 									console.log("退款结果", res)
 									if (res.status == 200) {
@@ -245,26 +267,28 @@
 					data.pay_price = that.pay_price;
 					createOrder(data).then(res => {
 						console.log("订单id", res.data.result.order_id)
+						that.order_id = res.data.result.order_id
 						if (that.Producer != '') {
-							var orderdata = {
-								order_id: res.data.result.order_id,
-								pay_type: 'yue'
-							}
-							payOrder(orderdata).then(res => {
-								console.log("支付结果", res)
-								if (res.status == 200) {
-									uni.hideLoading()
-									uni.showToast({
-										title: '支付成功等待作者确认',
-										icon: 'none'
-									})
-									setTimeout(function() {
-										uni.navigateBack({
-											delta: 1
-										})
-									}, 1500);
-								}
-							})
+							this.shareBox = true
+							// var orderdata = {
+							// 	order_id: res.data.result.order_id,
+							// 	pay_type: 'yue'
+							// }
+							// payOrder(orderdata).then(res => {
+							// 	console.log("支付结果", res)
+							// 	if (res.status == 200) {
+							// 		uni.hideLoading()
+							// 		uni.showToast({
+							// 			title: '支付成功等待作者确认',
+							// 			icon: 'none'
+							// 		})
+							// 		setTimeout(function() {
+							// 			uni.navigateBack({
+							// 				delta: 1
+							// 			})
+							// 		}, 1500);
+							// 	}
+							// })
 							return
 						}
 						if (res.status == 200) {
@@ -283,9 +307,9 @@
 				}
 			},
 			// 提交
-			submit() {
+			submit(bool) {
 				var that = this;
-				uni.showLoading()
+				// uni.showLoading()
 				// 音色要求
 				var timbre_type_id = '';
 				var timbre_type_name = '';
@@ -394,6 +418,116 @@
 					that.chuangjianorder(data)
 				}
 
+			},
+			getpay(index) {
+				var that = this
+				// #ifdef H5
+				if (index == 0 || index == 1) {
+					uni.showToast({
+						icon: 'none',
+						title: '暂时不支持h5支付'
+					})
+				}
+				// #endif
+				// #ifdef APP-PLUS
+				//微信支付
+				if (index == 0) {
+					var orderdata = {
+						order_id: that.order_id,
+						pay_type: 'weixin'
+					}
+					payOrder(orderdata).then(res => {
+						console.log("支付结果", res)
+						if (res.status == 200) {
+							var wxdata = res.data
+							uni.requestPayment({
+								timeStamp: wxdata.timeStamp,
+								nonceStr: wxdata.nonceStr,
+								package: wxdata.package,
+								signType: wxdata.signType,
+								paySign: wxdata.paySign,
+								success: function(res) {
+									uni.hideLoading()
+									uni.showToast({
+										title: '支付成功等待作者确认',
+										icon: 'none'
+									})
+									setTimeout(function() {
+										that.showShare = false
+										uni.navigateBack({
+											delta: 1
+										})
+									}, 1500);
+								},
+								fail: function(e) {
+									uni.hideLoading();
+								},
+								complete: function(e) {
+									uni.hideLoading();
+								},
+							});
+
+						}
+					})
+				}
+				//支付宝支付
+				if (index == 1) {
+					var orderdata = {
+						order_id: that.order_id,
+						pay_type: 'alipay'
+					}
+					payOrder(orderdata).then(res => {
+						console.log("支付结果", res)
+						if (res.status == 200) {
+							uni.requestPayment({
+								provider: 'alipay',
+								orderInfo: res.data.param,
+								success: function(res) {
+									uni.hideLoading()
+									uni.showToast({
+										title: '支付成功等待作者确认',
+										icon: 'none'
+									})
+									setTimeout(function() {
+										that.showShare = false
+										uni.navigateBack({
+											delta: 1
+										})
+									}, 1500);
+								},
+
+								fail: function(err) {
+									console.log('fail:' + JSON.stringify(err));
+								}
+							});
+						}
+					})
+				}
+				// #endif
+				// 音宝支付
+				if (index == 2) {
+					var orderdata = {
+						order_id: that.order_id,
+						pay_type: 'yue'
+					}
+					payOrder(orderdata).then(res => {
+						console.log("支付结果", res)
+						if (res.status == 200) {
+							uni.hideLoading()
+							uni.showToast({
+								title: '支付成功等待作者确认',
+								icon: 'none'
+							})
+							setTimeout(function() {
+								that.showShare = false
+								uni.navigateBack({
+									delta: 1
+								})
+							}, 1500);
+						}
+					})
+				}
+
 			}
 		},
 		// computed: {
@@ -411,18 +545,16 @@
 </script>
 
 <style scoped lang="scss">
-	.bg {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 750rpx;
-		height: 100vh;
-		z-index: 1;
+	page {
+		width: 100%;
+		height: 100%;
+		background-image: url(/static/images/main-bg.png);
+		background-attachment: fixed;
+		background-repeat: no-repeat;
+		background-size: 100% 100vh;
 	}
 
 	.main {
-		position: absolute;
-		z-index: 2;
 		width: 690rpx;
 		margin-top: 20rpx;
 		margin-left: 30rpx;
@@ -560,5 +692,46 @@
 
 	/deep/ .u-add-wrap {
 		background-color: #FFFFFF;
+	}
+
+	.bgbox {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 2;
+		background-color: rgba(0, 0, 0, 0.6);
+	}
+
+	.share-box {
+		position: fixed;
+		z-index: 1000;
+		bottom: 0;
+		left: 0;
+		width: 750rpx;
+		height: 320rpx;
+		background-color: #454545;
+	}
+
+	.share-item {
+		height: 100rpx;
+		line-height: 100rpx;
+		font-size: 25rpx;
+		border-bottom: 1rpx solid #C8C7CC;
+		text-align: center;
+
+	}
+
+	.share-item-image {
+		width: 94rpx;
+		height: 94rpx;
+		margin-bottom: 30rpx;
+	}
+
+	.share-item-text {
+		font-size: 33rpx;
+		font-family: Adobe Heiti Std;
+		color: #FFFFFF;
 	}
 </style>
