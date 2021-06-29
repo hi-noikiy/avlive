@@ -81,6 +81,12 @@ export function giveGift(data) {
 export function userFollow(data) {
 	return request.get('v3/userFollow', data);
 }
+/**
+ * 用户是否关注
+ */
+export function userIsFollow(data) {
+	return request.get('v3/userIsFollow', data);
+}
 
 /**
  * 交易大厅

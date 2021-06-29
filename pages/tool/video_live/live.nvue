@@ -16,8 +16,8 @@
 			</view>
 		</view>
 		<scroll-view class="msgs" id="msgs" :scroll-y="true" :show-scrollbar="false">
-			<view class="msg">
-				<text class="umsg" @click="star()">点此开始直播!</text>
+			<view class="msg" @click="star()">
+				<text class="umsg">点此开始直播!</text>
 			</view>
 			<view class="msg" v-for="(item, index) in msgAll">
 				<!-- 用户发送消息 -->
@@ -95,22 +95,19 @@
 				switch(datas.type) {
 					// 有人加入直播间
 					case 'enter':
-						var msgData = JSON.parse(datas.data);
-						_this.msgAll.push(msgData);
+						_this.msgAll.push(JSON.parse(datas.data));
 					break;
 					// 有人退出直播间
 					case 'logout':
-						_this.msgAll.push(datas.data);
+						_this.msgAll.push(JSON.parse(datas.data));
 					break;
 					// 直播间消息
 					case 'msg':
-						var msgData = JSON.parse(datas.data);
-						_this.msgAll.push(msgData);
+						_this.msgAll.push(JSON.parse(datas.data));
 					break;
 					// 直播间礼物
 					case 'gift':
-						var msgData = JSON.parse(datas.data);
-						_this.msgAll.push(msgData)
+						_this.msgAll.push(JSON.parse(datas.data));
 					break;
 					// 主播心跳检测
 					case 'ping':
@@ -130,6 +127,12 @@
 			
 			// 注意：需要在onReady中 或 onLoad 延时
 			this.context = uni.createLivePusherContext("livePusher", this);
+			// 开启摄像头预览
+			this.context.startPreview({
+			    success: (a) => {
+			        console.log("livePusher.startPreview:" + JSON.stringify(a));
+			    }
+			});
 		},
 		methods: {
 			// 开始直播
@@ -194,7 +197,7 @@
 					});
 					// 返回到个人中心页面
 					uni.switchTab({
-						url: '/pages/index/components/Me'
+						url: '/pages/index/index'
 					})
 				});
 			},

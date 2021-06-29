@@ -1,6 +1,5 @@
 <template>
 	<view>
-		<image src="/static/images/main-bg.png" class="bg"></image>
 		<view class="u-page">
 			<!-- 所有内容的容器 -->
 			<Home v-if="drawComp[0]" v-show="showComp[0]"></Home> 
@@ -116,8 +115,6 @@
 			tabChange(index){  
 				console.log("index"+index);
 				if(index==this.activeIndex)return;
-				
-				
 				//上一组件隐藏
 				this.showComp[this.activeIndex]=false
 				//切换下一组件显示
@@ -145,12 +142,13 @@
 </script>
 
 <style>
-	.bg {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 750rpx;
-		height: 100vh;
+	page{
+		width: 100%;
+		height: 100%;
+		background-image: url(/static/images/main-bg.png);
+		background-attachment: fixed;
+		background-repeat: no-repeat;
+		background-size:100% 100vh;
 	}
 	/deep/ .u-tabbar__content {
 		height: 120rpx!important;

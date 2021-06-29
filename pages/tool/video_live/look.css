@@ -4,6 +4,7 @@
 	height: 64rpx;
 	flex-direction: row;
 	margin-top: 44rpx;
+	justify-content: space-between;
 }
 
 .author {
@@ -61,7 +62,7 @@
 
 .user {
 	flex-direction: row;
-	margin-left: 127rpx;
+	margin-right: 30rpx;
 }
 
 .user-head {

@@ -14,7 +14,6 @@
 		    </view>
 		  </view> -->
 		  <!-- #ifdef H5 -->
-		  
 		  <u-gap height="44" ></u-gap>
 		  <!-- #endif -->
 		  <view >
@@ -186,7 +185,8 @@
 			console.log("updated");
 			
 		},
-		mounted () {  
+		mounted () {
+			
 			console.log("mounted");
 			if(!this.uid)return 
 			uni.$on('onIMLogin',(isLogin)=>{
@@ -240,7 +240,7 @@
 		    this.getRoster();
 			
 			
-			//  this.getChatList()
+			 // this.getChatList()
 			// // this.arr= this.getChatList();
 			// this.unReadSpotNum= getApp().globalData.unReadMessageNum > 99 ? '99+' : getApp().globalData.unReadMessageNum;
 			

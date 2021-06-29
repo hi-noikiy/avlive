@@ -160,6 +160,7 @@
 				_this.src = res.data.row.pull_url;
 				_this.anchorInfo = res.data.anchorInfo;
 				_this.userInfo = res.data.userInfo;
+				_this.isFollow = res.data.isFollow ? 1 : 0;
 				
 				uni.onSocketOpen(function (res) {
 					console.log('WebSocket连接已打开！');
@@ -221,22 +222,19 @@
 					break;
 					// 加入直播间
 				    case 'enter':
-						var msgData = JSON.parse(datas.data);
-						_this.msgAll.push(msgData);
+						_this.msgAll.push(JSON.parse(datas.data));
 				    break;
 					// 退出直播间
 				    case 'logout':
-				        _this.msgAll.push(datas.data);
+				        _this.msgAll.push(JSON.parse(datas.data));
 				    break;
 					// 聊天室消息
 					case 'msg':
-						var msgData = JSON.parse(datas.data);
-					    _this.msgAll.push(msgData);
+					    _this.msgAll.push(JSON.parse(datas.data));
 					break;
 					// 刷礼物
 					case 'gift':
-						var msgData = JSON.parse(datas.data);
-						_this.msgAll.push(msgData)
+						_this.msgAll.push(JSON.parse(datas.data));
 					break;
 					// 心跳检测
 					case 'ping':
@@ -267,6 +265,10 @@
 		methods: {
 			// 退出直播间
 			closePage() {
+				// 关闭心跳检测
+				clearInterval(this.ping)
+				// 退出聊天室
+				this.send('logout', '{"roomId":"'+this.row.id+'","nickname":"'+this.userInfo.nickname+'", "uid":'+this.userInfo.uid+'}')
 				// 关闭websocket
 				uni.closeSocket();
 				// 返回上一页
@@ -287,11 +289,11 @@
 				var _this = this;
 				var operation = (_this.isFollow == 1) ? 0 : 1;
 				var data = {
+					uid: uni.getStorageSync('uid'),
 					to_user_id: _this.row.anchor_id,
 					operation: operation
 				};
 				userFollow(data).then(res=>{
-					
 					_this.isFollow = operation;
 				})
 			},

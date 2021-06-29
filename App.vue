@@ -867,12 +867,10 @@ export default {
 /* #endif */
 @import 'static/css/guildford.css';
 @import 'static/css/style.scss';
-/* page{
+page{
 	max-width: 750rpx;
 	margin: auto;
-	background-image: url(static/images/home_background.png);
-	background-size:100% 100%;
-} */
+}
 view {
 	box-sizing: border-box;
 }

@@ -29,7 +29,7 @@
 					<view class="sign">个性签名：{{userInfo.signature == '' ? '这个家伙很懒，什么都没留下' : userInfo.signature}}</view>
 				</view>
 				<view class="c" v-if="userInfo.uid != uid">
-					<view class="btn">关注</view>
+					<view class="btn" @click="follow">{{isFollow ? '已' : ''}}关注</view>
 					<view class="btn">雇佣他</view>
 				</view>
 			</view>
@@ -99,7 +99,9 @@
 	import {
 		getDemandForm,
 		userInfo,
-		getHomeData
+		getHomeData,
+		userIsFollow,
+		userFollow
 	} from '@/api/liveApp.js';
 	export default {
 		components: {
@@ -120,7 +122,8 @@
 				demand_form: [],
 				userInfo: [],
 				uid: '',
-				user_id: ''
+				user_id: '',
+				isFollow: false,
 			}
 		},
 		methods: {
@@ -130,6 +133,16 @@
 				this.getUserInfo()
 				this.getList()
 				this.uid = uni.getStorageSync('uid')
+				// 验证是否关注
+				if(this.uid != this.user_id) {
+					var that = this;
+					userIsFollow({
+						user_id: that.uid,
+						to_user_id: that.user_id
+					}).then(res => {
+						that.isFollow = res.data.data;
+					})
+				}
 			},
 			// 设置menu_id
 			setMenuId(menu_id) {
@@ -175,6 +188,19 @@
 			works() {
 				uni.navigateTo({
 					url: '../../tool/worklist'
+				})
+			},
+			// 用户关注与取关
+			follow() {
+				var that = this;
+				var operation = (that.isFollow === true) ? 0 : 1;
+				var data = {
+					uid: uni.getStorageSync('uid'),
+					to_user_id: this.user_id,
+					operation: operation
+				};
+				userFollow(data).then(res=>{
+					that.isFollow = !that.isFollow;
 				})
 			}
 		}
