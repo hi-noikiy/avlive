@@ -15,21 +15,27 @@
 						<view class='input'><input type='text' name='nickname' :value='userInfo.nickname'></input>
 						</view>
 					</view>
+
+
 					<view class='item acea-row row-between-wrapper'>
-						<view>手机号码</view>
-						<navigator url="/pages/users/user_phone/index" hover-class="none" class="input"
-							v-if="!userInfo.phone">
-							点击绑定手机号<text class="iconfont icon-xiangyou"></text>
-						</navigator>
-						<view class='input acea-row row-between-wrapper' v-else>
-							<input type='text' disabled='true' name='phone' :value='userInfo.phone' class='id'></input>
-							<text class='iconfont icon-suozi'></text>
-						</view>
+						<block class="" v-if="userInfo.phone ==''">
+							<view>手机号码</view>
+							<view class='input'><input type='text' name='phone' :value='userInfo.phone'></input>					
+							</view>
+						</block>
+						<block class="" v-else>
+							<view>更换手机号码</view>
+							<navigator url="/pages/users/user_phone/index?type=1" hover-class="none" class="input">
+								{{userInfo.phone}}<text class="iconfont icon-xiangyou"></text>
+							</navigator>
+						</block>
 					</view>
+
+
 					<view class='item acea-row row-between-wrapper'>
 						<view>实名认证</view>
-						<navigator v-if="userInfo.is_authentication == 1" url=""
-							hover-class="none" class="input" v-else>
+						<navigator v-if="userInfo.is_authentication == 1" url="" hover-class="none" class="input"
+							v-else>
 							已认证<text class="iconfont icon-xiangyou"></text>
 						</navigator>
 						<navigator url="/pages/users/realName/index" hover-class="none" class="input" v-else>
@@ -60,45 +66,48 @@
 					</view>
 					<!-- #endif -->
 
-					<view class="item acea-row row-between-wrapper" v-if="userInfo.phone">
+<!-- 					<view class="item acea-row row-between-wrapper" v-if="userInfo.phone">
 						<view>更换手机号码</view>
 						<navigator url="/pages/users/user_phone/index?type=1" hover-class="none" class="input">
-							点击更换手机号码<text class="iconfont icon-xiangyou"></text>
+							{{userInfo.phone}}<text class="iconfont icon-xiangyou"></text>
 						</navigator>
-					</view>
+					</view> -->
+
 					<view class='item acea-row row-between-wrapper'>
 						<view>微博号</view>
-						<view class='input'><input type='text' name='micro_blog' placeholder="填写微博号"  :value='userInfo.micro_blog'></input>
+						<view class='input'><input type='text' name='micro_blog' placeholder="填写微博号"
+								:value='userInfo.micro_blog'></input>
 						</view>
 					</view>
 					<view class='item acea-row row-between-wrapper'>
 						<view>微信号</view>
-						<view class='input'><input type='text' name='wechat' placeholder="填写微信号" :value='userInfo.wechat'></input>
+						<view class='input'><input type='text' name='wechat' placeholder="填写微信号"
+								:value='userInfo.wechat'></input>
 						</view>
 					</view>
 					<view class='item acea-row row-between-wrapper'>
 						<view>邮箱</view>
-						<view class='input'><input type='text' name='email' placeholder="填写邮箱号" :value='userInfo.email'></input>
+						<view class='input'><input type='text' name='email' placeholder="填写邮箱号"
+								:value='userInfo.email'></input>
 						</view>
 					</view>
-					
+
 					<view class='item acea-row row-between-wrapper'>
 						<view>绑定微信</view>
-						<navigator  url=""
-							hover-class="none" class="input">
+						<navigator url="" hover-class="none" class="input">
 							未绑定<text class="iconfont icon-xiangyou"></text>
 						</navigator>
-						
-<!-- 						<navigator url="/pages/users/realName/index" hover-class="none" class="input" v-else>
+
+						<!-- 						<navigator url="/pages/users/realName/index" hover-class="none" class="input" v-else>
 							实名认证<text class="iconfont icon-xiangyou"></text>
 						</navigator> -->
 					</view>
-					
+
 				</view>
 				<button class='modifyBnt' formType="submit">保存修改</button>
 				<!-- #ifdef H5 -->
-				<view class="logOut  acea-row row-center-wrapper" @click="outLogin"
-					v-if="!this.$wechat.isWeixin()">退出登录</view>
+				<view class="logOut  acea-row row-center-wrapper" @click="outLogin" v-if="!this.$wechat.isWeixin()">退出登录
+				</view>
 				<!-- #endif -->
 				<!-- #ifdef APP-PLUS -->
 				<view class="logOut  acea-row row-center-wrapper" @click="outLogin">退出登录</view>

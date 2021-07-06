@@ -23,52 +23,63 @@
 			</view>
 			<u-gap height="20"></u-gap>
 
-			<template v-if="current==0">
+			<swiper :current="swiperCurrent" @transition="transition" :style="{height:mainHeight*0.5+'px'}"
+				@change="animationfinish">
 				<!-- 视频 -->
-				<scroll-view scroll-y :style="{height:mainHeight*0.5 + 'px'}" @scrolltolower="videolower">
-					<video-list :videoList="data_list"></video-list>
-				</scroll-view>
-			</template>
-
-			<template v-if="current==2">
-				<!-- 直播 -->
-				<live-list :liveList="data_list"></live-list>
-			</template>
-
-			<template v-else-if="current==1">
+				<swiper-item class="swiper-item">
+					<scroll-view scroll-y :style="{height:mainHeight*0.5 + 'px'}" @scrolltolower="videolower">
+						<video-list :videoList="data_list"></video-list>
+						<view class="zwsj" v-if="nodata">
+							暂无数据
+						</view>
+					</scroll-view>
+				</swiper-item>
 				<!-- 音频 -->
-				<scroll-view scroll-y :style="{height:mainHeight*0.5 + 'px'}" @scrolltolower="videolower">
-					<audio-list :audioList="data_list"></audio-list>
-				</scroll-view>
-			</template>
+				<swiper-item class="swiper-item">
+					<scroll-view scroll-y :style="{height:mainHeight*0.5 + 'px'}" @scrolltolower="videolower">
+						<audio-list :audioList="data_list"></audio-list>
+						<view class="zwsj" v-if="nodata">
+							暂无数据
+						</view>
+					</scroll-view>
 
-			<!-- <template v-else-if="current==2"></template> -->
-			<template v-else-if="current==3">
+				</swiper-item>
+				<!-- 直播 -->
+				<swiper-item class="swiper-item">
+					<live-list :liveList="data_list"></live-list>
+					<view class="zwsj" v-if="nodata">
+						暂无数据
+					</view>
+				</swiper-item>
 				<!-- 关注 -->
-				<!-- 	<u-tabs ref="uTabs3" :list="list3" :current="current3" @change="tabsChange3" :is-scroll="false" ></u-tabs> -->
-				<view id="nav2">
-					<u-tabs-swiper ref="uTabs3" :list="list3" :is-scroll="false" bar-width="300" active-color="#000000"
-						:current="current3" @change="tabsChange3" bg-color="rgba(0,0,0,0)"></u-tabs-swiper>
-					<u-gap height="20"></u-gap>
-				</view>
+				<swiper-item class="swiper-item">
+					<!-- 关注 -->
+					<!-- 	<u-tabs ref="uTabs3" :list="list3" :current="current3" @change="tabsChange3" :is-scroll="false" ></u-tabs> -->
+					<view id="nav2">
+						<u-tabs-swiper ref="uTabs3" :list="list3" :is-scroll="false" bar-width="300"
+							active-color="#000000" :current="current3" @change="tabsChange3" bg-color="rgba(0,0,0,0)">
+						</u-tabs-swiper>
+						<u-gap height="20"></u-gap>
+					</view>
 
-				<swiper :style="{height:mainHeight+'px'}" :current="current3" @transition="transition"
-					@animationfinish="animationfinish">
-					<swiper-item class="swiper-item" v-for="(item, index) in list3" :key="index">
-						<template v-if="index==0">
-							<!-- 视频 -->
-							<video-list :videoList="video_list"></video-list>
-						</template>
-						<template v-else-if="index==1">
-							<!-- 音频 -->
-							<audio-list :audioList="audio_list"></audio-list>
-						</template>
-					</swiper-item>
-				</swiper>
-			</template>
+					<!-- 				<swiper :style="{height:mainHeight+'px'}" :current="current3" @transition="transition"
+						@animationfinish="animationfinish"> -->
+					<!-- <view class="swiper-item" v-for="(item, index) in list3" :key="index"> -->
+					<template v-if="current3==0">
+						<!-- 视频 -->
+						<video-list :videoList="video_list"></video-list>
+					</template>
+					<template v-else-if="current3==1">
+						<!-- 音频 -->
+						<audio-list :audioList="audio_list"></audio-list>
+					</template>
+				</swiper-item>
+			</swiper>
+
 			<u-gap height="20"></u-gap>
 		</view>
-		<u-loadmore :status="loadStatus" />
+
+		<u-loadmore v-if="current==0||current==1&&data_list.length!=0" :status="loadStatus" />
 	</view>
 	<!-- </scroll-view> -->
 </template>
@@ -98,6 +109,7 @@
 		},
 		data() {
 			return {
+				nodata: false,
 				scrolly: false,
 				windowHeight: 0,
 				mainHeight: 800,
@@ -130,6 +142,7 @@
 				}],
 				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
 				current: 0, // tabs组件的current值，表示当前活动的tab选项 
+				swiperCurrent: '',
 				current2: 0, // tabs组件的current值，表示当前活动的tab选项 
 				current3: 0, // tabs组件的current值，表示当前活动的tab选项
 				// 作品分类列表
@@ -183,7 +196,7 @@
 			},
 			// tabs通知swiper切换
 			tabsChange(index) {
-				this.current = index
+				this.swiperCurrent = index;
 				this.initData();
 			},
 			// tabs通知swiper切换
@@ -198,14 +211,18 @@
 			// swiper-item左右移动，通知tabs的滑块跟随移动
 			transition(e) {
 				let dx = e.detail.dx;
-				this.$refs.uTabs3.setDx(dx);
+				this.$refs.uTabs.setDx(dx);
 			},
 			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
 			// swiper滑动结束，分别设置tabs和swiper的状态
 			animationfinish(e) {
 				let current = e.detail.current;
-				this.$refs.uTabs3.setFinishCurrent(current);
-				this.current3 = current;
+				
+				this.$refs.uTabs.setFinishCurrent(current);
+				this.current = current;
+				this.swiperCurrent = current
+				console.log("+++++++++++++++",this.swiperCurrent)
+				this.initData();
 			},
 			// scroll-view到底部加载更多
 			// onreachBottom() {
@@ -227,17 +244,20 @@
 			// 获取数据
 			getData() {
 				var that = this;
-				var type = that.current + 1;
+				var type = that.swiperCurrent + 1;
 				if (type == 1 || type == 2) {
 					// 视频、音频
 					console.log(that.page)
 					var data = {
-						'type': that.current + 1,
+						'type': that.swiperCurrent + 1,
 						'demand_form_id': that.menu_id,
 						'page': that.page
 					}
 					getHomeData(data).then(res => {
 						// that.data_list = res.data.list;
+						if (res.data.list.length == 0 && that.page == 1) {
+							this.nodata = true
+						}
 						if (that.page == 1) {
 							that.data_list = res.data.list;
 							if (that.data_list.length < 6) {
@@ -264,7 +284,10 @@
 						'page': that.page
 					}
 					getLiveRoomList(data).then(res => {
-						that.data_list = res.data.list;
+						this.data_list = res.data.list;
+						if (res.data.list.length == 0 && that.page == 1) {
+							this.nodata = true
+						}
 					})
 				} else if (type == 4) {
 					// 关注 视频
@@ -292,6 +315,7 @@
 			initData() {
 				this.page = 1;
 				this.scrolly = false
+				this.nodata = false
 				this.loadStatus = 'loadmore';
 				this.getData();
 			},
@@ -349,5 +373,14 @@
 		.u-tabs {
 			background-color: rgba(0, 0, 0, 0) !important;
 		}
+	}
+
+	.zwsj {
+		color: rgb(96, 98, 102);
+		font-size: 24rpx;
+		text-align: center;
+		margin-top: 200rpx;
+		background-color: transparent;
+
 	}
 </style>
