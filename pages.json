@@ -153,14 +153,14 @@
 		, {
 			"path": "pages/wallet/wallet",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "充值",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/wallet/bill",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "账单",
 				"enablePullDownRefresh": false
 			}
 

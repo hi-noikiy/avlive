@@ -186,7 +186,6 @@
 			
 		},
 		mounted () {
-			
 			console.log("mounted");
 			if(!this.uid)return 
 			uni.$on('onIMLogin',(isLogin)=>{
@@ -309,9 +308,6 @@
 					}
 					
 				}
-				
-				
-				 
 			},
 		    listGroups() { 
 		      return WebIM.conn.getGroup({
@@ -338,6 +334,7 @@
 		              member.push(roster[i]);
 		            }
 		          }
+				  
 		          uni.setStorage({
 		            key: "member",
 		            data: member
@@ -359,7 +356,7 @@
 		        }
 		
 		      };
-			   
+			  
 		      WebIM.conn.getRoster(rosters);
 		    },
 		 

@@ -4,9 +4,9 @@
 		<view class="main">
 			<view class="top box">
 				<view class="line1">
-					<image :src="userInfo.avatar" class="head"></image>
+					<image :src="userInfo.avatar" class="head" @click="urlTo('/pages/users/user_info/index')"></image>
 					<view class="info">
-						<view class="t">
+						<view class="t" @click="urlTo('/pages/users/user_info/index')">
 							<view>昵称：{{userInfo.nickname}}</view>
 							<view>ID {{userInfo.uid}}</view>
 						</view>
@@ -16,8 +16,7 @@
 							<view>{{userInfo.guanzhu}}关注</view>
 						</view>
 					</view>
-					<image src="/static/images/me_sz.png" class="setting"
-						@click="urlTo('/pages/users/user_info/index')"></image>
+					<image src="/static/images/me_sz.png" class="setting" @click="urlTo('/pages/users/user_info/index')"></image>
 				</view>
 				<view class="line2">
 					<view>经验等级：二级</view>
@@ -179,14 +178,14 @@
 						width: '87',
 						height: '118',
 						mright: '60',
-						url: '/pages/users/order_list/index?status=2'
+						url: '/pages/tool/worklist?data_type=3'
 					}, {
 						title: '我下载的',
 						src: '/static/images/me_wxzd.png',
 						width: '87',
 						height: '118',
 						mright: '0',
-						url: '/pages/users/order_list/index?status=2'
+						url: '/pages/tool/worklist?data_type=4'
 					}]
 				}, {
 					title: '录音棚',

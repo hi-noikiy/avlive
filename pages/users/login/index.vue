@@ -340,6 +340,11 @@
 			},
 			async loginMobile() {
 				let that = this;
+				if(!that.xy) {
+					return that.$util.Tips({
+						title: '请先同意平台使用协议'
+					});
+				}
 				if (!that.account) return that.$util.Tips({
 					title: '请填写手机号码'
 				});
@@ -469,6 +474,11 @@
 			},
 			async submit() {
 				let that = this;
+				if(!that.xy) {
+					return that.$util.Tips({
+						title: '请先同意平台使用协议'
+					});
+				}
 				if (!that.account) return that.$util.Tips({
 					title: '请填写账号'
 				});
@@ -581,8 +591,8 @@
 		flex-direction: column;
 		align-items: center;
 		.logo {
-			width: 162rpx;
-			height: 162rpx;
+			width: 164rpx;
+			height: 144rpx;
 			margin-top: 175rpx;
 		}
 		.phone {
@@ -665,8 +675,12 @@
 				padding-bottom: 2rpx;
 			}
 			/deep/ .u-checkbox__icon-wrap--square {
-				width: 27rpx!important;
-				height: 27rpx!important;
+				width: 30rpx!important;
+				height: 30rpx!important;
+			}
+			/deep/ .u-checkbox__icon-wrap--checked {
+				border-color: #626262!important;
+				background-color: #626262!important;
 			}
 		}
 		.qt {

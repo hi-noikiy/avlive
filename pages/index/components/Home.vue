@@ -7,11 +7,11 @@
 			<!-- #endif -->
 			<view class="top-menu">
 				<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
-					active-color="#000000" inactive-color="#000000" font-size="31" bar-width="48" bar-height="7">
+					active-color="#000000" inactive-color="#000000" font-size="34" bar-width="48" bar-height="7">
 				</u-tabs-swiper>
-				<view class="search">
+				<!-- <view class="search">
 					<image src="../../../static/images/home_search.png"></image>
-				</view>
+				</view> -->
 			</view>
 			<u-gap height="20"></u-gap>
 			<view class="wrap">
@@ -75,7 +75,8 @@
 
 <script>
 	import {
-		getAddressList
+		getAddressList,
+		getBanner
 	} from '@/api/user.js';
 	import {
 		getDemandForm,
@@ -101,19 +102,7 @@
 				scrolly: false,
 				windowHeight: 0,
 				mainHeight: 800,
-				banner: [{
-						image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
-						title: '昨夜星辰昨夜风，画楼西畔桂堂东'
-					},
-					{
-						image: 'https://cdn.uviewui.com/uview/swiper/2.jpg',
-						title: '身无彩凤双飞翼，心有灵犀一点通'
-					},
-					{
-						image: 'https://cdn.uviewui.com/uview/swiper/3.jpg',
-						title: '谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳'
-					}
-				],
+				banner: [],
 				list: [{
 					name: '视频'
 				}, {
@@ -220,6 +209,11 @@
 				getDemandForm().then(res => {
 					that.demand_form = res.data.demand_form;
 					that.menu_id = res.data.demand_form[0].id;
+					
+					getBanner().then(res => {
+						that.banner = res.data;
+					})
+					
 					that.initData();
 					// this.getData()
 				})
@@ -331,15 +325,14 @@
 	}
 
 	.top-menu {
+		margin-top: 12rpx;
 		display: flex;
 		flex-direction: row;
 		width: 400rpx;
 		margin-left: 10rpx;
-
 		.search {
 			margin-top: 26rpx;
 			margin-left: 270rpx;
-
 			image {
 				width: 40rpx;
 				height: 40rpx;

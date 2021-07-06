@@ -1,6 +1,13 @@
 import request from "@/utils/request.js";
 
 /**
+ * 获取banner图
+ */
+export function getBanner() {
+	return request.get('v3/getBanner');
+}
+
+/**
  * 获取用户信息
  * 
 */
