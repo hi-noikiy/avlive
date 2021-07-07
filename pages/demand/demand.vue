@@ -114,7 +114,8 @@
 							};
 							cancelOrder(data).then(result => {
 								uni.showToast({
-									title: res.data.msg
+									icon:'none',
+									title: result.msg
 								})
 								if (result.data.status == 200) {
 									setTimeout(() => {

@@ -1,17 +1,18 @@
 <template>
 	<view class="">
+		<l-file ref="lFile" @up-success="onSuccess"></l-file>
 		<view class="main">
 			<view class="i i1">
 				<view class="title">指定制作方</view>
 				<input type="number" value="" :disabled="disabledzz" placeholder="选填" v-model="Producer"
 					@input="changeInputzz()" />
-				<view class="info">安妮爱主持</view>
+				<view class="info">{{userinfozz.nickname}}</view>
 			</view>
 			<view class="i i1">
 				<view class="title">指定雇主</view>
 				<input type="number" value="" :disabled="disabledgz" v-model="employer" placeholder="选填"
 					@input="changeInputgz()" />
-				<view class="info">安妮爱主持</view>
+				<view class="info">{{userinfogz.nickname}}</view>
 			</view>
 			<view class="i i2">
 				<view class="title">预算（非必填）</view>
@@ -19,7 +20,7 @@
 			</view>
 			<view class="i i3">
 				<view class="title">期望制作周期（非必填）</view>
-				<input type="text" v-model="cycle_data" placeholder="请输入" />
+				<input type="text" style="text-align: right;" v-model="cycle_data" placeholder="请输入" />
 				<view class="info">
 					<picker :range="unitArr" @change="unitChange" :value="unitIndex">
 						<view>{{unit}}</view>
@@ -44,7 +45,18 @@
 				<view>详细描述您的需求</view>
 				<textarea v-model="remake" placeholder="请输入详情" />
 			</view>
-			<u-upload :action="action" ref="uUpload"></u-upload>
+			<!-- <u-upload :action="action" ref="uUpload"></u-upload> -->
+
+			<view class="r" v-show="rshow" @tap="onUpload()">
+				<image v-if="enclosure == ''" src="../../../static/images/hadd.png"></image>
+				<view style="padding-top: 100rpx;">
+					<span class="t">{{enclosure == '' ? '音频视频支持' : '已选择文件'}}</span>
+					<span class="b">{{enclosure == '' ? 'PM3 PM4格式' : '点击替换'}}</span>
+				</view>
+			</view>
+			<view class="" @click="getceshi">
+				啊哈哈哈或或或或或或或或或
+			</view>
 
 			<view class="sub" @click="submit" v-if="Producer!=''">修改</view>
 
@@ -74,13 +86,28 @@
 		getUserOrderList,
 		saveOrder
 	} from '@/api/liveApp';
-
+	import lFile from '@/components/l-file/l-file';
 	export default {
 
 		data() {
 			return {
+				rshow: true,
 				disabledzz: false,
 				disabledgz: false,
+				userinfozz: {
+					avatar: "",
+					nickname: "",
+					phone: "",
+					real_name: "",
+					uid: ''
+				},
+				userinfogz: {
+					avatar: "",
+					nickname: "",
+					phone: "",
+					real_name: "",
+					uid: ''
+				},
 				shareBox: false,
 				list: [{
 					title: '微信'
@@ -175,22 +202,74 @@
 		},
 
 		methods: {
-
+			getceshi(){
+				uni.navigateTo({
+					url:'../../index/components/Hall'
+				})
+			},
+			/* 上传附件 */
+			onUpload() {
+				/**
+				 * currentWebview: 当前webview
+				 * url：上传接口地址
+				 * name：附件key,服务端根据key值获取文件流，默认file,上传文件的key
+				 * header: 上传接口请求头
+				 */
+				this.$refs.lFile.upload({
+					// #ifdef APP-PLUS
+					// nvue页面使用时请查阅nvue获取当前webview的api，当前示例为vue窗口
+					currentWebview: this.$mp.page.$getAppWebview(),
+					// #endif
+					url: 'http://qyh.ugekeji.com/api/v3/upload', //替换为你的
+					name: 'file'
+				});
+			},
+			onSuccess(res) {
+				this.enclosure = res.data.id;
+			},
 			//填写制作方发生变化时
 			changeInputzz() {
 				if (this.Producer == '') {
 					this.disabledgz = false
+					this.userinfozz.nickname = ''
 				} else {
 					this.disabledgz = true
 				}
+				var datas = {
+					look_id: this.Producer
+				}
+				getUserInfo(datas).then(res => {
+					console.log("制作方信息", res)
+					if (res.data.length == 0) {
+						console.log("暂无该用户")
+						this.userinfozz.nickname = '无此用户'
+						return
+					} else {
+						this.userinfozz = res.data
+					}
+				})
 			},
 			//填写雇主发生变化时
 			changeInputgz() {
 				if (this.employer == '') {
 					this.disabledzz = false
+					this.userinfogz.nickname = ''
 				} else {
 					this.disabledzz = true
 				}
+				var datas = {
+					look_id: this.employer
+				}
+				getUserInfo(datas).then(res => {
+					console.log("制作方信息", res)
+					if (res.data.length == 0) {
+						console.log("暂无该用户")
+						this.userinfogz.nickname = '无此用户'
+						return
+					} else {
+						this.userinfogz = res.data
+					}
+				})
 			},
 			// 周期选中
 			unitChange(e) {
@@ -323,86 +402,68 @@
 					timbre_type_id = timbre_type_id.substr(0, timbre_type_id.length - 1);
 					timbre_type_name = timbre_type_name.substr(0, timbre_type_name.length - 1);
 				}
-				// 图片
-				let files = [];
-				files = that.$refs.uUpload.lists.filter(val => {
-					return val.progress == 100;
-				})
-				if (files.length > 0) {
-					that.enclosure = files[0].response;
-				}
 				if (that.Producer != '') {
 					console.log("制作方")
-					var datas = {
-						look_id: that.Producer
+					if (that.userinfozz.nickname == '无此用户') {
+						uni.showToast({
+							icon: 'none',
+							title: '请输入正确制作方ID'
+						})
+						return
 					}
-					getUserInfo(datas).then(res => {
-						console.log("制作方信息", res)
-						if (res.data.length == 0) {
-							console.log("暂无该用户")
-							uni.showToast({
-								icon: 'none',
-								title: '暂无该用户'
-							})
-							return
-						}
-						var data = {
-							order_type: 2,
-							look_id: that.Producer,
-							make_uid: res.data.uid,
-							make_name: res.data.nickname,
-							make_phone: res.data.phone,
-							desc: that.desc,
-							remake: that.remake,
-							enclosure: that.enclosure,
-							timbre_type_id: timbre_type_id,
-							timbre_type_name: timbre_type_name,
-							cycle_type: that.unit,
-							cycle_value: that.cycle_data
-						}
-						if (that.pay_price <= 0) {
-							uni.showToast({
-								icon: 'none',
-								title: '请输入预算金额'
-							})
-							return
-						}
-						that.chuangjianorder(data)
-					})
+					var data = {
+						order_type: 2,
+						look_id: that.Producer,
+						make_uid: that.userinfozz.uid,
+						make_name: that.userinfozz.nickname,
+						make_phone: that.userinfozz.phone,
+						desc: that.desc,
+						remake: that.remake,
+						enclosure: that.enclosure,
+						timbre_type_id: timbre_type_id,
+						timbre_type_name: timbre_type_name,
+						cycle_type: that.unit,
+						cycle_value: that.cycle_data
+					}
+					if (that.pay_price <= 0) {
+						uni.showToast({
+							icon: 'none',
+							title: '请输入预算金额'
+						})
+						return
+					}
+					that.chuangjianorder(data)
+
 				} else if (that.employer != '') {
+					if (that.userinfogz.nickname == '无此用户') {
+						uni.showToast({
+							icon: 'none',
+							title: '请输入正确雇主ID'
+						})
+						return
+					}
 					console.log("雇主")
-					getUserInfo(datas).then(res => {
-						console.log("雇主信息", res)
-						if (res.data.length == 0) {
-							console.log("暂无该用户")
-							uni.showToast({
-								icon: 'none',
-								title: '暂无该用户'
-							})
-							return
-						}
-						var data = {
-							order_type: 3,
-							make_uid: res.data.uid,
-							make_name: res.data.nickname,
-							make_phone: res.data.phone,
-							desc: that.desc,
-							remake: that.remake,
-							enclosure: that.enclosure,
-							timbre_type_id: timbre_type_id,
-							timbre_type_name: timbre_type_name,
-							cycle_type: that.unit,
-							cycle_value: that.cycle_data
-						}
-						if (that.pay_price <= 0) {
-							uni.showToast({
-								icon: 'none',
-								title: '请输入预算金额'
-							})
-							return
-						}
-						that.chuangjianorder(data)
-					})
+					var data = {
+						order_type: 3,
+						make_uid: that.userinfogz.uid,
+						make_name: that.userinfogz.nickname,
+						make_phone: that.userinfogz.phone,
+						desc: that.desc,
+						remake: that.remake,
+						enclosure: that.enclosure,
+						timbre_type_id: timbre_type_id,
+						timbre_type_name: timbre_type_name,
+						cycle_type: that.unit,
+						cycle_value: that.cycle_data
+					}
+					if (that.pay_price <= 0) {
+						uni.showToast({
+							icon: 'none',
+							title: '请输入预算金额'
+						})
+						return
+					}
+					that.chuangjianorder(data)
 				} else {
 					console.log("普通订单")
 					var data = {
@@ -414,6 +475,13 @@
 						timbre_type_name: timbre_type_name,
 						cycle_type: that.unit,
 						cycle_value: that.cycle_data
+					}
+					if (that.pay_price <= 0) {
+						uni.showToast({
+							icon: 'none',
+							title: '请输入预算金额'
+						})
+						return
 					}
 					that.chuangjianorder(data)
 				}
@@ -733,5 +801,28 @@
 		font-size: 33rpx;
 		font-family: Adobe Heiti Std;
 		color: #FFFFFF;
+	}
+
+	.r {
+		width: 180rpx;
+		height: 180rpx;
+		background: #FFFFFF;
+		border-radius: 15rpx;
+		margin-right: 30rpx;
+		position: relative;
+		font-size: 22rpx;
+		margin-top: 20rpx;
+		color: #999999;
+		text-align: center;
+
+		image {
+			width: 40rpx;
+			height: 40rpx;
+			position: absolute;
+			top: 46rpx;
+			left: 70rpx;
+
+		}
+
 	}
 </style>

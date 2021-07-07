@@ -131,9 +131,14 @@
 		right: 0;
 		bottom: 0;
 		left: 0;
+<<<<<<< HEAD
 		z-index: 999999999999;
+=======
+		z-index: 2;
+>>>>>>> origin/renxiaosen
 		background-color: rgba(0, 0, 0, 0.6);
 	}
+
 	.share-box {
 		position: fixed;
 		z-index: 1000;

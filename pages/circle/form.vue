@@ -143,8 +143,8 @@
 					})
 					if(res.status == 200) {
 						setTimeout(function(){
-							uni.switchTab({
-								url: '/pages/index/components/MyCircle'
+							uni.navigateBack({
+								delta:1
 							})
 						}, 1000);
 					}
