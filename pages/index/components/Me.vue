@@ -27,10 +27,10 @@
 					<view class="title">技能标签</view>
 					<u-tag v-for="(tag, tagIndex) in userInfo.class_name" :text="tag" mode="plain" shape="circle"
 						size="mini" color="#FFFFFF" border-color="#FFFFFF" bg-color="rgba(0,0,0,0)" />
-					<view class="add">+</view>
+					<view class="add" @click="urlTo('/pages/users/tag/form')">+</view>
 				</view>
 				<view class="line4">
-					<view v-for="i in 5">测试自动说明，可以自动换行</view>
+					<view>{{userInfo.signature}}</view>
 				</view>
 			</view>
 			<view class="list box" v-for="(item, index) in list">

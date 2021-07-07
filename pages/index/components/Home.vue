@@ -210,7 +210,6 @@
 				this.$refs.uTabs.setFinishCurrent(current);
 				this.current = current;
 				this.swiperCurrent = current
-				console.log("+++++++++++++++",this.swiperCurrent)
 				this.initData();
 			},
 			// scroll-view到底部加载更多

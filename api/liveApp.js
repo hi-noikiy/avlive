@@ -217,4 +217,15 @@ export function textToSpeech(data) {
 	return request.post('user/ceshi', data);
 }
 
-
+/**
+ * 添加技能标签
+ */
+export function createFormOrder(data) {
+	return request.post('form/create_form_order', data);
+}
+/**
+ * 认证记录
+ */
+export function formClassList(data) {
+	return request.post('form/form_class_list', data);
+}
