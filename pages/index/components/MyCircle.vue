@@ -13,9 +13,9 @@
 			<view class="item" v-for="(item, index) in list">
 				<view class="info">
 					<view class="l">
-						<image :src="item.user_avatar" class="head"></image>
+						<image :src="item.user_avatar" class="head" @click="findUser(item.user_id)"></image>
 						<view class="u">
-							<view class="name">{{item.user_nickname}}</view>
+							<view class="name" @click="findUser(item.user_id)">{{item.user_nickname}}</view>
 							<view class="time">{{item.update_time}}前</view>
 						</view>
 					</view>
@@ -34,7 +34,7 @@
 						<image :src="'/static/images/'+(item.is_like ? 'video_zan_curr' : 'circle_like')+'.png'"></image>
 						<view>{{item.like_num}}</view>
 					</view>
-					<view class="comment ico">
+					<view class="comment ico" @click="showComment(true)">
 						<image src="/static/images/circle_comment.png"></image>
 						<view>{{item.comment_num}}</view>
 					</view>
@@ -46,11 +46,13 @@
 			</view>
 		</view>
 		<share-box ref="shareBox"></share-box>
+		<comment ref="commentBox"></comment>
 	</view>
 </template>
 
 <script>
 	import shareBox from '@/components/shareBox/shareBox';
+	import comment from '@/components/comment';
 	import {
 		getCircleList,
 		userFollow,
@@ -58,7 +60,8 @@
 	} from '@/api/liveApp.js';
 	export default {
 		components: {
-			'share-box': shareBox
+			'share-box': shareBox,
+			'comment': comment
 		},
 		data() {
 			return {
@@ -138,8 +141,15 @@
 				})
 			},
 			showShare(bool) {
-				console.log("+++++++++",bool)
 				this.$refs.shareBox.showShare(bool);
+			},
+			showComment(bool) {
+				this.$refs.commentBox.showComment(bool);
+			},
+			findUser(user_id) {
+				uni.navigateTo({
+					url: '/pages/liveApp/user/findUser?user_id='+user_id
+				})
 			}
 		}
 	}

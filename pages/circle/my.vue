@@ -14,7 +14,7 @@
 						<image :src="'/static/images/'+(item.is_like ? 'video_zan_curr' : 'circle_like')+'.png'"></image>
 						<view>{{item.like_num}}</view>
 					</view>
-					<view class="comment ico">
+					<view class="comment ico" @click="showComment(true)">
 						<image src="/static/images/circle_comment.png"></image>
 						<view>{{item.comment_num}}</view>
 					</view>
@@ -27,11 +27,13 @@
 		</view>
 		<u-loadmore :status="loadStatus" />
 		<share-box ref="shareBox"></share-box>
+		<comment ref="commentBox"></comment>
 	</view>
 </template>
 
 <script>
 	import shareBox from '@/components/shareBox/shareBox';
+	import comment from '@/components/comment';
 	import {
 		circleLike,
 		getCircleList,
@@ -39,7 +41,8 @@
 	} from '@/api/liveApp.js';
 	export default {
 		components: {
-			'share-box': shareBox
+			'share-box': shareBox,
+			'comment': comment
 		},
 		data() {
 			return {
@@ -104,6 +107,10 @@
 			// 转发
 			showShare(bool) {
 				this.$refs.shareBox.showShare(bool);
+			},
+			// 显示评论框
+			showComment(bool) {
+				this.$refs.commentBox.showComment(bool);
 			},
 			// 删除
 			del(id) {

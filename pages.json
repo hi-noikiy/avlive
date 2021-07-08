@@ -336,7 +336,7 @@
 				}, {
 					"path": "user/findUser",
 					"style": {
-						"navigationBarTitleText": "",
+						"navigationBarTitleText": "个人资料",
 						"enablePullDownRefresh": false
 					}
 

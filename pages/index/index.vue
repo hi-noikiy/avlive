@@ -161,4 +161,7 @@
 		width: 70rpx !important;
 		height: 70rpx !important;
 	}
+	/deep/ .commenti {
+		margin-bottom: 120rpx!important;
+	}
 </style>

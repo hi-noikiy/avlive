@@ -51,12 +51,21 @@
 				file2: ''
 			}
 		},
-		onLoad() {
+		onLoad(options) {
 			var that = this;
 			getUserInfo().then(res => {
 				that.tagArr = res.data.class_list;
-				that.tag = res.data.class_list[0].form_type_name;
-				that.tagId = res.data.class_list[0].id;
+				if(JSON.stringify(options) != "{}") {
+					that.tagId = options.tagId;
+					for(let i = 0; i < that.tagArr.length; i++) {
+						if(that.tagArr[i].id == options.tagId) {
+							that.tag = that.tagArr[i].form_type_name;
+						}
+					}
+				} else {
+					that.tag = res.data.class_list[0].form_type_name;
+					that.tagId = res.data.class_list[0].id;
+				}
 			});
 		},
 		methods: {
