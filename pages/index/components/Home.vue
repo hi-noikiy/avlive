@@ -6,12 +6,16 @@
 			<u-gap height="44"></u-gap>
 			<!-- #endif -->
 			<view class="top-menu">
+
 				<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
 					active-color="#000000" inactive-color="#000000" font-size="31" bar-width="48" bar-height="7">
 				</u-tabs-swiper>
+
+
 				<view class="search">
 					<image src="../../../static/images/home_search.png"></image>
 				</view>
+
 			</view>
 			<u-gap height="20"></u-gap>
 			<view class="wrap">
@@ -23,11 +27,11 @@
 			</view>
 			<u-gap height="20"></u-gap>
 
-			<swiper :current="swiperCurrent" @transition="transition" :style="{height:mainHeight*0.5+'px'}"
-				@change="animationfinish">
+			<swiper :current="swiperCurrent" @transition="transition" :style="{height:mainHeight+'rpx'}"
+				@animationfinish="animationfinish">
 				<!-- 视频 -->
 				<swiper-item class="swiper-item">
-					<scroll-view scroll-y :style="{height:mainHeight*0.5 + 'px'}" @scrolltolower="videolower">
+					<scroll-view scroll-y :style="{height:mainHeight+ 'rpx'}" @scrolltolower="videolower">
 						<video-list :videoList="data_list"></video-list>
 						<view class="zwsj" v-if="nodata">
 							暂无数据
@@ -36,7 +40,7 @@
 				</swiper-item>
 				<!-- 音频 -->
 				<swiper-item class="swiper-item">
-					<scroll-view scroll-y :style="{height:mainHeight*0.5 + 'px'}" @scrolltolower="videolower">
+					<scroll-view scroll-y :style="{height:mainHeight + 'rpx'}" @scrolltolower="videolower">
 						<audio-list :audioList="data_list"></audio-list>
 						<view class="zwsj" v-if="nodata">
 							暂无数据
@@ -74,12 +78,13 @@
 						<audio-list :audioList="audio_list"></audio-list>
 					</template>
 				</swiper-item>
-			</swiper>
 
+			</swiper>
+			<u-loadmore v-if="current==0||current==1&&data_list.length!=0" :status="loadStatus" />
 			<u-gap height="20"></u-gap>
 		</view>
 
-		<u-loadmore v-if="current==0||current==1&&data_list.length!=0" :status="loadStatus" />
+
 	</view>
 	<!-- </scroll-view> -->
 </template>
@@ -112,7 +117,7 @@
 				nodata: false,
 				scrolly: false,
 				windowHeight: 0,
-				mainHeight: 800,
+				mainHeight: 300,
 				banner: [{
 						image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
 						title: '昨夜星辰昨夜风，画楼西畔桂堂东'
@@ -142,7 +147,7 @@
 				}],
 				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
 				current: 0, // tabs组件的current值，表示当前活动的tab选项 
-				swiperCurrent: '',
+				swiperCurrent: 0,
 				current2: 0, // tabs组件的current值，表示当前活动的tab选项 
 				current3: 0, // tabs组件的current值，表示当前活动的tab选项
 				// 作品分类列表
@@ -158,6 +163,13 @@
 				audio_list: [],
 				loadStatus: 'loadmore'
 			};
+		},
+		watch: {
+			swiperCurrent(val, newval) {
+				if (val != newval) {
+					this.initData()
+				}
+			}
 		},
 		created() {
 			this.getDemandForm();
@@ -197,6 +209,7 @@
 			// tabs通知swiper切换
 			tabsChange(index) {
 				this.swiperCurrent = index;
+				// this.current = index;
 				this.initData();
 			},
 			// tabs通知swiper切换
@@ -210,19 +223,19 @@
 			},
 			// swiper-item左右移动，通知tabs的滑块跟随移动
 			transition(e) {
+				console.log("++++++++++++++++++++++++")
 				let dx = e.detail.dx;
 				this.$refs.uTabs.setDx(dx);
+
 			},
 			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
 			// swiper滑动结束，分别设置tabs和swiper的状态
 			animationfinish(e) {
 				let current = e.detail.current;
-				
 				this.$refs.uTabs.setFinishCurrent(current);
 				this.current = current;
 				this.swiperCurrent = current
-				console.log("+++++++++++++++",this.swiperCurrent)
-				this.initData();
+
 			},
 			// scroll-view到底部加载更多
 			// onreachBottom() {
@@ -261,6 +274,7 @@
 						if (that.page == 1) {
 							that.data_list = res.data.list;
 							if (that.data_list.length < 6) {
+								that.scrolly = true
 								that.loadStatus = 'nomore';
 							}
 						} else {
@@ -313,6 +327,7 @@
 			},
 			// 初始化数据
 			initData() {
+				console.log("2222222")
 				this.page = 1;
 				this.scrolly = false
 				this.nodata = false

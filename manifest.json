@@ -1,6 +1,6 @@
 {
     "name" : "音服务",
-    "appid" : "__UNI__9E71C0C",
+    "appid" : "__UNI__BA0DEFD",
     "description" : "音服务",
     "versionName" : "1.0",
     "versionCode" : 100,
@@ -23,9 +23,8 @@
             "Push" : {},
             "OAuth" : {},
             "Payment" : {},
-            "Maps" : {},
-            "Geolocation" : {},
-            "LivePusher" : {}
+            "LivePusher" : {},
+            "Maps" : {}
         },
         /* 应用发布信息 */
         "distribute" : {
@@ -88,19 +87,11 @@
                         "__platform__" : [ "ios", "android" ]
                     }
                 },
-                "share" : {
-                    "weixin" : {
-                        "appid" : "wx19dfc09b8ce3dda0",
-                        "UniversalLinks" : "https://pro.115.crmeb.net/"
-                    }
+                "share" : {},
+                "push" : {
+                    "unipush" : {}
                 },
-                "push" : {},
-                "maps" : {
-                    "amap" : {
-                        "appkey_ios" : "aeb768547b9d752891e37e1ca0a2b66d",
-                        "appkey_android" : "41ec5c3f4d110ce02a326210fe147be8"
-                    }
-                },
+                "maps" : {},
                 "oauth" : {
                     "weixin" : {
                         "appid" : "wx19dfc09b8ce3dda0",

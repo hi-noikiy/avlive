@@ -54,9 +54,6 @@
 					<span class="b">{{enclosure == '' ? 'PM3 PM4格式' : '点击替换'}}</span>
 				</view>
 			</view>
-			<view class="" @click="getceshi">
-				啊哈哈哈或或或或或或或或或
-			</view>
 
 			<view class="sub" @click="submit" v-if="Producer!=''">修改</view>
 
@@ -202,9 +199,9 @@
 		},
 
 		methods: {
-			getceshi(){
+			getceshi() {
 				uni.navigateTo({
-					url:'../../index/components/Hall'
+					url: '../../index/components/Hall'
 				})
 			},
 			/* 上传附件 */
@@ -297,31 +294,12 @@
 								}, 1000);
 							}
 							if (res.data.need_pay_noney > 0) {
-								var orderdata = {
-									order_id: res.data.order_id,
-									pay_type: 'again_yue'
-								}
-								payOrder(orderdata).then(res => {
-									console.log("支付结果", res)
-									if (res.status == 200) {
-										uni.hideLoading()
-										uni.showToast({
-											title: '修改成功',
-											icon: 'none'
-										})
-										setTimeout(function() {
-											uni.navigateBack({
-												delta: 1
-											})
-										}, 1500);
-									}
-								})
+								that.shareBox = true
 							}
 							if (res.data.need_refund_noney > 0) {
 								var data = {
 									order_id: res.data.order_id,
 								}
-
 								refundMoney(data).then(res => {
 									console.log("退款结果", res)
 									if (res.status == 200) {
@@ -502,18 +480,25 @@
 				if (index == 0) {
 					var orderdata = {
 						order_id: that.order_id,
-						pay_type: 'weixin'
+						pay_type: that.edit ? 'again_weixin' : 'weixin'
 					}
 					payOrder(orderdata).then(res => {
 						console.log("支付结果", res)
 						if (res.status == 200) {
 							var wxdata = res.data
+							var orderInfo = {
+								"appid": wxdata.appId, // 微信开放平台 - 应用 - AppId，注意和微信小程序、公众号 AppId 可能不一致
+								"noncestr": wxdata.nonceStr, // 随机字符串
+								"package": wxdata.package, // 固定值
+								"partnerid": wxdata.partnerid, // 微信支付商户号
+								"prepayid": wxdata.prepayid, // 统一下单订单号 
+								"timestamp": wxdata.timeStamp, // 时间戳（单位：秒）
+								"sign": wxdata.paySign // 签名，这里用的 MD5 签名
+							}
+							console.log("+++++", orderInfo)
 							uni.requestPayment({
-								timeStamp: wxdata.timeStamp,
-								nonceStr: wxdata.nonceStr,
-								package: wxdata.package,
-								signType: wxdata.signType,
-								paySign: wxdata.paySign,
+								"provider": "wxpay",
+								"orderInfo": orderInfo,
 								success: function(res) {
 									uni.hideLoading()
 									uni.showToast({
@@ -529,9 +514,11 @@
 								},
 								fail: function(e) {
 									uni.hideLoading();
+									console.log('fail:' + JSON.stringify(e));
 								},
 								complete: function(e) {
 									uni.hideLoading();
+									console.log('fail:' + JSON.stringify(e));
 								},
 							});
 
@@ -542,7 +529,7 @@
 				if (index == 1) {
 					var orderdata = {
 						order_id: that.order_id,
-						pay_type: 'alipay'
+						pay_type: that.edit ? 'again_alipay' : 'alipay'
 					}
 					payOrder(orderdata).then(res => {
 						console.log("支付结果", res)
@@ -576,7 +563,7 @@
 				if (index == 2) {
 					var orderdata = {
 						order_id: that.order_id,
-						pay_type: 'yue'
+						pay_type: that.edit?'again_yue':'yue'
 					}
 					payOrder(orderdata).then(res => {
 						console.log("支付结果", res)

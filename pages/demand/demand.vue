@@ -117,13 +117,13 @@
 									icon:'none',
 									title: result.msg
 								})
-								if (result.data.status == 200) {
+								if (result.status == 200) {
 									setTimeout(() => {
 										// 跳转到指定组件
-										uni.switchTab({
-											url: '/pages/index/components/Hall'
+										uni.navigateBack({
+											delta:1
 										})
-									}, 1000)
+									}, 1500)
 								}
 							})
 						} else if (res.cancel) {
@@ -161,7 +161,7 @@
 										uni.navigateBack({
 											delta:1
 										})
-									}, 1000)
+									}, 1500)
 								}
 							})
 						} else if (res.cancel) {

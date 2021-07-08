@@ -538,3 +538,27 @@ export function payShell(data) {
 export function userBill(data) {
     return request.post('user/user_bill', data);
 }
+/**
+ * 获取充值列表
+ */
+export function rechargeList() {
+    return request.get('recharge/index');
+}
+/**
+ * 创建充值订单
+ */
+export function createRecharge(data) {
+    return request.post('user/create_recharge',data);
+}
+/**
+ * 充值--微信支付
+ */
+export function weixinRecharge(data) {
+    return request.post('user/weixin_recharge',data);
+}
+/**
+ * 充值--支付宝支付
+ */
+export function alipay(data) {
+    return request.post('user/alipay',data);
+}
