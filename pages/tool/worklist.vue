@@ -74,6 +74,19 @@
 				this.getList();
 			},
 			getList() {
+				if(this.data_type == 3 || this.data_type == 4) {
+					if(this.data_type == 3) {
+						uni.setNavigationBarTitle({
+							title: "我打赏的"
+						});
+					} else if (this.data_type == 4) {
+						uni.setNavigationBarTitle({
+							title: "我下载的"
+						});
+					}
+					this.data_list = [];
+					return;
+				}
 				var that = this;
 				// 视频、音频
 				var data = {

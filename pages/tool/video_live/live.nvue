@@ -138,14 +138,14 @@
 			// 开始直播
 			star(){
 				// 开始推流
-				// this.context.start({
-				// 	success: (a) => {
-				// 		console.log("livePusher.start:" + JSON.stringify(a));
-				// 	},
-				// 	fail: (err) => {
-				// 		console.log('fail')
-				// 	}
-				// })
+				this.context.start({
+					success: (a) => {
+						console.log("livePusher.start:" + JSON.stringify(a));
+					},
+					fail: (err) => {
+						console.log('fail')
+					}
+				})
 				// 开启心跳
 				this.heartbeat()
 				// 开启直播

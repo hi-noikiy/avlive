@@ -216,9 +216,17 @@
 							title: msgData.msg,
 							icon: 'none'
 						})
-						uni.switchTab({
-							url: '/pages/index/index'
+						// 关闭心跳检测
+						clearInterval(this.ping)
+						// 关闭websocket
+						uni.closeSocket();
+						// 返回上一页
+						uni.navigateBack({
+							delta: 1
 						})
+						// uni.switchTab({
+						// 	url: '/pages/index/index'
+						// })
 					break;
 					// 加入直播间
 				    case 'enter':

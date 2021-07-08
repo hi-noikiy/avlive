@@ -4,9 +4,9 @@
 		<view class="main">
 			<view class="top box">
 				<view class="line1">
-					<image :src="userInfo.avatar" class="head"></image>
+					<image :src="userInfo.avatar" class="head" @click="urlTo('/pages/users/user_info/index')"></image>
 					<view class="info">
-						<view class="t">
+						<view class="t" @click="urlTo('/pages/users/user_info/index')">
 							<view>昵称：{{userInfo.nickname}}</view>
 							<view>ID {{userInfo.uid}}</view>
 						</view>
@@ -16,8 +16,7 @@
 							<view>{{userInfo.guanzhu}}关注</view>
 						</view>
 					</view>
-					<image src="/static/images/me_sz.png" class="setting"
-						@click="urlTo('/pages/users/user_info/index')"></image>
+					<image src="/static/images/me_sz.png" class="setting" @click="urlTo('/pages/users/user_info/index')"></image>
 				</view>
 				<view class="line2">
 					<view>经验等级：二级</view>
@@ -28,10 +27,10 @@
 					<view class="title">技能标签</view>
 					<u-tag v-for="(tag, tagIndex) in userInfo.class_name" :text="tag" mode="plain" shape="circle"
 						size="mini" color="#FFFFFF" border-color="#FFFFFF" bg-color="rgba(0,0,0,0)" />
-					<view class="add">+</view>
+					<view class="add" @click="urlTo('/pages/users/tag/form')">+</view>
 				</view>
 				<view class="line4">
-					<view v-for="i in 5">测试自动说明，可以自动换行</view>
+					<view>{{userInfo.signature}}</view>
 				</view>
 			</view>
 			<view class="list box" v-for="(item, index) in list">
@@ -179,14 +178,14 @@
 						width: '87',
 						height: '118',
 						mright: '60',
-						url: '/pages/users/order_list/index?status=2'
+						url: '/pages/tool/worklist?data_type=3'
 					}, {
 						title: '我下载的',
 						src: '/static/images/me_wxzd.png',
 						width: '87',
 						height: '118',
 						mright: '0',
-						url: '/pages/users/order_list/index?status=2'
+						url: '/pages/tool/worklist?data_type=4'
 					}]
 				}, {
 					title: '录音棚',
