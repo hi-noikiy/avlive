@@ -10,18 +10,9 @@
 				<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
 					active-color="#000000" inactive-color="#000000" font-size="34" bar-width="48" bar-height="7">
 				</u-tabs-swiper>
-<<<<<<< HEAD
-
-
-				<view class="search">
-					<image src="../../../static/images/home_search.png"></image>
-				</view>
-
-=======
 				<!-- <view class="search">
 					<image src="../../../static/images/home_search.png"></image>
 				</view> -->
->>>>>>> origin/qiyunhai
 			</view>
 			<u-gap height="20"></u-gap>
 			<view class="wrap">
