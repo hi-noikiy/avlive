@@ -33,7 +33,7 @@
 					<view class="b"><span style="padding-right: 12rpx;">{{userInfo.extractTotalPrice}}</span>元</view>
 				</view>
 				<view class="md">
-					<view>提现记录</view>
+					<view @click="getmask">立即提现</view>
 					<image src="../../static/images/rj_icon.png"></image>
 				</view>
 			</view>
@@ -76,18 +76,24 @@
 				num: ""
 			}
 		},
+		onShow() {
+			this.getUserInfo();
+		},
 		methods: {
 			selectOne(options) {
 				this.type = options.label
 				this.typeVal = options.value
 			},
-			onLoad() {
-				this.getUserInfo();
-			},
 			getUserInfo() {
 				let that = this;
 				getUserInfo().then(res => {
 					that.userInfo = res.data;
+				})
+			},
+			//跳转提现页面
+			getmask(){
+				uni.navigateTo({
+					url:'../users/user_cash/index'
 				})
 			},
 			//点击提现

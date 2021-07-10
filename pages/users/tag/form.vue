@@ -29,6 +29,15 @@
 			<view class="sub" @click="submit">提交审核</view>
 			<view class="bt">注：每个用户可免费认证一个技能，以后每个技能认证保证金为298，一年后可以申请退换。</view>
 		</view>
+		<!-- 支付弹窗 -->
+		<view class="bgbox" v-if="shareBox" @click="shareBox = false">
+			<view class="share-box" v-if="shareBox" @tap.stop>
+				<view class="share-item" v-for="(item, index) in list" :key="index" @click="getpay(index)">
+					<!-- <image class="share-item-image" :src="item.image"></image> -->
+					<text class="share-item-text">{{item.title}}</text>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -38,11 +47,20 @@
 		getUserInfo
 	} from '@/api/user.js';
 	import {
-		createFormOrder
+		createFormOrder,
+		ormwxPay,
+		ormalipay,
 	} from '@/api/liveApp.js';
 	export default {
 		data() {
 			return {
+				shareBox:false,
+				list: [{
+					title: '微信'
+				}, {
+					title: '支付宝'
+				}],
+				order_id:'',
 				tagArr: [],
 				tag: '',
 				tagIndex: 0,
@@ -143,12 +161,100 @@
 					form_class_name: that.tag,
 					img: file
 				}
-				createFormOrder(data).then(res => {						
-					uni.showToast({
-						title: res.msg,
-						icon: 'none'
-					})
+				createFormOrder(data).then(res => {
+					console.log("添加标签订单",res)
+					if(res.status == 200){
+						that.order_id = res.data.order_id
+						this.shareBox = true
+					}else{
+						uni.showToast({
+							title: res.msg,
+							icon: 'none'
+						})
+					}
 				})
+			},
+			getpay(index) {
+				var that = this
+				// #ifdef H5
+				if (index == 0 || index == 1) {
+					uni.showToast({
+						icon: 'none',
+						title: '暂时不支持h5支付'
+					})
+				}
+				// #endif
+				// #ifdef APP-PLUS
+				//微信支付 
+				if (index == 0) {
+					var orderdata = {
+						order_id: that.order_id,
+					} 
+					ormwxPay(orderdata).then(res => {
+						console.log("支付结果", res)
+						if (res.status == 200) {
+							var wxdata = res.data
+							var orderInfo = {
+								"appid": wxdata.appId, // 微信开放平台 - 应用 - AppId，注意和微信小程序、公众号 AppId 可能不一致
+								"noncestr": wxdata.nonceStr, // 随机字符串
+								"package": wxdata.package, // 固定值
+								"partnerid": wxdata.partnerid, // 微信支付商户号
+								"prepayid": wxdata.prepayid, // 统一下单订单号 
+								"timestamp": wxdata.timeStamp, // 时间戳（单位：秒）
+								"sign": wxdata.paySign // 签名，这里用的 MD5 签名
+							}
+							console.log("+++++", orderInfo)
+							uni.requestPayment({
+								"provider": "wxpay",
+								"orderInfo": orderInfo,
+								success: function(res) {
+									uni.hideLoading()
+									uni.showToast({
+										title: '支付成功',
+										icon: 'none'
+									})
+									that.shareBox = false
+								},
+								fail: function(e) {
+									uni.hideLoading();
+									console.log('fail:' + JSON.stringify(e));
+								},
+								complete: function(e) {
+									uni.hideLoading();
+									console.log('fail:' + JSON.stringify(e));
+								},
+							});
+			
+						}
+					})
+				}
+				//支付宝支付
+				if (index == 1) {
+					var orderdata = {
+						order_id: that.order_id,
+					}
+					ormalipay(orderdata).then(res => {
+						console.log("支付结果", res)
+						if (res.status == 200) {
+							uni.requestPayment({
+								provider: 'alipay',
+								orderInfo: res.data.param,
+								success: function(res) {
+									uni.hideLoading()
+									that.shareBox = false
+									uni.showToast({
+										title: '支付成功',
+										icon: 'none'
+									})
+								},
+								fail: function(err) {
+									console.log('fail:' + JSON.stringify(err));
+								}
+							});
+						}
+					})
+				}
+				// #endif
 			}
 		}
 	}
@@ -280,5 +386,45 @@
 		color: #999999;
 		font-weight: 500;
 		font-family: PingFangSC-regular;
+	}
+	.bgbox {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 2;
+		background-color: rgba(0, 0, 0, 0.6);
+	}
+	
+	.share-box {
+		position: fixed;
+		z-index: 1000;
+		bottom: 0;
+		left: 0;
+		width: 750rpx;
+		height: 220rpx;
+		background-color: #454545;
+	}
+	
+	.share-item {
+		height: 100rpx;
+		line-height: 100rpx;
+		font-size: 25rpx;
+		border-bottom: 1rpx solid #C8C7CC;
+		text-align: center;
+	
+	}
+	
+	.share-item-image {
+		width: 94rpx;
+		height: 94rpx;
+		margin-bottom: 30rpx;
+	}
+	
+	.share-item-text {
+		font-size: 33rpx;
+		font-family: Adobe Heiti Std;
+		color: #FFFFFF;
 	}
 </style>

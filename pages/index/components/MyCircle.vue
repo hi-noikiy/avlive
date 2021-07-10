@@ -9,7 +9,7 @@
 				<view class="r" @click="urlTo('/pages/circle/form')">发布</view>
 			</view>
 		</u-navbar>
-		<view class="list">
+		<scroll-view class="list" :scroll-y="true" @scrolltolower="scrolltolower" :style="{height:mainHeight+'px'}">
 			<view class="item" v-for="(item, index) in list">
 				<view class="info">
 					<view class="l">
@@ -44,7 +44,7 @@
 					</view>
 				</view>
 			</view>
-		</view>
+		</scroll-view >
 		<share-box ref="shareBox"></share-box>
 		<comment ref="commentBox"></comment>
 	</view>
@@ -68,12 +68,19 @@
 				uid: '',
 				list: [],
 				page: 1,
-				uavatar: ''
+				uavatar: '',
+				mainHeight:''
 			}
 		},
 		mounted() {
 			this.uavatar = uni.getStorageSync('uavatar');
 			this.getData()
+			uni.getSystemInfo({
+				success: res => {
+					this.mainHeight = res.safeArea.height -120
+					console.log("高度",res)
+				}
+			});
 		},
 		methods: {
 			// 跳转页面

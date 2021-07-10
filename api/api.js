@@ -371,6 +371,13 @@ export function wechatAppAuth(data) {
   return request.post("wechat/app_auth", data, { noAuth: true });
 }
 /**
+ * App解绑微信
+ * @returns {*}
+ */
+export function unbuildWechat() {
+  return request.post("user/unbuild_wechat");
+}
+/**
  * 实名认证
  */
 export function idCard(data) {

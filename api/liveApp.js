@@ -224,6 +224,18 @@ export function createFormOrder(data) {
 	return request.post('form/create_form_order', data);
 }
 /**
+ * 技能标签微信支付
+ */
+export function ormwxPay(data) {
+	return request.post('form/wx_pay', data);
+}
+/**
+ * 技能标签支付宝支付
+ */
+export function ormalipay(data) {
+	return request.post('form/alipay', data);
+}
+/**
  * 认证记录
  */
 export function formClassList(data) {

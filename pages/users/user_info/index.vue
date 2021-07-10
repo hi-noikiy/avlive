@@ -20,7 +20,7 @@
 					<view class='item acea-row row-between-wrapper'>
 						<block class="" v-if="userInfo.phone ==''">
 							<view>手机号码</view>
-							<view class='input'><input type='text' name='phone' :value='userInfo.phone'></input>					
+							<view class='input'><input type='text' name='phone' :value='userInfo.phone'></input>
 							</view>
 						</block>
 						<block class="" v-else>
@@ -66,7 +66,7 @@
 					</view>
 					<!-- #endif -->
 
-<!-- 					<view class="item acea-row row-between-wrapper" v-if="userInfo.phone">
+					<!-- 					<view class="item acea-row row-between-wrapper" v-if="userInfo.phone">
 						<view>更换手机号码</view>
 						<navigator url="/pages/users/user_phone/index?type=1" hover-class="none" class="input">
 							{{userInfo.phone}}<text class="iconfont icon-xiangyou"></text>
@@ -94,10 +94,14 @@
 
 					<view class='item acea-row row-between-wrapper'>
 						<view>绑定微信</view>
-						<navigator url="" hover-class="none" class="input">
+						<view url="" hover-class="none" class="input" @click="getlogin"
+							v-if="userInfo.is_bind_wechat == 0">
 							未绑定<text class="iconfont icon-xiangyou"></text>
-						</navigator>
-
+						</view>
+						<view url="" hover-class="none" class="input" v-if="userInfo.is_bind_wechat == 1"
+							@click="unbundlingwx">
+							解绑<text class="iconfont icon-xiangyou"></text>
+						</view>
 						<!-- 						<navigator url="/pages/users/realName/index" hover-class="none" class="input" v-else>
 							实名认证<text class="iconfont icon-xiangyou"></text>
 						</navigator> -->
@@ -129,8 +133,11 @@
 		getLogout
 	} from '@/api/user.js';
 	import {
-		switchH5Login
+		switchH5Login,
+		wechatAppAuth,
+		unbuildWechat
 	} from '@/api/api.js';
+
 	import {
 		toLogin
 	} from '@/libs/login.js';
@@ -157,7 +164,8 @@
 				isShowAuth: false, //是否隐藏授权
 				canvasWidth: "",
 				canvasHeight: "",
-				canvasStatus: false
+				canvasStatus: false,
+				appUserInfo: ""
 			};
 		},
 		computed: mapGetters(['isLogin']),
@@ -179,6 +187,96 @@
 			}
 		},
 		methods: {
+			//微信授权信息
+			getlogin() {
+				const self = this
+				uni.login({
+					provider: 'weixin',
+					success: function(loginRes) {
+						// 获取用户信息
+						uni.getUserInfo({
+							provider: 'weixin',
+							success: function(infoRes) {
+								console.log(infoRes.userInfo, 'yyyy')
+								self.appUserInfo = infoRes.userInfo
+								self.wxLoginApi()
+							},
+							fail() {
+								uni.showToast({
+									title: '获取用户信息失败',
+									icon: 'none',
+									duration: 2000
+								})
+							},
+							complete() {
+								uni.hideLoading()
+							}
+						});
+					},
+					fail() {
+						uni.showToast({
+							title: '登录失败',
+							icon: 'none',
+							duration: 2000
+						})
+					}
+				});
+			},
+			//授权绑定微信
+			wxLoginApi() {
+				let self = this
+				console.log("手机号", this.switchUserInfo[0].phone)
+				wechatAppAuth({
+					userInfo: self.appUserInfo,
+					phone: self.switchUserInfo[0].phone,
+				}).then(({
+					data
+				}) => {
+					console.log("绑定微信信息", data)
+					self.getUserInfo();
+					uni.showToast({
+						icon: 'none',
+						title:'绑定成功'
+					})
+				}).catch(error => {
+					uni.showModal({
+						title: '提示',
+						content: `错误信息${error}`,
+						success: function(res) {
+							if (res.confirm) {
+								console.log('用户点击确定');
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+					});
+				})
+			},
+			//解绑微信
+			unbundlingwx() {
+				var that = this;
+				uni.showModal({
+					title: '提示',
+					content: '您确定要解绑微信吗？',
+					success: function(res) {
+						if (res.confirm) {
+							unbuildWechat().then(res => {
+								console.log("解绑微信结果",res)
+								if (res.status == 200) {
+									that.getUserInfo();
+									uni.showToast({
+										icon: 'none',
+										title: res.msg
+									})
+								}
+							})
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+
+			},
 			/**
 			 * 授权回调
 			 */
