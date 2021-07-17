@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view >
 		<u-navbar :is-back="false" title="">
 			<view class="header">
 				<view class="l" @click="urlTo('/pages/circle/my')">
@@ -22,19 +22,21 @@
 					<view class="follow" v-if="uid != item.user_id" @click="follow(item, item.user_id)">{{item.is_follow ? '已' : ''}}关注</view>
 				</view>
 				<u-gap height="2" bg-color="#E0DEDE" margin-top="30" margin-bottom="29"></u-gap>
-				<view class="content">
+				
+				<view class="content" @click="getdetail(index)">
 					<view class="title">{{item.title}}</view>
 					<view class="imgs">
 						<image v-for="(image, key) in item.images" :src="image"></image>
 					</view>
 				</view>
+				
 				<u-gap height="2" bg-color="#E0DEDE" margin-top="44" margin-bottom="26"></u-gap>
 				<view class="operation">
 					<view class="like ico" @click="like(item, index)">
 						<image :src="'/static/images/'+(item.is_like ? 'video_zan_curr' : 'circle_like')+'.png'"></image>
 						<view>{{item.like_num}}</view>
 					</view>
-					<view class="comment ico" @click="showComment(true)">
+					<view class="comment ico" @click="showComment(true,item.id)">
 						<image src="/static/images/circle_comment.png"></image>
 						<view>{{item.comment_num}}</view>
 					</view>
@@ -46,7 +48,7 @@
 			</view>
 		</scroll-view >
 		<share-box ref="shareBox"></share-box>
-		<comment ref="commentBox"></comment>
+		<comment ref="commentBox" :id="id"></comment>
 	</view>
 </template>
 
@@ -65,6 +67,7 @@
 		},
 		data() {
 			return {
+				id:1,
 				uid: '',
 				list: [],
 				page: 1,
@@ -83,6 +86,14 @@
 			});
 		},
 		methods: {
+			//跳转到详情页面
+			getdetail(index){
+				var data = this.list[index]
+				console.log("详情数据",data)
+				uni.navigateTo({
+					url:'/pages/circle/circledetail?data='+JSON.stringify(data)
+				})
+			},
 			// 跳转页面
 			urlTo(url) {
 				uni.navigateTo({
@@ -150,8 +161,9 @@
 			showShare(bool) {
 				this.$refs.shareBox.showShare(bool);
 			},
-			showComment(bool) {
+			showComment(bool,id) {
 				this.$refs.commentBox.showComment(bool);
+				this.$refs.commentBox.ids(id);
 			},
 			findUser(user_id) {
 				uni.navigateTo({
@@ -251,6 +263,11 @@
 				font-weight: 500;
 				color: #000000;
 				margin-bottom: 30rpx;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 1;
 			}
 			.imgs {
 				display: flex;

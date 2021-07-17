@@ -1,8 +1,8 @@
 <template>
 	<view>
-		<view class="bg" v-if="shareBox" @click="shareBox = false">
-			<view class="share-box" v-if="shareBox" @tap.stop>
-				<view class="share-item" v-for="(item, index) in list" @click="share(index)">
+		<view class="bg" v-if="shareBox" @click="showShare(false)">
+			<view class="share-box"  v-if="shareBox" @tap.stop>
+				<view class="share-item" v-for="(item, index) in list" @click.shop="share(index)">
 					<image class="share-item-image" :src="item.image"></image>
 					<text class="share-item-text">{{item.title}}</text>
 				</view>
@@ -25,38 +25,38 @@
 						image: '/static/images/share_pyq.png',
 						title: '朋友圈'
 					},
-					// {
-					// 	image: '/static/images/share_qq.png',
-					// 	title: 'QQ'
-					// },
-					// {
-					// 	image: '/static/images/share_hy.png',
-					// 	title: '好友'
-					// },
-					// {
-					// 	image: '/static/images/share_xz.png',
-					// 	title: '下载'
-					// },
-					// {
-					// 	image: '/static/images/share_wb.png',
-					// 	title: '微博'
-					// },
-					// {
-					// 	image: '/static/images/share_sc.png',
-					// 	title: '收藏'
-					// },
-					// {
-					// 	image: '/static/images/share_qqkj.png',
-					// 	title: 'QQ空间'
-					// },
-					// {
-					// 	image: '/static/images/share_lj.png',
-					// 	title: '链接'
-					// },
-					// {
-					// 	image: '/static/images/share_th.png',
-					// 	title: '举报'
-					// },
+					{
+						image: '/static/images/share_qq.png',
+						title: 'QQ'
+					},
+					{
+						image: '/static/images/share_hy.png',
+						title: '好友'
+					},
+					{
+						image: '/static/images/share_xz.png',
+						title: '下载'
+					},
+					{
+						image: '/static/images/share_wb.png',
+						title: '微博'
+					},
+					{
+						image: '/static/images/share_sc.png',
+						title: '收藏'
+					},
+					{
+						image: '/static/images/share_qqkj.png',
+						title: 'QQ空间'
+					},
+					{
+						image: '/static/images/share_lj.png',
+						title: '链接'
+					},
+					{
+						image: '/static/images/share_th.png',
+						title: '举报'
+					},
 				]
 			};
 		},
@@ -131,12 +131,14 @@
 		right: 0;
 		bottom: 0;
 		left: 0;
-		z-index: 2;
+		z-index: 999;
 		background-color: rgba(0, 0, 0, 0.6);
 	}
 
 	.share-box {
 		position: fixed;
+		border-top-right-radius: 20rpx;
+		border-top-left-radius: 20rpx;
 		z-index: 1000;
 		bottom: 0;
 		left: 0;

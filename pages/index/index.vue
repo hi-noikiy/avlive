@@ -86,7 +86,6 @@
 				this.$refs.Hall.getData();
 			}
 			if (this.activeIndex == 3) {
-				
 				this.$refs.MyCircle.getData()
 			}
 			if (this.activeIndex == 4) {
@@ -147,11 +146,7 @@
 		background-size: 100% 100vh;
 	}
 
-	.u-page {
-		padding-bottom: 0;
-		padding-bottom: constant(safe-area-inset-bottom);
-		padding-bottom: env(safe-area-inset-bottom);
-	}
+
 
 	/deep/ .u-tabbar__content {
 		height: 120rpx !important;

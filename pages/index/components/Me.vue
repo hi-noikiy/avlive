@@ -8,7 +8,7 @@
 					<view class="info">
 						<view class="t" @click="urlTo('/pages/users/user_info/index')">
 							<view>昵称：{{userInfo.nickname}}</view>
-							<view>ID {{userInfo.uid}}</view>
+							<view>ID {{userInfo.look_id}}</view>
 						</view>
 						<view class="b">
 							<view>{{userInfo.fensi}}粉丝</view>
@@ -30,7 +30,7 @@
 					<view class="add" @click="urlTo('/pages/users/tag/form')">+</view>
 				</view>
 				<view class="line4">
-					<view>{{userInfo.signature}}</view>
+					<view>个性签名：{{userInfo.signature}}</view>
 				</view>
 			</view>
 			<view class="list box" v-for="(item, index) in list">
@@ -99,36 +99,36 @@
 					items: [{
 						title: '上传作品',
 						src: '/static/images/me_sczp.png',
-						width: '87',
-						height: '115',
-						mright: '48',
+						width: '103',
+						height: '120',
+						mright: '40',
 						url: '/pages/tool/works'
 					}, {
 						title: '开始直播',
 						src: '/static/images/me_kszb.png',
-						width: '88',
-						height: '115',
-						mright: '49',
+						width: '93',
+						height: '120',
+						mright: '40',
 						url: '/pages/tool/telecast'
 					}, {
-						title: '文字转语音',
+						title: 'AI语音',
 						src: '/static/images/me_wzzyy.png',
-						width: '111',
-						height: '115',
-						mright: '48',
+						width: '100',
+						height: '120',
+						mright: '40',
 						url: '/pages/tool/turn'
 					}, {
 						title: '技能测定',
 						src: '/static/images/me_jncd.png',
-						width: '88',
-						height: '115',
-						mright: '49',
+						width: '100',
+						height: '120',
+						mright: '40',
 						url: '/pages/evaluation/testtable'
 					}, {
-						title: '名片',
+						title: '我的名片',
 						src: '/static/images/me_mp.png',
-						width: '79',
-						height: '115',
+						width: '100',
+						height: '120',
 						mright: '0',
 						url: '/pages/users/user_return_list/index'
 					}]
@@ -137,84 +137,91 @@
 					items: [{
 						title: '充值',
 						src: '/static/images/me_cz.png',
-						width: '79',
-						height: '114',
+						width: '87',
+						height: '116',
 						mright: '45',
 						url: '/pages/wallet/wallet'
 					}, {
 						title: '账单',
 						src: '/static/images/me_zd.png',
-						width: '79',
-						height: '114',
+						width: '84',
+						height: '116',
 						mright: '45',
 						url: '/pages/wallet/bill'
 					}, {
-						title: '收入',
+						title: '余额',
 						src: '/static/images/me_sr.png',
-						width: '79',
-						height: '114',
+						width: '87',
+						height: '116',
 						mright: '45',
 						url: '/pages/wallet/withdrawal'
+					},{
+						title: '提现',
+						src: '/static/images/me_tx.png',
+						width: '87',
+						height: '116',
+						mright: '45',
+						url: '/pages/users/user_cash/index'
 					}]
 				}, {
 					title: '作品',
 					items: [{
 						title: '我的作品',
 						src: '/static/images/me_wdzp.png',
-						width: '87',
-						height: '118',
+						width: '106',
+						height: '123',
 						mright: '59',
 						url: '/pages/tool/worklist?data_type=1'
 					}, {
 						title: '我点赞的',
 						src: '/static/images/me_wdzd.png',
-						width: '87',
-						height: '118',
+						width: '96',
+						height: '123',
 						mright: '60',
 						url: '/pages/tool/worklist?data_type=2'
 					}, {
 						title: '我打赏的',
 						src: '/static/images/me_wdsd.png',
-						width: '87',
-						height: '118',
+						width: '99',
+						height: '123',
 						mright: '60',
 						url: '/pages/tool/worklist?data_type=3'
 					}, {
 						title: '我下载的',
 						src: '/static/images/me_wxzd.png',
-						width: '87',
-						height: '118',
+						width: '95',
+						height: '123',
 						mright: '0',
 						url: '/pages/tool/worklist?data_type=4'
 					}]
 				}, {
-					title: '录音棚',
+					title: '创作中心',
 					items: [{
-						title: '单人录制',
+						title: '录音棚',
 						src: '/static/images/me_drlz.png',
-						width: '87',
-						height: '117',
+						width: '98',
+						height: '120',
 						mright: '58',
 						url: ''
 					}, {
 						title: '多人录制',
 						src: '/static/images/me_drlzs.png',
-						width: '86',
-						height: '117',
+						width: '93',
+						height: '120',
 						mright: '59',
 						url: ''
 					}, {
 						title: '录制草稿',
 						src: '/static/images/me_lzcg.png',
-						width: '88',
-						height: '117',
+						width: '97',
+						height: '120',
 						mright: '58',
 						url: ''
 					}, {
 						title: '素材库',
 						src: '/static/images/me_sck.png',
-						width: '79',
-						height: '117',
+						width: '91',
+						height: '120',
 						mright: '0',
 						url: ''
 					}]

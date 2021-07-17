@@ -20,7 +20,6 @@
         "modules" : {
             "VideoPlayer" : {},
             "Share" : {},
-            "Push" : {},
             "OAuth" : {},
             "Payment" : {},
             "LivePusher" : {},

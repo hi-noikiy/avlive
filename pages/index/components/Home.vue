@@ -5,8 +5,8 @@
 			<!-- #ifdef APP-PLUS -->
 			<u-gap height="44"></u-gap>
 			<!-- #endif -->
-			<view class="top-menu">
 
+			<view class="top-menu">
 				<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
 					active-color="#000000" inactive-color="#000000" font-size="34" bar-width="48" bar-height="7">
 				</u-tabs-swiper>
@@ -23,12 +23,11 @@
 				<category-menu :menuList="demand_form" @menuId="setMenuId"></category-menu>
 			</view>
 			<u-gap height="20"></u-gap>
-
-			<swiper :current="swiperCurrent" @transition="transition" :style="{height:mainHeight+'rpx'}"
+			<swiper :current="swiperCurrent" @transition="transition" :style="{height:mainHeight+'px'}"
 				@animationfinish="animationfinish">
 				<!-- 视频 -->
 				<swiper-item class="swiper-item">
-					<scroll-view scroll-y :style="{height:mainHeight+ 'rpx'}" @scrolltolower="videolower">
+					<scroll-view scroll-y :style="{height:mainHeight+ 'px'}" @scrolltolower="videolower">
 						<video-list :videoList="data_list"></video-list>
 						<view class="zwsj" v-if="nodata">
 							暂无数据
@@ -37,7 +36,7 @@
 				</swiper-item>
 				<!-- 音频 -->
 				<swiper-item class="swiper-item">
-					<scroll-view scroll-y :style="{height:mainHeight + 'rpx'}" @scrolltolower="videolower">
+					<scroll-view scroll-y :style="{height:mainHeight + 'px'}" @scrolltolower="videolower">
 						<audio-list :audioList="data_list"></audio-list>
 						<view class="zwsj" v-if="nodata">
 							暂无数据
@@ -77,7 +76,7 @@
 				</swiper-item>
 
 			</swiper>
-			
+
 			<u-gap height="20"></u-gap>
 			<u-loadmore v-if="current==0||current==1&&data_list.length!=0" :status="loadStatus" />
 		</view>
@@ -164,16 +163,9 @@
 		mounted() {
 			uni.getSystemInfo({
 				success: res => {
+					console.log("屏幕", res)
 					this.windowHeight = res.windowHeight;
-					this.mainHeight = this.windowHeight
-					// console.log(res);
-					// console.log(res.model);
-					// console.log(res.pixelRatio);
-					// console.log(res.windowWidth);
-					// console.log(res.windowHeight);
-					// console.log(res.language);
-					// console.log(res.version);
-					// console.log(res.platform);
+					this.mainHeight = res.safeArea.height -360 + res.safeAreaInsets.bottom
 				}
 			});
 		},
@@ -236,11 +228,11 @@
 				getDemandForm().then(res => {
 					that.demand_form = res.data.demand_form;
 					that.menu_id = res.data.demand_form[0].id;
-					
+
 					getBanner().then(res => {
 						that.banner = res.data;
 					})
-					
+
 					that.initData();
 					// this.getData()
 				})
@@ -254,7 +246,7 @@
 					console.log(that.page)
 					var data = {
 						'type': that.swiperCurrent + 1,
-						'demand_form_id': that.menu_id,
+						'demand_form_id': that.menu_id == 1 ? '' : that.menu_id,
 						'page': that.page
 					}
 					getHomeData(data).then(res => {
@@ -364,11 +356,13 @@
 		margin-top: 12rpx;
 		display: flex;
 		flex-direction: row;
-		width: 400rpx;
+		width: 420rpx;
 		margin-left: 10rpx;
+
 		.search {
 			margin-top: 26rpx;
 			margin-left: 270rpx;
+
 			image {
 				width: 40rpx;
 				height: 40rpx;
@@ -386,6 +380,5 @@
 		text-align: center;
 		margin-top: 200rpx;
 		background-color: transparent;
-
 	}
 </style>

@@ -38,7 +38,7 @@
 							<image class="operation-dashang" src="../../static/images/video_dashang.png"></image>
 							<text class="operation-txt">打赏</text>
 						</view>
-						<view class="operation-item">
+						<view class="operation-item" @click="showComment(true,item.id)">
 							<image class="operation-pinglun" src="../../static/images/video_pinglun.png"></image>
 							<text class="operation-txt">评论</text>
 						</view>
@@ -51,18 +51,21 @@
 			</swiper-item>
 		</swiper>
 		<share-box ref="shareBox"></share-box>
+		<comment ref="commentBox" :id="id"></comment>
 	</view>
 </template>
 
 <script>
 	import shareBox from '@/components/shareBox/shareBox';
+	import comment from '@/components/nvuecomment';
 	import {
 		getWorksVideoList,
 		worksLike
 	} from '@/api/liveApp.js';
 	export default {
 		components: {
-			'share-box': shareBox
+			'share-box': shareBox,
+			'comment': comment
 		},
 		data() {
 			return {
@@ -96,6 +99,7 @@
 			});
 		},
 		methods: {
+
 			// 页面初始化
 			init() {
 			    this.videoContextList = []
@@ -197,7 +201,12 @@
 			// 分享
 			showShare(bool) {
 				this.$refs.shareBox.showShare(bool);
-			}
+			},
+			//评论
+			showComment(bool,id) {
+				this.$refs.commentBox.showComment(bool);
+				this.$refs.commentBox.ids(id);
+			},
 		}
 	}
 </script>
@@ -235,6 +244,7 @@
 		padding-top: 21rpx;
 	}
 	.operation-txt {
+		color: #FFFFFF;
 		padding-top: 20rpx;
 		padding-bottom: 48rpx;
 		font-size: 28rpx;

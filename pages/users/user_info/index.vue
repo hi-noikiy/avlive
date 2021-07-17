@@ -39,7 +39,7 @@
 							已认证<text class="iconfont icon-xiangyou"></text>
 						</navigator>
 						<navigator url="/pages/users/realName/index" hover-class="none" class="input" v-else>
-							实名认证<text class="iconfont icon-xiangyou"></text>
+							未认证<text class="iconfont icon-xiangyou"></text>
 						</navigator>
 					</view>
 					<view class='item acea-row row-between-wrapper'>
@@ -57,14 +57,13 @@
 						</view>
 					</view>
 					<!-- #endif -->
-					<!-- #ifdef H5 -->
 					<view class="item acea-row row-between-wrapper" v-if="userInfo.phone && !this.$wechat.isWeixin()">
 						<view>密码</view>
 						<navigator url="/pages/users/user_pwd_edit/index" hover-class="none" class="input">
 							点击修改密码<text class="iconfont icon-xiangyou"></text>
 						</navigator>
 					</view>
-					<!-- #endif -->
+
 
 					<!-- 					<view class="item acea-row row-between-wrapper" v-if="userInfo.phone">
 						<view>更换手机号码</view>
@@ -106,7 +105,23 @@
 							实名认证<text class="iconfont icon-xiangyou"></text>
 						</navigator> -->
 					</view>
+					<view class='item acea-row row-between-wrapper'>
+						<view>收费标准</view>
+<!-- 						<view class='input'>
+							<textarea type='text' name='charging_standard' placeholder="填写收费标准"
+								:value='userInfo.charging_standard'></textarea>
+						</view> -->
 
+						<view class="module1">
+							<textarea value="" :value='userInfo.charging_standard' name='charging_standard'
+								placeholder="例如:100字200元,200字300元" />
+<!-- 							<view class="empty" @click="empty">
+								<image src="../../../static/images/del.png"></image>
+								<text>清空</text>
+							</view> -->
+						</view>
+
+					</view>
 				</view>
 				<button class='modifyBnt' formType="submit">保存修改</button>
 				<!-- #ifdef H5 -->
@@ -236,7 +251,7 @@
 					self.getUserInfo();
 					uni.showToast({
 						icon: 'none',
-						title:'绑定成功'
+						title: '绑定成功'
 					})
 				}).catch(error => {
 					uni.showModal({
@@ -261,7 +276,7 @@
 					success: function(res) {
 						if (res.confirm) {
 							unbuildWechat().then(res => {
-								console.log("解绑微信结果",res)
+								console.log("解绑微信结果", res)
 								if (res.status == 200) {
 									that.getUserInfo();
 									uni.showToast({
@@ -616,7 +631,41 @@
 		width: 690rpx;
 		height: 90rpx;
 		border-radius: 45rpx;
-		margin: 30rpx auto 0 auto;
+		margin: 30rpx auto 30rpx auto;
+	}
+
+	.module1 {
+		margin-top: 30rpx;
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		height: 380rpx;
+		background: #FFFFFF;
+		border-radius: 15rpx;
+		padding: 30rpx 30rpx 24rpx 30rpx;
+
+		textarea {
+			font-size: 24rpx;
+			width: auto;
+		}
+
+		.empty {
+			display: flex;
+			align-items: center;
+			margin-top: 16rpx;
+
+			image {
+				width: 28rpx;
+				height: 28rpx;
+			}
+
+			text {
+				font-size: 24rpx;
+				font-weight: bold;
+				color: #000000;
+				padding-left: 4rpx;
+			}
+		}
 	}
 
 	.avatar-box {

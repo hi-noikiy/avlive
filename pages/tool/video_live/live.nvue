@@ -3,7 +3,7 @@
 		<!-- #ifdef APP-NVUE -->
 		<live-pusher id='livePusher' ref="livePusher" class="livePusher"
 		:url="push_url"
-		:style="{height: 780+'px'}"
+		:style="{height: windowHeight+'px',width:windowidth + 'px'}"
 		mode="FHD" :muted="true" :enable-camera="true" :auto-focus="true" :beauty="beauty_rating" :whiteness="beauty_rating"
 		aspect="9:16" @statechange="statechange" @netstatus="netstatus" @error = "error"
 		></live-pusher>
@@ -60,7 +60,8 @@
 				firstList: [],
 				// 消息列表
 				msgAll: [],
-				msg: ''
+				msg: '',
+				windowHeight:""
 			}
 		},
 		onLoad(options) {
@@ -68,6 +69,13 @@
 			this.push_url = options.push_url;
 			this.uid = options.uid;
 			this.beauty_rating = options.beauty_rating;
+			uni.getSystemInfo({
+				success: res => {
+					console.log("屏幕",res)
+					this.windowHeight = res.windowHeight
+					this.windowidth = res.windowWidth
+				}
+			});
 		},
 		onReady() {
 			// 保持屏幕常亮
@@ -196,8 +204,8 @@
 					    }
 					});
 					// 返回到个人中心页面
-					uni.switchTab({
-						url: '/pages/index/index'
+					uni.navigateBack({
+						delta:1
 					})
 				});
 			},

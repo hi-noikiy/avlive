@@ -369,7 +369,9 @@
 						})
 						.then(res => {
 							let data = res.data;
-							
+							if (res.status == 400) return that.$util.Tips({
+								title: res.msg
+							});
 							// 保存用户uid
 							uni.setStorageSync('uid', data.uid);
 							uni.setStorageSync('uavatar', data.uavatar);
@@ -425,6 +427,9 @@
 						spread: that.$Cache.get("spread")
 					})
 					.then(res => {
+						if (res.status == 400) return that.$util.Tips({
+							title: res.msg
+						});
 						that.$util.Tips({
 							title: res
 						});
@@ -453,6 +458,9 @@
 						code: that.codeVal
 					})
 					.then(res => {
+						if (res.status == 400) return that.$util.Tips({
+							title: res.msg
+						});
 						that.$util.Tips({
 							title: res.msg
 						});
@@ -492,20 +500,20 @@
 						account: that.account,
 						password: that.password,
 						spread: that.$Cache.get("spread")
-					})
-					.then(({
-						data
-					}) => { 
+					}).then( res => { 
 						console.log(this.$Cache.time());
+						if (res.status == 400) return that.$util.Tips({
+							title: res.msg
+						});
+
 						// 保存用户uid
-						uni.setStorageSync('uid', data.uid);
-						uni.setStorageSync('uavatar', data.uavatar);
+						uni.setStorageSync('uid', res.data.uid);
+						uni.setStorageSync('uavatar', res.data.uavatar);
 						
 						that.$store.commit("LOGIN", {
-							'token': data.token,
-							'time': data.expires_time - this.$Cache.time()
+							'token': res.data.token,
+							'time': res.data.expires_time - this.$Cache.time()
 						});
-						
 						getUserInfo().then(res => {
 							console.log(" user is ",res);
 							//

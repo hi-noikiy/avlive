@@ -11,8 +11,8 @@
 			</view>
 			<view class="module2">
 				<view class="item" v-for="(item,index) in list" :key="index" @click="getsoundbank(item.id,index)">
-					<view class="t">
-						<image src="../../static/images/yinfu.png"></image>
+					<view class="t" :style=" active == index?'background-color: #000000;':'background-color:#8F9092;'">
+						<image :style=" active == index?'background-color: #000000;':'background-color:#8F9092;'" src="../../static/images/yinfu.png"></image>
 					</view>
 					<view class="b" :class="active == index?'active':''">{{item.name}}</view>
 				</view>
@@ -46,9 +46,16 @@
 					</view>
 				</view>
 			</view>
-			<view class="module4">
-				<!-- <view class="btn">背景音乐</view> -->
-				<!-- <view class="btn">试听</view> -->
+			<view class="module4" v-if="url!=''">
+				<!-- <view class="btn" v-if="url!=''" @click="Audition">试听</view> -->
+				<view class="playbox" @click="Audition">
+					<image class="iconplay"  :src="'/static/images/audio_'+(play ? 'suspend' : 'player')+'.png'" ></image>
+					<view class="btn" >试听</view>
+				</view>
+				<view class="playbox" @click="download">
+					<image class="iconplays" src="../../static/images/audio-download.png" ></image>
+					<view class="btn" >下载</view>
+				</view>
 			</view>
 			<button type="default" class="sub" @click="getsynthesis">立即合成</button>
 		</view>
@@ -63,6 +70,7 @@
 		data() {
 			return {
 				content: '',
+				play: false,
 				list: [{
 					name: '度小美',
 					id: 0
@@ -80,9 +88,50 @@
 				value1: 50,
 				value2: 50,
 				per: '',
+				url: '',
+				Audio: ''
 			}
 		},
+		created() {
+			this.Audio = uni.createInnerAudioContext();
+		},
 		methods: {
+			download(){
+				var that = this
+				uni.downloadFile({
+					url: that.url,
+					success: ({statusCode, tempFilePath}) => {
+						if (statusCode === 200) {
+							//保存到本地
+							uni.saveFile({
+								tempFilePath,
+								success:(saveRes)=>{
+									 console.log('保存成功');
+									 console.log(saveRes.savedFilePath)
+									 uni.openDocument({
+										filePath:saveRes.savedFilePath,
+										success:(openRes)=>console.log('成功打开文档')
+									})
+								},
+								fail:(err)=>console.log(err)
+							})
+						}
+					}
+				})
+			},
+			Audition() {
+				var that = this
+				if (!that.play) {
+					that.Audio.src = that.url; //音频地址 
+					console.log("播放")
+					this.Audio.play(); //执行播放 
+					that.play = true
+				} else {
+					this.Audio.stop(); //暂停播放 
+					console.log("暂停")
+					that.play = false
+				}
+			},
 			//清空
 			empty() {
 				this.content = ''
@@ -95,6 +144,13 @@
 			//立即合成
 			getsynthesis() {
 				var that = this
+				if (that.content == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入转语音的文字'
+					})
+					return
+				}
 				var pit = that.value1 / 10
 				var spd = that.value2 / 10
 				var data = {
@@ -105,35 +161,45 @@
 				}
 				textToSpeech(data).then(res => {
 					console.log("语音转文字合成结果", res)
-					if (res.status == 200) {
-						uni.downloadFile({
-							url: res.data.download_link,
-							success: ({
-								statusCode,
-								tempFilePath
-							}) => {
-								if (statusCode === 200) {
-									//保存到本地
-									uni.saveFile({
-										tempFilePath,
-										success: (saveRes) => {
-											console.log('保存成功');
-											console.log(saveRes.savedFilePath)
-											uni.openDocument({
-												filePath: saveRes.savedFilePath,
-												success: (openRes) => console.log(
-													'成功打开文档')
-											})
-										},
-										fail: (err) => console.log(err)
-									})
-								}
-							}
+					if(res.status == 200){
+						that.url = res.data.download_link
+						uni.showToast({
+							icon:'none',
+							title:res.msg
 						})
 					}
+					// if (res.status == 200) {
+					// 	uni.downloadFile({
+					// 		url: res.data.download_link,
+					// 		success: ({
+					// 			statusCode,
+					// 			tempFilePath
+					// 		}) => {
+					// 			if (statusCode === 200) {
+					// 				//保存到本地
+					// 				uni.saveFile({
+					// 					tempFilePath,
+					// 					success: (saveRes) => {
+					// 						console.log('保存成功');
+					// 						console.log(saveRes.savedFilePath)
+					// 						uni.openDocument({
+					// 							filePath: saveRes.savedFilePath,
+					// 							success: (openRes) => console.log(
+					// 								'成功打开文档')
+					// 						})
+					// 					},
+					// 					fail: (err) => console.log(err)
+					// 				})
+					// 			}
+					// 		}
+					// 	})
+					// }
 				})
 			}
-		}
+		},
+		onUnload() {
+
+		},
 	}
 </script>
 
@@ -225,7 +291,7 @@
 			}
 
 			.active {
-				color:#000000;
+				color: #000000;
 			}
 		}
 	}
@@ -273,19 +339,6 @@
 	.module4 {
 		display: flex;
 		flex-wrap: wrap;
-
-		.btn {
-			width: 160rpx;
-			height: 54rpx;
-			line-height: 54rpx;
-			text-align: center;
-			background-color: rgba($color: #FFFFFF, $alpha: 0.29);
-			border: 1rpx solid #232323;
-			margin-right: 20rpx;
-			font-size: 24rpx;
-			font-weight: bold;
-			color: #666666;
-		}
 	}
 
 	.sub {
@@ -297,4 +350,21 @@
 		font-size: 30rpx;
 		color: #D7DCE2;
 	}
+	.playbox{
+		width: 100rpx;
+		text-align: center;
+		font-size: 24rpx;
+		font-weight: bolder;
+		color: #000;
+		.iconplay{
+			width: 58rpx;
+			height: 58rpx;
+		}
+	}
+	.iconplays{
+		width: 38rpx;
+		height: 45rpx;
+		margin-top: 13rpx;
+	}
+
 </style>

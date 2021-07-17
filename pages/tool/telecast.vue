@@ -2,7 +2,7 @@
 	<view class="">
 		<image src="/static/images/main-bg.png" class="bg"></image>
 		<view class="main">
-			<view class="colse">
+			<view class="colse" :style="{'margin-top':top +'px'}">
 				<image src="/static/images/lclose.png" @click="closePage()"></image>
 			</view>
 			<picker style="position: relative;z-index: 3;" class="picker" :range="demandFormArr" @change="demandFormChange" :value="demandFormIndex" range-key="form_type_name">
@@ -54,6 +54,7 @@
 		data() {
 			return {
 				type: 1,
+				top:'',
 				beauty: true,
 				beauty_rating: 0,
 				demandFormArr: [],
@@ -65,6 +66,12 @@
 		},
 		onLoad() {
 			var that = this;
+			uni.getSystemInfo({
+				success: res => {
+					console.log("屏幕",res)
+					this.top = res.statusBarHeight
+				}
+			});
 			// 获取分类
 			getDemandForm().then(res => {
 				that.demandFormArr = res.data.demand_form;

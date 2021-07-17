@@ -1,5 +1,6 @@
 <template>
 	<view class="main">
+		
 		<view class="item" v-for="(item, index) in videoList">
 			<image :src="item.image" class="bg" @click="playVideo(item.id, item.demand_form_id)"></image>
 			<view class="info" @click="showAuthor(item.user_id)">
@@ -11,6 +12,8 @@
 						<span>{{item.like_num}}</span>
 					</view>
 				</view>
+				<image class="del" v-if="delshow == 1" src="../../static/images/del.png" @click.stop="del(item.id)"
+					mode=""></image>
 			</view>
 		</view>
 		<!-- <view class="" v-if="!noPage">
@@ -21,22 +24,23 @@
 </template>
 
 <script>
+	import {
+		deleteWorks
+	} from '@/api/liveApp.js';
 	export default {
 		name: "video-list",
 		props: [
 			'videoList',
-			'noPage'
+			'delshow'
 		],
 		data() {
-			return {
-
-			};
+			return {};
 		},
 		methods: {
 			// 发布人主页
 			showAuthor(user_id) {
 				uni.navigateTo({
-					url: '/pages/liveApp/user/findUser?user_id='+user_id
+					url: '/pages/liveApp/user/findUser?user_id=' + user_id
 				})
 			},
 			// 视频页
@@ -51,6 +55,30 @@
 					url: '/pages/liveApp/playVideo?id=' + id + '&demand_form_id=' + demand_form_id + '&index=' +
 						index
 				})
+			},
+			//删除按钮
+			del(id) {
+				var that = this;
+				uni.showModal({
+					title: '提示',
+					content: '您确定要删除作品吗？',
+					success: function(res) {
+						if (res.confirm) {
+							var data = {
+								id: id
+							};
+							deleteWorks(data).then(result => {
+								uni.showToast({
+									icon: 'none',
+									title: result.msg
+								}) 
+								that.$emit("pgetList")
+							})
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
 			}
 		}
 	}
@@ -91,6 +119,7 @@
 			background: linear-gradient(0deg, #282828, rgba(0, 0, 0, 0));
 			border-radius: 15rpx;
 			display: flex;
+			align-items: center;
 
 			.head {
 				width: 80rpx;
@@ -129,5 +158,12 @@
 				}
 			}
 		}
+	}
+
+	.del {
+		margin-top: 36rpx;
+		width: 36rpx;
+		height: 36rpx;
+		margin-left: 50rpx;
 	}
 </style>

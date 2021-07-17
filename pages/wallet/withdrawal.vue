@@ -3,19 +3,19 @@
 		<image src="/static/images/main-bg.png" class="bg"></image>
 		<view class="page">
 			<view class="module module1">
-				<view class="title">我的余额</view>
+				<view class="title">我的账户</view>
 				<view class="prices">
 					<view class="item">
-						<image src="../users/static/1.png"></image>
+						<image src="../users/static/ybb.png"></image>
 						<view class="price">音贝：{{userInfo.now_yinbei}}</view>
 					</view>
 					<view class="item">
-						<image src="../users/static/1.png"></image>
+						<image src="../users/static/yb.png"></image>
 						<view class="price">音宝：{{userInfo.now_yinbao}}</view>
 						<view class="b">价值{{userInfo.now_yinbao}}元</view>
 					</view>
 					<view class="item">
-						<image src="../users/static/1.png"></image>
+						<image src="../users/static/yz.png"></image>
 						<view class="price">音珠：{{userInfo.now_yinzhu}}</view>
 						<view class="b">价值{{userInfo.now_yinzhu / 10}}元</view>
 					</view>
@@ -45,11 +45,14 @@
 					<span class="type">提现数量</span>
 					<input type="number" value="" v-model="num" placeholder="请输入数量" />
 				</view>
-				<view class="b">
-					预计到账：<span>500</span>元
+				<view class="b" v-if="type =='音宝'">
+					预计到余额：<span>{{num}}</span>元
+				</view>
+				<view class="b" v-if="type =='音珠'">
+					预计到余额：<span>{{num/10}}</span>元
 				</view>
 			</view>
-			<view class="sub" @click="getWithdrawal">立即提现</view>
+			<view class="sub" @click="getWithdrawal">兑换到余额</view>
 		</view>
 	</view>
 </template>
@@ -91,11 +94,11 @@
 				})
 			},
 			//跳转提现页面
-			getmask(){
-				uni.navigateTo({
-					url:'../users/user_cash/index'
-				})
-			},
+			// getmask(){
+			// 	uni.navigateTo({
+			// 		url:'../users/user_cash/index'
+			// 	})
+			// },
 			//点击提现
 			getWithdrawal() {
 				var that = this

@@ -241,3 +241,21 @@ export function ormalipay(data) {
 export function formClassList(data) {
 	return request.post('form/form_class_list', data);
 }
+/**
+ * 我的作品删除
+ */
+export function deleteWorks(data) {
+	return request.get('v3/deleteWorks', data);
+}
+/**
+ * 圈子查询作品评论
+ */
+export function circleDetail(data) {
+	return request.get('v3/circleDetail', data);
+}
+/**
+ * 圈子作品评论
+ */
+export function circleComment(data) {
+	return request.post('v3/circleComment', data);
+}

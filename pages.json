@@ -9,7 +9,7 @@
 				"navigationBarTitleText": "首页",
 				"navigationStyle": "custom"
 			}
-		},     
+		},
 		{
 			"path": "pages/index/components/Home",
 			"style": {
@@ -54,8 +54,8 @@
 				//头部导航不显示
 				"navigationBarBackgroundColor": "transparent",
 				"navigationBarTextStyle": "white",
-				"app-plus": {
-					"titleNView": false
+				"app-plus":{
+					"bounce":"none" // 将回弹属性关掉
 				}
 			}
 		},
@@ -108,6 +108,12 @@
 			}
 
 		}, {
+			"path": "pages/circle/circledetail",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+
+		},{
 			"path": "pages/tool/works",
 			"style": {
 				"navigationBarTitleText": "上传作品",
@@ -174,7 +180,7 @@
 		}, {
 			"path": "pages/wallet/withdrawal",
 			"style": {
-				"navigationBarTitleText": "提现",
+				"navigationBarTitleText": "我的账户",
 				"enablePullDownRefresh": false
 			}
 
@@ -184,7 +190,6 @@
 				"navigationBarTitleText": "发布",
 				"enablePullDownRefresh": false
 			}
-
 		}, {
 			"path": "pages/tool/video_live/live",
 			"style": {
@@ -194,7 +199,6 @@
 					"titleNView": false
 				}
 			}
-
 		}, {
 			"path": "pages/tool/video_live/look",
 			"style": {
@@ -226,14 +230,14 @@
 				"enablePullDownRefresh": false
 			}
 
-		},{
+		}, {
 			"path": "pages/demand/completed",
 			"style": {
 				"navigationBarTitleText": "已完成",
 				"enablePullDownRefresh": false
 			}
 
-		},{
+		}, {
 			"path": "pages/demand/involved",
 			"style": {
 				"navigationBarTitleText": "我参与的",
@@ -257,26 +261,22 @@
 
 			}
 
+		}, {
+			"path": "pages/circle/my",
+			"style": {
+				"navigationBarTitleText": "我发布的",
+				"enablePullDownRefresh": true
+			}
+
+		}, {
+			"path": "pages/tool/worklist",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}
-	    ,{
-            "path" : "pages/circle/my",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "我发布的",
-                "enablePullDownRefresh": true
-            }
-            
-        }
-        ,{
-            "path" : "pages/tool/worklist",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	// "tabBar": {
 	// 	"color": "#8a8a8a",
 	// 	"selectedColor": "#00ff7f",
@@ -311,110 +311,109 @@
 			"root": "pages/liveApp",
 			"name": "live",
 			"pages": [{
-					"path": "hall/index",
-					"style": {
-						"navigationBarTitleText": "需求大厅",
-						"enablePullDownRefresh": false
-					}
-
-				}, {
-					"path": "hall/detail",
-					"style": {
-						"navigationBarTitleText": "需求详情",
-						"enablePullDownRefresh": false
-					}
-				}, {
-					"path": "playVideo",
-					"style": {
-						"navigationBarTitleText": "",
-						"enablePullDownRefresh": false,
-						"app-plus": {
-							"titleNView": false
-						}
-					}
-
-				}, {
-					"path": "user/findUser",
-					"style": {
-						"navigationBarTitleText": "个人资料",
-						"enablePullDownRefresh": false
-					}
-
-				}, {
-					"path": "chatroom/chatroom",
-					"style": {
-						"navigationBarTitleText": "聊天室",
-						"enablePullDownRefresh": true,
-						"navigationBarBackgroundColor": "#fafafa",
-						"navigationBarTextStyle": "black"
-					}
-
-				}, {
-					"path": "add_new/add_new",
-					"style": {
-						"navigationBarTitleText": "",
-						"enablePullDownRefresh": false
-					}
-
-				}, {
-					"path": "chatUserList/chatUserList",
-					"style": {
-						"navigationBarTitleText": "",
-						"enablePullDownRefresh": false
-					}
-
-				}, {
-					"path": "groups/groups",
-					"style": {
-						"navigationBarTitleText": "",
-						"enablePullDownRefresh": false
-					}
-
-				}, {
-					"path": "add_groups/add_groups",
-					"style": {
-						"navigationBarTitleText": "",
-						"enablePullDownRefresh": false
-					}
-
-				}, {
-					"path": "groupChatRoom/groupChatRoom",
-					"style": {
-						"navigationBarTitleText": "",
-						"enablePullDownRefresh": false
-					}
-
-				}, {
-					"path": "emedia/index",
-					"style": {
-						"navigationBarBackgroundColor": "#fafafa",
-						"navigationBarTextStyle": "black",
-						"navigationBarTitleText": "emedia"
-					}
-
-				}, {
-					"path": "groupSetting/groupSetting",
-					"style": {
-						"navigationBarTitleText": "",
-						"enablePullDownRefresh": false
-					}
-
-				}, {
-					"path": "newfriendDetail/newfriendDetail",
-					"style": {
-						"navigationBarTitleText": "",
-						"enablePullDownRefresh": false
-					}
-
-				}, {
-					"path": "offer",
-					"style": {
-						"navigationBarTitleText": "报价",
-						"enablePullDownRefresh": false
-					}
-
+				"path": "hall/index",
+				"style": {
+					"navigationBarTitleText": "需求大厅",
+					"enablePullDownRefresh": false
 				}
-			]
+
+			}, {
+				"path": "hall/detail",
+				"style": {
+					"navigationBarTitleText": "需求详情",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "playVideo",
+				"style": {
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false,
+					"app-plus": {
+						"titleNView": false
+					}
+				}
+
+			}, {
+				"path": "user/findUser",
+				"style": {
+					"navigationBarTitleText": "个人资料",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "chatroom/chatroom",
+				"style": {
+					"navigationBarTitleText": "聊天室",
+					"enablePullDownRefresh": true,
+					"navigationBarBackgroundColor": "#fafafa",
+					"navigationBarTextStyle": "black"
+				}
+
+			}, {
+				"path": "add_new/add_new",
+				"style": {
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "chatUserList/chatUserList",
+				"style": {
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "groups/groups",
+				"style": {
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "add_groups/add_groups",
+				"style": {
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "groupChatRoom/groupChatRoom",
+				"style": {
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "emedia/index",
+				"style": {
+					"navigationBarBackgroundColor": "#fafafa",
+					"navigationBarTextStyle": "black",
+					"navigationBarTitleText": "emedia"
+				}
+
+			}, {
+				"path": "groupSetting/groupSetting",
+				"style": {
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "newfriendDetail/newfriendDetail",
+				"style": {
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "offer",
+				"style": {
+					"navigationBarTitleText": "报价",
+					"enablePullDownRefresh": false
+				}
+
+			}]
 		},
 		{
 			"root": "pages/users",
@@ -431,7 +430,7 @@
 						"navigationBarTitleText": "提现",
 						"enablePullDownRefresh": false
 					}
-				
+
 				},
 				{
 					"path": "user_spread_money/index",
@@ -439,7 +438,7 @@
 						"navigationBarTitleText": "提现记录",
 						"enablePullDownRefresh": false
 					}
-				
+
 				},
 				{
 					"path": "wechat_login/index",
@@ -501,7 +500,7 @@
 					"path": "realName/index",
 					"style": {
 						"navigationBarTitleText": "实名认证"
-				
+
 							// #ifdef MP
 							,
 						"navigationBarTextStyle": "#fff",
@@ -547,26 +546,22 @@
 							// #endif
 						}
 					}
+				}, {
+					"path": "tag/form",
+					"style": {
+						"navigationBarTitleText": "添加标签",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "tag/record",
+					"style": {
+						"navigationBarTitleText": "认证记录",
+						"enablePullDownRefresh": false
+					}
+
 				}
-			    ,{
-                    "path" : "tag/form",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "添加标签",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "tag/record",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "认证记录",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-            ]
+			]
 		}
 	],
 	"globalStyle": {
@@ -575,7 +570,12 @@
 		"navigationBarBackgroundColor": "#fff",
 		"backgroundColor": "#F8F8F8",
 		// "titleNView": false 去除系统原生导航
-		"bounce": "none" // 将回弹属性关掉
+		"bounce": "none" ,// 将回弹属性关掉
+		"app-plus": {
+			"softinputMode": "adjustResize", // 自适应软键盘弹起页面高度
+		    "softinputNavBar": "none"
+			
+		}
 	},
 	"condition": { //模式配置，仅开发期间生效
 		"current": 0, //当前激活的模式(list 的索引项)

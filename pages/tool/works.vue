@@ -30,7 +30,7 @@
 				</u-checkbox-group>
 				<view class="r">
 					<input type="text" v-model="download_price" placeholder="请输入" />
-					<span>音宝</span>
+					<span>音珠</span>
 				</view>
 			</view>
 			<view class="b">综合你的平台等级，你最高可设置为100元</view>

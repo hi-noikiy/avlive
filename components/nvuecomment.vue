@@ -1,6 +1,7 @@
 <template>
 	<view class="comment-view" v-if="commentBox" @click="commentBox = false" @touchmove.stop.prevent="moveHandle">
-		<view class="comment-main" v-if="commentBox" @tap.stop :style="{height:mainHeight*0.8+'px','margin-top':windowHeight-mainHeight*0.8+'px'}">
+		<view class="comment-main" v-if="commentBox" @tap.stop
+			:style="{height:mainHeight*0.8+'px','margin-top':windowHeight-mainHeight*0.8+'px',width:windowWidth+'px'}">
 			<scroll-view :scroll-y="true" class="scroll" :style="{height:mainHeight*0.8-55+'px'}"
 				@scrolltolower="videolower">
 				<view class="comment" v-for="(res, index) in commentList" :key="res.id">
@@ -10,7 +11,7 @@
 					<view class="right">
 						<view class="top">
 							<view class="name">{{ res.user_nickname }}</view>
-							<!-- 							<view class="like" :class="{ highlight: res.isLike }">
+							<!-- <view class="like" :class="{ highlight: res.isLike }">
 								<view class="num">{{ res.likeNum }}</view>
 								<u-icon v-if="!res.isLike" name="thumb-up" :size="30" color="#9a9a9a"
 									@click="getLike(index)"></u-icon>
@@ -63,6 +64,7 @@
 		props: ['id'],
 		data() {
 			return {
+				windowWidth: '',
 				nodata: false,
 				scrolly: false,
 				loadStatus: 'loadmore',
@@ -107,17 +109,18 @@
 				]
 			};
 		},
-		mounted() {
+		mounted() { 
 			uni.getSystemInfo({
 				success: res => {
 					this.mainHeight = res.safeArea.height - 120
 					this.windowHeight = res.windowHeight
+					this.windowWidth = res.windowWidth
 					console.log("高度", res.windowHeight)
 				}
 			});
 		},
 		methods: {
-			moveHandle(){},
+			moveHandle() {},
 			//评论触底加载
 			videolower() {
 				if (this.scrolly) {
@@ -244,7 +247,6 @@
 	.comment-main {
 		position: fixed;
 		z-index: 9999;
-		width: 100%;
 		background-color: #FFFFFF;
 		border-top-left-radius: 20rpx;
 		border-top-right-radius: 20rpx;
